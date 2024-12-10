@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-10 11:37:41
+LastEditTime: 2024-12-10 13:29:46
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -161,7 +161,7 @@ def get_case_details():
             }), 400
             
         # PDF文件路径
-        pdf_path = os.path.join('E:\\test\\emails', f'{case_id}.pdf')
+        pdf_path = os.path.join('E:\\Case_KB\\emails', f'{case_id}.pdf')
         
         if not os.path.exists(pdf_path):
             return jsonify({
@@ -531,7 +531,7 @@ def load_case_email():
         case_id = data.get('case_id')
         
         # 构建PDF文件路径
-        pdf_path = f'e:/test/emails/{case_id}.pdf'
+        pdf_path = f'e:/Case_KB/emails/{case_id}.pdf'
         
         if not os.path.exists(pdf_path):
             return jsonify({
@@ -611,7 +611,7 @@ def get_case_summary():
 
 @app.route('/get-templates')
 def get_templates():
-    template_dir = 'E:\\test\\email_template'
+    template_dir = 'E:\\Case_KB\\email_template'
     templates = []
     
     try:
