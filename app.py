@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-10 13:29:46
+LastEditTime: 2024-12-10 20:55:16
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -26,6 +26,8 @@ from PIL import Image
 import io
 import fitz  # PyMuPDF
 from docx import Document
+from docx.shared import Inches
+import shutil
 
 # 配置日志
 logging.basicConfig(
@@ -609,21 +611,72 @@ def get_case_summary():
             'message': str(e)
         }), 500
 
-@app.route('/get-templates')
-def get_templates():
-    template_dir = 'E:\\Case_KB\\email_template'
-    templates = []
-    
+@app.route('/upload-pdf', methods=['POST'])
+def upload_pdf():
     try:
-        for file in os.listdir(template_dir):
-            if file.endswith('.docx'):
-                templates.append({
-                    'name': file,
-                    'path': os.path.join(template_dir, file)
-                })
-        return jsonify(templates)
+        if 'file' not in request.files:
+            return jsonify({
+                'success': False,
+                'message': '没有文件被上传'
+            })
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'message': '未选择文件'
+            })
+            
+        if file and file.filename.endswith('.pdf'):
+            # 保存上传的PDF文件到临时目录
+            temp_path = os.path.join('temp', file.filename)
+            os.makedirs('temp', exist_ok=True)
+            file.save(temp_path)
+            
+            # 使用PyMuPDF提取PDF内容
+            doc = fitz.open(temp_path)
+            content_blocks = []
+            
+            for page in doc:
+                # 获取文本
+                text = page.get_text()
+                if text.strip():
+                    content_blocks.append({'type': 'text', 'content': text})
+                
+                # 获取图片
+                for img in page.get_images():
+                    try:
+                        xref = img[0]
+                        base = doc.extract_image(xref)
+                        image_data = base64.b64encode(base['image']).decode()
+                        content_blocks.append({
+                            'type': 'image',
+                            'content': f"data:image/{base['ext']};base64,{image_data}"
+                        })
+                    except Exception as img_error:
+                        logger.error(f"处理PDF图片时出错: {str(img_error)}")
+                        continue
+            
+            doc.close()
+            # 清理临时文件
+            os.remove(temp_path)
+            
+            return jsonify({
+                'success': True,
+                'content_blocks': content_blocks
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': '不支持的文件格式'
+            })
+            
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"处理PDF上传失败: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 @app.route('/get-template-content', methods=['POST'])
 def get_template_content():
@@ -636,30 +689,102 @@ def get_template_content():
                 'success': False,
                 'message': '模板文件不存在'
             })
-            
-        doc = Document(template_path)
-        content = []
-        images = []
+
+        file_ext = os.path.splitext(template_path)[1].lower()
         
-        for paragraph in doc.paragraphs:
-            content.append(paragraph.text)
+        if file_ext == '.docx':
+            doc = Document(template_path)
+            content_blocks = []
             
-        # 提取图片
-        for rel in doc.part.rels.values():
-            if "image" in rel.target_ref:
-                image_path = os.path.join(os.path.dirname(template_path), rel.target_ref)
-                if os.path.exists(image_path):
-                    with open(image_path, 'rb') as img_file:
-                        img_data = base64.b64encode(img_file.read()).decode()
-                        images.append(f"data:image/png;base64,{img_data}")
-        
+            # 遍历文档中的所有元素
+            for element in doc.element.body:
+                if element.tag.endswith('p'):  # 段落
+                    paragraph = element.xpath('.//w:t')
+                    if paragraph:
+                        text = ''.join(p.text for p in paragraph)
+                        if text.strip():  # 只添加非空文本
+                            content_blocks.append({'type': 'text', 'content': text})
+                
+                elif element.tag.endswith('drawing'):  # 图片
+                    for rel in doc.part.rels.values():
+                        if "image" in rel.target_ref:
+                            try:
+                                image_part = rel.target_part
+                                image_bytes = image_part.blob
+                                image_type = image_part.content_type.split('/')[-1]
+                                
+                                if image_type != 'x-emf':  # 跳过EMF格式
+                                    img_base64 = base64.b64encode(image_bytes).decode()
+                                    content_blocks.append({
+                                        'type': 'image',
+                                        'content': f"data:image/{image_type};base64,{img_base64}"
+                                    })
+                            except Exception as img_error:
+                                logger.error(f"处理图片时出错: {str(img_error)}")
+                                continue
+                                
+        elif file_ext == '.pdf':
+            doc = fitz.open(template_path)
+            content_blocks = []
+            
+            for page in doc:
+                # 获取文本
+                text = page.get_text()
+                if text.strip():
+                    content_blocks.append({'type': 'text', 'content': text})
+                
+                # 获取图片
+                for img in page.get_images():
+                    try:
+                        xref = img[0]
+                        base = doc.extract_image(xref)
+                        image_data = base64.b64encode(base['image']).decode()
+                        content_blocks.append({
+                            'type': 'image',
+                            'content': f"data:image/{base['ext']};base64,{image_data}"
+                        })
+                    except Exception as img_error:
+                        logger.error(f"处理PDF图片时出错: {str(img_error)}")
+                        continue
+            
+            doc.close()
+        else:
+            return jsonify({
+                'success': False,
+                'message': '不支持的文件格式'
+            })
+            
         return jsonify({
             'success': True,
-            'content': '\n'.join(content),
-            'images': images
+            'content_blocks': content_blocks
         })
         
     except Exception as e:
+        logger.error(f"获取模板内容失败: {str(e)}")
+        logger.error(traceback.format_exc())
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+@app.route('/scan-local-pdfs')
+def scan_local_pdfs():
+    pdf_dir = 'E:\\Case_KB\\email_template'  # PDF文件目录
+    pdfs = []
+    
+    try:
+        for file in os.listdir(pdf_dir):
+            if file.endswith('.pdf'):
+                pdfs.append({
+                    'name': file,
+                    'path': os.path.join(pdf_dir, file)
+                })
+        return jsonify({
+            'success': True,
+            'pdfs': pdfs
+        })
+    except Exception as e:
+        logger.error(f"扫描PDF文件失败: {str(e)}")
         return jsonify({
             'success': False,
             'message': str(e)

@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-11-28 14:55:34
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-10 12:38:34
+ * @LastEditTime: 2024-12-10 13:39:11
  * @FilePath: \test\show.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -408,28 +408,51 @@
             overflow-y: auto;
             outline: none;
             resize: vertical;
+            padding-right: 40px;
+            margin-top: 0;  /* 移除顶部边距，因为现在由容器控制 */
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 2px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            display: none;
         }
         .template-selector {
             position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid #d1d5db;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             max-height: 300px;
+            min-width: 200px;
             overflow-y: auto;
             z-index: 1000;
-            display: none;
+            padding: 10px;
+            backdrop-filter: blur(5px);
         }
         .template-item {
+            display: flex;
+            align-items: center;
             padding: 8px 12px;
             cursor: pointer;
             transition: background 0.2s;
+            border-radius: 4px;
+            margin-bottom: 4px;
         }
         .template-item:hover {
-            background: #f3f4f6;
+            background: rgba(243, 244, 246, 0.8);
+        }
+        .template-item i {
+            margin-right: 8px;
+            color: #666;
         }
         .resizer {
             width: 5px;
@@ -458,6 +481,10 @@
         }
         .section:nth-child(4) .result-area::-webkit-scrollbar-thumb:hover {
             background: #a1a1a1;
+        }
+        .generated-email-container {
+            position: relative;
+            margin-top: 16px;
         }
     </style>
 </head>
@@ -546,7 +573,12 @@
                     <button onclick="generateEmail()" class="button">
                         <i class="fas fa-envelope"></i> 生成邮件
                     </button>
-                    <div id="generatedEmail" class="generated-email" contenteditable="true"></div>
+                    <div class="generated-email-container" style="position: relative;">
+                        <div id="generatedEmail" class="generated-email" contenteditable="true"></div>
+                        <button class="copy-button" onclick="copyEmailContent()" title="复制内容">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -896,6 +928,9 @@
                     generatedEmail.textContent = data.email;
                     updateProgress(100, '完成', '邮件生成完成');
                     
+                    // 显示复制按钮
+                    document.querySelector('.copy-button').style.display = 'block';
+                    
                     // 初始化模板选择功能
                     initTemplateSelector();
                 } else {
@@ -914,7 +949,8 @@
             const emailContent = document.getElementById('generatedEmail');
             const selector = document.createElement('div');
             selector.className = 'template-selector';
-            emailContent.parentElement.appendChild(selector);
+            selector.style.display = 'none';
+            document.body.appendChild(selector);  // 改为添加到 body
             
             emailContent.addEventListener('input', async function(e) {
                 const selection = window.getSelection();
@@ -922,54 +958,64 @@
                 const cursorPos = range.startOffset;
                 const text = this.textContent;
                 
-                // 检查光标前是否有 @ 符号
                 const textBeforeCursor = text.substring(0, cursorPos);
                 const lastAtIndex = textBeforeCursor.lastIndexOf('@');
                 
                 if (lastAtIndex !== -1 && lastAtIndex === cursorPos - 1) {
                     const rect = range.getBoundingClientRect();
+                    
+                    // 使用绝对定位相对于视窗
+                    selector.style.position = 'fixed';
                     selector.style.left = `${rect.left}px`;
                     selector.style.top = `${rect.bottom + 5}px`;
                     
                     try {
-                        const response = await fetch('/get-templates');
-                        const templates = await response.json();
+                        const localFiles = await fetch('/scan-local-pdfs').then(res => res.json());
                         
-                        selector.innerHTML = templates.map(template => `
-                            <div class="template-item" data-path="${template.path}">
-                                ${template.name}
-                            </div>
-                        `).join('');
+                        selector.innerHTML = `
+                            ${localFiles.pdfs.map(pdf => `
+                                <div class="template-item" data-path="${pdf.path}">
+                                    <i class="fas fa-file-pdf"></i>
+                                    ${pdf.name}
+                                </div>
+                            `).join('')}
+                        `;
                         
                         selector.style.display = 'block';
                         
+                        // 修改点击事件处理
                         selector.querySelectorAll('.template-item').forEach(item => {
-                            item.addEventListener('click', async () => {
-                                const templatePath = item.dataset.path;
+                            item.onclick = async function(e) {
+                                e.stopPropagation();
+                                const templatePath = this.dataset.path;
                                 await insertTemplate(templatePath, range);
                                 selector.style.display = 'none';
-                            });
+                            };
                         });
                     } catch (error) {
-                        console.error('Error loading templates:', error);
+                        console.error('Error loading PDFs:', error);
                     }
                 } else {
                     selector.style.display = 'none';
                 }
             });
+
+            // 添加全局点击事件来关闭选择器
+            document.addEventListener('click', function(e) {
+                if (!selector.contains(e.target) && !e.target.closest('#generatedEmail')) {
+                    selector.style.display = 'none';
+                }
+            });
+
+            // 添加 ESC 键关闭选择器
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    selector.style.display = 'none';
+                }
+            });
         }
 
-        // 页面加载完成时初始化进度条
-        document.addEventListener('DOMContentLoaded', () => {
-            updateProgress(0, '准备就绪', '等待操作');
-        });
-        // 添��点击其他区域关闭选择器
-        document.addEventListener('click', function(e) {
-            if (!selector.contains(e.target) && e.target !== emailContent) {
-                selector.style.display = 'none';
-            }
-        });
-
+        // 添加 insertTemplate 函数
         async function insertTemplate(templatePath, range) {
             try {
                 const response = await fetch('/get-template-content', {
@@ -986,12 +1032,31 @@
                     range.setStart(range.startContainer, range.startOffset - 1);
                     range.deleteContents();
                     
-                    // 插入模板内容
-                    const content = document.createTextNode(result.content);
-                    range.insertNode(content);
+                    // 创建一个临时容器
+                    const tempContainer = document.createElement('div');
+                    
+                    // 按顺序插入内容块
+                    result.content_blocks.forEach(block => {
+                        if (block.type === 'text') {
+                            const textNode = document.createTextNode(block.content);
+                            tempContainer.appendChild(textNode);
+                            tempContainer.appendChild(document.createElement('br'));
+                        } else if (block.type === 'image') {
+                            const img = document.createElement('img');
+                            img.src = block.content;
+                            img.style.maxWidth = '100%';
+                            img.style.height = 'auto';
+                            img.style.margin = '10px 0';
+                            tempContainer.appendChild(img);
+                            tempContainer.appendChild(document.createElement('br'));
+                        }
+                    });
+                    
+                    // 插入所有内容
+                    range.insertNode(tempContainer);
                     
                     // 移动光标到内容末尾
-                    range.setStartAfter(content);
+                    range.setStartAfter(tempContainer);
                     range.collapse(true);
                     const selection = window.getSelection();
                     selection.removeAllRanges();
@@ -1002,6 +1067,26 @@
             }
         }
 
+        // 页面加载完成时初始化进度条
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgress(0, '准备就绪', '等待操作');
+        });
+
+        // 添加复制功能
+        function copyEmailContent() {
+            const emailContent = document.getElementById('generatedEmail').textContent;
+            navigator.clipboard.writeText(emailContent).then(() => {
+                // 可以添加复制成功的提示
+                const copyButton = document.querySelector('.copy-button');
+                const originalIcon = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyButton.innerHTML = originalIcon;
+                }, 1500);
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
 
         // 在 script 标签中添加 queryCaseCategory 函数
         async function queryCaseCategory() {
