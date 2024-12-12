@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="jumbotron">
+        <h1 class="display-4">案例管理系统</h1>
+        <p class="lead">欢迎使用案例管理系统，这里可以管理您的案例和邮件。</p>
+        <hr class="my-4">
+        <p>请选择以下功能：</p>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">主界面</h5>
+                        <p class="card-text">进入系统主界面。</p>
+                        <a href="{{ url_for('show') }}" class="btn btn-primary">进入主界面</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">案例管理</h5>
+                        <p class="card-text">管理和查看案例信息。</p>
+                        <a href="{{ url_for('case_manager.show_case_manager') }}" class="btn btn-primary">进入案例管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Case分类</h5>
+                        <p class="card-text">对Case进行自动分类和管理。</p>
+                        <a href="{{ url_for('email_classification') }}" class="btn btn-primary">Case分类管理</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

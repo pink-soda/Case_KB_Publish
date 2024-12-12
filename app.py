@@ -2,11 +2,11 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-10 20:55:16
+LastEditTime: 2024-12-12 22:07:17
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, flash, redirect, url_for, render_template, Response
 from flask_cors import CORS
 from case_data_handler import CaseDataHandler
 from mongo_handler import MongoHandler
@@ -28,6 +28,9 @@ import fitz  # PyMuPDF
 from docx import Document
 from docx.shared import Inches
 import shutil
+from process_emails_hierarchy import create_initial_hierarchy, update_hierarchy
+import json
+import time
 
 # 配置日志
 logging.basicConfig(
@@ -42,6 +45,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__, static_url_path='', static_folder='static')
+app.config['JSON_AS_ASCII'] = False
+app.config['JSONIFY_MIMETYPE'] = "application/json; charset=utf-8"
 CORS(app, resources={
     r"/*": {
         "origins": "*",
@@ -75,30 +80,8 @@ except Exception as e:
 
 @app.route('/')
 def index():
-    #logger.info("访问首页")
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>案例管理系统</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <h1>案例管理系统</h1>
-        <p>API 端点列表：</p>
-        <ul>
-            <li>POST /collect-info - 收集案例信息</li>
-            <li>POST /get-case-list - 获取案例列表</li>
-            <li>POST /get-case-details - 获取案例详情</li>
-            <li>GET /get-pending-audits - 获取待审核案例</li>
-            <li>POST /audit-case - 提交审核结果</li>
-            <li>GET /get-category-hierarchy - 获取分类层级</li>
-        </ul>
-        <p><a href="/show">进入主界面</a></p>
-        <p><a href="/case_manager">进入案例管理</a></p>
-    </body>
-    </html>
-    """
+    """首页"""
+    return render_template('index.html')
 
 @app.route('/show')
 def show():
@@ -308,7 +291,7 @@ def query_category():
             raise Exception("知识图谱数据库验证失败，请检查数据")
         category_hierarchy = kg.get_category_hierarchy()
         
-        # 使用LLM进行分类（这里会自动进行最多3次尝试）
+        # 使用LLM进行分类（这里会自���进行最多3次尝试）
         llm_handler = LLMHandler()
         analysis_result = llm_handler.analyze_description_with_categories(
             description=case_description,
@@ -596,7 +579,7 @@ def get_case_summary():
                 'message': '未找到案例'
             }), 404
             
-        # 获取案例评估字段
+        # 获取案例评估字
         summary = case.get('case_evaluation', '暂无案例评估')
         
         return jsonify({
@@ -790,7 +773,257 @@ def scan_local_pdfs():
             'message': str(e)
         }), 500
 
+def decode_unicode_dict(d):
+    """递归解码字典中的Unicode字符串"""
+    if isinstance(d, dict):
+        return {decode_unicode_dict(k): decode_unicode_dict(v) for k, v in d.items()}
+    elif isinstance(d, list):
+        return [decode_unicode_dict(i) for i in d]
+    elif isinstance(d, str):
+        try:
+            return d.encode().decode('unicode_escape')
+        except:
+            return d
+    else:
+        return d
+
+@app.route('/email-classification')
+def email_classification():
+    # 获取初始数据
+    email_folder = "./emails"
+    hierarchy_file = "./category_hierarchy.json"
+    cases_file = "./classified_cases.json"
+    
+    # 检查文件是否存在
+    hierarchy_exists = os.path.exists(hierarchy_file)
+    cases_exists = os.path.exists(cases_file)
+    
+    # 获取邮件文件列表
+    email_files = []
+    if os.path.exists(email_folder):
+        for file in os.listdir(email_folder):
+            if file.endswith('.pdf'):
+                processed = False
+                if os.path.exists(cases_file):
+                    with open(cases_file, 'r', encoding='utf-8') as f:
+                        cases = json.load(f)
+                        processed = any(case.get('file_path', '').endswith(file) for case in cases)
+                email_files.append({
+                    'name': file,
+                    'processed': processed
+                })
+    
+    # 获取分类层级
+    hierarchy = {}
+    if hierarchy_exists:
+        with open(hierarchy_file, 'r', encoding='utf-8') as f:
+            hierarchy = json.load(f)
+    
+    return render_template('email_classification.html', 
+                         email_files=email_files, 
+                         hierarchy=hierarchy,
+                         hierarchy_exists=hierarchy_exists,
+                         cases_exists=cases_exists)
+
+@app.route('/get-classification-status')
+def get_classification_status():
+    try:
+        email_folder = "./emails"
+        hierarchy_file = "./category_hierarchy.json"
+        cases_file = "./classified_cases.json"
+
+        # 获取邮件文件列表
+        email_files = []
+        if os.path.exists(email_folder):
+            for file in os.listdir(email_folder):
+                if file.endswith('.pdf'):
+                    processed = False
+                    if os.path.exists(cases_file):
+                        with open(cases_file, 'r', encoding='utf-8') as f:
+                            cases = json.load(f)
+                            processed = any(case.get('file_path', '').endswith(file) for case in cases)
+                    
+                    email_files.append({
+                        'name': file,
+                        'processed': processed
+                    })
+
+        # 获取分类层级
+        hierarchy = {}
+        if os.path.exists(hierarchy_file):
+            with open(hierarchy_file, 'r', encoding='utf-8') as f:
+                hierarchy = json.load(f)
+
+        # 确保中文字符正确编码
+        def encode_chinese(obj):
+            if isinstance(obj, dict):
+                return {encode_chinese(k): encode_chinese(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [encode_chinese(i) for i in obj]
+            elif isinstance(obj, str):
+                return obj.encode('utf-8').decode('utf-8')
+            return obj
+
+        hierarchy = encode_chinese(hierarchy)
+                
+        return jsonify({
+            'status': 'success',
+            'email_files': email_files,
+            'hierarchy': hierarchy
+        })
+
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/process-emails', methods=['POST'])
+def process_emails_api():
+    try:
+        print("开始处理邮件请求")  # 调试日志
+        email_folder = request.form.get('email_folder')
+        print(f"收到邮件文件夹路径: {email_folder}")  # 调试日志
+        
+        hierarchy_file = "./category_hierarchy.json"
+        cases_file = "./classified_cases.json"
+
+        # 检查文件是否存在
+        files_exist = os.path.exists(hierarchy_file) and os.path.exists(cases_file)
+        print(f"文件是否存在: {files_exist}")  # 调试日志
+        
+        try:
+            if not files_exist:
+                create_initial_hierarchy(email_folder, hierarchy_file, cases_file)
+                message = "分类层级结构创建成功"
+            else:
+                update_hierarchy(email_folder, hierarchy_file, cases_file)
+                message = "分类层级结构更新成功"
+            
+            # 读取最新的分类结果
+            with open(hierarchy_file, 'r', encoding='utf-8') as f:
+                hierarchy = json.load(f)
+            
+            # 获取最新的文件处理状态
+            email_files = []
+            if os.path.exists(email_folder):
+                for file in os.listdir(email_folder):
+                    if file.endswith('.pdf'):
+                        processed = False
+                        if os.path.exists(cases_file):
+                            with open(cases_file, 'r', encoding='utf-8') as f:
+                                cases = json.load(f)
+                                processed = any(case.get('file_path', '').endswith(file) for case in cases)
+                        email_files.append({
+                            'name': file,
+                            'processed': processed
+                        })
+            
+            print("处理完成，准备返回结果")
+            response_data = {
+                'status': 'success',
+                'message': message,
+                'hierarchy': hierarchy,
+                'email_files': email_files,
+                'redirect': '/email-classification'  # 添加重定向URL
+            }
+            print(f"返回数据: {response_data}")
+            #return jsonify(response_data)
+            return redirect(url_for('email_classification'))
+            
+        except Exception as e:
+            # 如果处理过程中出错，删除可能创建的不完整文件
+            if not files_exist:
+                for file in [hierarchy_file, cases_file]:
+                    if os.path.exists(file):
+                        os.remove(file)
+            
+            error_message = str(e)
+            error_detail = traceback.format_exc()
+            print(f"处理过程中出错: {str(e)}")  # 调试日志
+            return jsonify({
+                'status': 'error',
+                'message': '处理失败',
+                'error': f"错误信息: {error_message}\n\n详细信息:\n{error_detail}"
+            }), 500
+
+    except Exception as e:
+        print(f"请求处理失败: {str(e)}")  # 调试日志
+        return jsonify({
+            'status': 'error',
+            'message': '处理失败',
+            'error': str(e)
+        }), 500
+
 app.register_blueprint(case_manager)
+
+# 添加自定义过滤器
+@app.template_filter('yesno')
+def yesno_filter(value, choices='yes,no'):
+    """
+    将布尔值转换为自定义的是/否字符串
+    用法: {{ value | yesno('已处理,未处理') }}
+    """
+    choices_list = choices.split(',')
+    if len(choices_list) != 2:
+        return value
+    return choices_list[0] if value else choices_list[1]
+
+@app.template_filter('tojson_pretty')
+def tojson_pretty_filter(value):
+    """
+    将对象转换为格式化的 JSON 字符串，确保中文正确显示
+    """
+    return json.dumps(value, ensure_ascii=False, indent=2)
+
+@app.route('/process-progress')
+def process_progress():
+    def generate():
+        folder = request.args.get('folder', '')
+        if not folder or not os.path.exists(folder):
+            yield f"data: {json.dumps({'progress': 0, 'message': '无效的文件夹路径'})}\n\n"
+            return
+
+        total_files = len([f for f in os.listdir(folder) if f.endswith('.pdf')])
+        if total_files == 0:
+            yield f"data: {json.dumps({'progress': 0, 'message': '文件夹中没有PDF文件'})}\n\n"
+            return
+
+        cases_file = "./classified_cases.json"
+        processed = 0
+        last_processed = -1  # 用于跟踪上次的处理数量
+
+        while processed < total_files:
+            if os.path.exists(cases_file):
+                with open(cases_file, 'r', encoding='utf-8') as f:
+                    cases = json.load(f)
+                    processed = len([case for case in cases 
+                                  if case.get('file_path', '').startswith(folder)])
+            
+            # 只在处理数量发生变化时发送更新
+            if processed != last_processed:
+                progress = (processed / total_files) if total_files > 0 else 0
+                data = {
+                    'progress': progress,
+                    'message': f'已处理 {processed}/{total_files} 个文件'
+                }
+                yield f"data: {json.dumps(data)}\n\n"
+                last_processed = processed
+            
+            time.sleep(0.5)  # 降低检查频率
+            
+            # 如果处理完成，发送最后的消息
+            if processed >= total_files:
+                yield f"data: {json.dumps({'progress': 1, 'message': '处理完成'})}\n\n"
+                break
+    
+    return Response(generate(), mimetype='text/event-stream')
+
+def is_file_processed(filename):
+    # 检查文件是否已处理
+    with open('classified_cases.json', 'r', encoding='utf-8') as f:
+        cases = json.load(f)
+        return any(case.get('file_path', '').endswith(filename) for case in cases)
 
 if __name__ == '__main__':
     try:
@@ -799,7 +1032,7 @@ if __name__ == '__main__':
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         result = sock.connect_ex(('127.0.0.1', 5000))
         if result == 0:
-            print("警告：端口 5000 已被占用")
+            print("警告：端口 5000 已被占")
         sock.close()
         
         #print("正在启动Flask应用...")
