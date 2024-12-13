@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:41:12
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-09 16:10:42
+LastEditTime: 2024-12-13 10:46:45
 FilePath: \test\knowledge_graph.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -58,7 +58,7 @@ class KnowledgeGraph:
                     ORDER BY depth
                 """)
 
-                # 处理每个节点
+                # 处理��个节点
                 for record in result:
                     name = record['name']
                     parent_name = record['parent_name']
@@ -95,48 +95,36 @@ class KnowledgeGraph:
                 # 清除现有数据
                 session.run("MATCH (n) DETACH DELETE n")
                 
-                # 创建根节点
-                session.run("""
-                    CREATE (root:Category {name: '案例分类'})
-                """)
-                
-                # 递归创建节点和关系
-                def create_category_nodes(parent_name, categories):
-                    for category in categories:
-                        # 创建当前节点
+                # 遍历层级结构并创建节点和关系
+                for level1, level2_dict in categories.items():
+                    # 创建一级分类节点
+                    session.run("""
+                        MERGE (n:Category {name: $name})
+                    """, name=level1)
+                    
+                    # 遍历二级分类
+                    for level2, level3_list in level2_dict.items():
+                        # 创建二级分类节点并与一级分类建立关系
                         session.run("""
                             MATCH (parent:Category {name: $parent_name})
-                            CREATE (child:Category {name: $name})
-                            CREATE (parent)-[:HAS_SUBCATEGORY]->(child)
-                        """, parent_name=parent_name, name=category['name'])
+                            MERGE (child:Category {name: $child_name})
+                            MERGE (parent)-[:HAS_SUBCATEGORY]->(child)
+                        """, parent_name=level1, child_name=level2)
                         
-                        # 如果有子类别，递归创建
-                        if 'subcategories' in category:
-                            create_category_nodes(category['name'], category['subcategories'])
+                        # 遍历三级分类
+                        for level3 in level3_list:
+                            # 创建三级分类节点并与二级分类建立关系
+                            session.run("""
+                                MATCH (parent:Category {name: $parent_name})
+                                MERGE (child:Category {name: $child_name})
+                                MERGE (parent)-[:HAS_SUBCATEGORY]->(child)
+                            """, parent_name=level2, child_name=level3)
                 
-                # 开始导入
-                create_category_nodes('案例分类', categories)
-                
-            return True, "分类导入成功"
+                return True, "分类导入成功"
             
         except Exception as e:
             logging.error(f"导入分类失败: {str(e)}")
             return False, str(e)
-    '''
-    def get_category_hierarchy(self):
-        """获取完整的分类层级结构"""
-        with self.driver.session() as session:
-            result = session.run("""
-                MATCH path = (root:Category {name: '案例分类'})-[:HAS_SUBCATEGORY*]->(child:Category)
-                WITH COLLECT(path) AS paths
-                CALL apoc.convert.toTree(paths) YIELD value
-                RETURN value
-            """)
-            
-            # 转换Neo4j结果为Python字典
-            hierarchy = result.single()[0]
-            return hierarchy
-    '''
 
     def verify_data(self):
         try:

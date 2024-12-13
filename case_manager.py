@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-05 14:49:25
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-09 16:13:19
+LastEditTime: 2024-12-13 10:20:24
 FilePath: \test\case_manager.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''

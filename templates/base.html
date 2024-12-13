@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:34:56
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-12 21:02:01
+ * @LastEditTime: 2024-12-13 10:22:06
  * @FilePath: \Case_KB\templates\base.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -34,12 +34,18 @@
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">分类管理系统</a>
+            <a class="navbar-brand" href="{{ url_for('index') }}">Case-KB</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('show') }}">主页面</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('case_manager.show_case_manager') }}">案例管理</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('email_classification') }}">Case分类</a>
                     </li>

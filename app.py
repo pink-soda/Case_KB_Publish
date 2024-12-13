@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-12 22:07:17
+LastEditTime: 2024-12-13 10:34:47
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -291,7 +291,7 @@ def query_category():
             raise Exception("知识图谱数据库验证失败，请检查数据")
         category_hierarchy = kg.get_category_hierarchy()
         
-        # 使用LLM进行分类（这里会自���进行最多3次尝试）
+        # 使用LLM进行分类（这里会自动进行最多3次尝试）
         llm_handler = LLMHandler()
         analysis_result = llm_handler.analyze_description_with_categories(
             description=case_description,
@@ -798,26 +798,49 @@ def email_classification():
     hierarchy_exists = os.path.exists(hierarchy_file)
     cases_exists = os.path.exists(cases_file)
     
+    # 读取分类数据
+    cases_data = {}
+    if cases_exists:
+        try:
+            with open(cases_file, 'r', encoding='utf-8') as f:
+                cases = json.load(f)
+                # 创建文件名到分类的映射
+                for case in cases:
+                    file_path = case.get('file_path', '')
+                    if file_path:
+                        file_name = os.path.basename(file_path)
+                        cases_data[file_name] = case.get('classification', {
+                            'level1': '',
+                            'level2': '',
+                            'level3': ''
+                        })
+        except Exception as e:
+            logger.error(f"读取分类数据失败: {str(e)}")
+    
     # 获取邮件文件列表
     email_files = []
     if os.path.exists(email_folder):
         for file in os.listdir(email_folder):
             if file.endswith('.pdf'):
-                processed = False
-                if os.path.exists(cases_file):
-                    with open(cases_file, 'r', encoding='utf-8') as f:
-                        cases = json.load(f)
-                        processed = any(case.get('file_path', '').endswith(file) for case in cases)
+                processed = file in cases_data
                 email_files.append({
                     'name': file,
-                    'processed': processed
+                    'processed': processed,
+                    'categories': cases_data.get(file, {
+                        'level1': '',
+                        'level2': '',
+                        'level3': ''
+                    })
                 })
     
-    # 获取分类层级
+    # 获���分类层级
     hierarchy = {}
     if hierarchy_exists:
-        with open(hierarchy_file, 'r', encoding='utf-8') as f:
-            hierarchy = json.load(f)
+        try:
+            with open(hierarchy_file, 'r', encoding='utf-8') as f:
+                hierarchy = json.load(f)
+        except Exception as e:
+            logger.error(f"读取层级结构失败: {str(e)}")
     
     return render_template('email_classification.html', 
                          email_files=email_files, 
@@ -883,7 +906,7 @@ def process_emails_api():
     try:
         print("开始处理邮件请求")  # 调试日志
         email_folder = request.form.get('email_folder')
-        print(f"收到邮件文件夹路径: {email_folder}")  # 调试日志
+        print(f"收到邮件文件夹路径: {email_folder}")  # 调��日志
         
         hierarchy_file = "./category_hierarchy.json"
         cases_file = "./classified_cases.json"
@@ -1024,6 +1047,99 @@ def is_file_processed(filename):
     with open('classified_cases.json', 'r', encoding='utf-8') as f:
         cases = json.load(f)
         return any(case.get('file_path', '').endswith(filename) for case in cases)
+
+@app.route('/import-to-neo4j', methods=['POST'])
+def import_to_neo4j():
+    try:
+        # 获取请求中的分类数据
+        hierarchy_data = request.get_json()
+        
+        # 将数据保存到临时文件
+        with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+            json.dump(hierarchy_data, f, ensure_ascii=False, indent=2)
+        
+        # 初始化KnowledgeGraph并导入数据
+        kg = KnowledgeGraph()
+        success, message = kg.import_categories_from_json()
+        
+        if success:
+            return jsonify({'success': True, 'message': '导入成功'})
+        else:
+            return jsonify({'success': False, 'message': message})
+            
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/update-file-categories', methods=['POST'])
+def update_file_categories():
+    try:
+        data = request.get_json()
+        file_name = data.get('file_name')
+        categories = data.get('categories')
+        
+        if not file_name or not categories:
+            return jsonify({
+                'success': False,
+                'message': '缺少必要参数'
+            })
+        
+        # 读取现有的分类数据
+        with open('classified_cases.json', 'r', encoding='utf-8') as f:
+            cases = json.load(f)
+        
+        # 构建完整的文件路径
+        full_path = os.path.join('./emails', file_name)
+        
+        # 更新指定文件的分类
+        case_updated = False
+        for case in cases:
+            if case.get('file_path', '').endswith(file_name):
+                case['classification'] = categories
+                case_updated = True
+                break
+        
+        # 如果没有找到对应的案例，添加新的
+        if not case_updated:
+            cases.append({
+                'file_path': full_path,
+                'classification': categories
+            })
+        
+        # 保存更新后的数据
+        with open('classified_cases.json', 'w', encoding='utf-8') as f:
+            json.dump(cases, f, ensure_ascii=False, indent=2)
+        
+        # 重新生成层级结构
+        hierarchy = {}
+        for case in cases:
+            classification = case.get('classification', {})
+            level1 = classification.get('level1')
+            level2 = classification.get('level2')
+            level3 = classification.get('level3')
+            
+            if level1 and level2 and level3:
+                if level1 not in hierarchy:
+                    hierarchy[level1] = {}
+                if level2 not in hierarchy[level1]:
+                    hierarchy[level1][level2] = []
+                if level3 not in hierarchy[level1][level2]:
+                    hierarchy[level1][level2].append(level3)
+        
+        # 保存更新后的层级结构
+        with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+            json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+        
+        return jsonify({
+            'success': True,
+            'hierarchy': hierarchy
+        })
+        
+    except Exception as e:
+        logger.error(f"更新分类失败: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     try:

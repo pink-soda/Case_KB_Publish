@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:27:37
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-12 22:28:38
+ * @LastEditTime: 2024-12-13 10:12:49
  * @FilePath: \Case_KB\templates\email_classification.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -28,19 +28,26 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">{% if hierarchy_exists and cases_exists %}更新分类{% else %}创建分类{% endif %}</h5>
-                    <form method="POST" action="{{ url_for('process_emails_api') }}">
-                        <div class="mb-3">
+                    <form method="POST" action="{{ url_for('process_emails_api') }}" class="d-flex align-items-end gap-3">
+                        <div class="flex-grow-1">
                             <label for="email_folder" class="form-label">邮件文件夹路径</label>
                             <input type="text" class="form-control" id="email_folder" name="email_folder" 
                                    value="./emails" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                {% if hierarchy_exists and cases_exists %}
+                                开始更新
+                                {% else %}
+                                开始创建
+                                {% endif %}
+                            </button>
                             {% if hierarchy_exists and cases_exists %}
-                            开始更新
-                            {% else %}
-                            开始创建
+                            <button id="importToNeo4j" type="button" class="btn btn-success">
+                                <i class="fas fa-database me-1"></i>导入Neo4j
+                            </button>
                             {% endif %}
-                        </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -58,11 +65,34 @@
                         <div class="list-group">
                         {% for file in email_files %}
                             <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>{{ file.name.replace('.pdf', '') }}</span>
-                                    <span class="badge {% if file.processed %}bg-success{% else %}bg-secondary{% endif %}">
-                                        {{ file.processed | yesno('已处理,未处理') }}
-                                    </span>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="me-3">{{ file.name.replace('.pdf', '') }}</span>
+                                            <span class="badge {% if file.processed %}bg-success{% else %}bg-secondary{% endif %}">
+                                                {{ file.processed | yesno('已处理,未处理') }}
+                                            </span>
+                                        </div>
+                                        {% if file.processed %}
+                                        <div class="category-editor" data-file="{{ file.name }}">
+                                            <div class="input-group input-group-sm mb-2">
+                                                <span class="input-group-text">一级分类</span>
+                                                <input type="text" class="form-control category-input" 
+                                                       data-level="1" value="{{ file.categories.level1 }}">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-2">
+                                                <span class="input-group-text">二级分类</span>
+                                                <input type="text" class="form-control category-input" 
+                                                       data-level="2" value="{{ file.categories.level2 }}">
+                                            </div>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">三级分类</span>
+                                                <input type="text" class="form-control category-input" 
+                                                       data-level="3" value="{{ file.categories.level3 }}">
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
@@ -283,6 +313,94 @@
         if (submitButton) {
             submitButton.dataset.originalText = submitButton.textContent;
         }
+
+        // 添加导入按钮的点击事件处理
+        const importButton = document.getElementById('importToNeo4j');
+        if (importButton) {
+            importButton.addEventListener('click', function() {
+                // 获取当前显示的分类层级数据
+                const hierarchyCode = document.getElementById('hierarchyCode');
+                if (!hierarchyCode || !hierarchyCode.textContent) {
+                    showAlert('warning', '没有可导入的分类数据');
+                    return;
+                }
+
+                // 禁用按钮，显示加载状态
+                importButton.disabled = true;
+                importButton.textContent = '导入中...';
+
+                // 发送导入请求
+                fetch('{{ url_for("import_to_neo4j") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: hierarchyCode.textContent
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('success', '分类数据已成功导入到Neo4j');
+                    } else {
+                        showAlert('danger', '导入失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showAlert('danger', '导入过程中发生错误: ' + error.message);
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    importButton.disabled = false;
+                    importButton.textContent = '导入到Neo4j';
+                });
+            });
+        }
+
+        // 处理分类编辑
+        const categoryInputs = document.querySelectorAll('.category-input');
+        categoryInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const editor = this.closest('.category-editor');
+                const fileName = editor.dataset.file;
+                const level = this.dataset.level;
+                const value = this.value;
+
+                // 收集当前文件的所有分类值
+                const categories = {
+                    level1: editor.querySelector('[data-level="1"]').value,
+                    level2: editor.querySelector('[data-level="2"]').value,
+                    level3: editor.querySelector('[data-level="3"]').value
+                };
+
+                // 发送更新请求
+                fetch('{{ url_for("update_file_categories") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        file_name: fileName,
+                        categories: categories
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 更新分类结果显示
+                        const hierarchyCode = document.getElementById('hierarchyCode');
+                        if (hierarchyCode) {
+                            hierarchyCode.textContent = JSON.stringify(data.hierarchy, null, 2);
+                        }
+                        showAlert('success', '分类更新成功');
+                    } else {
+                        showAlert('danger', '更新失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showAlert('danger', '更新过程中发生错误: ' + error.message);
+                });
+            });
+        });
     });
 </script>
 {% endblock %}
@@ -318,6 +436,31 @@ pre code {
     font-family: 'Microsoft YaHei', Consolas, monospace;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+.category-editor {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.input-group-sm > .form-control {
+    font-size: 0.875rem;
+}
+
+.input-group-text {
+    min-width: 80px;
+    justify-content: center;
+}
+
+.btn-success {
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 </style>
 {% endblock %} 
