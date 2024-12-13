@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+<div class="container mt-4">
+    <h2>案例审核管理</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">待审核案例</h5>
+        </div>
+        <div class="card-body">
+            <!-- 添加调试信息 -->
+            {% if debug %}
+            <div class="alert alert-info">
+                <p>Cases count: {{ cases|length if cases else 0 }}</p>
+                <p>First case: {{ cases[0]|tojson if cases and cases|length > 0 else 'None' }}</p>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if cases and cases|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover" id="pendingCasesTable">
+                    <thead>
+                        <tr>
+                            <th>案例ID</th>
+                            <th>当前分类</th>
+                            <th>置信度</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for case in cases %}
+                        <tr>
+                            <td>{{ case.case_id }}</td>
+                            <td>
+                                <div class="categories">
+                                    {% if case.category %}
+                                        {% for cat in case.category %}
+                                        <div>第{{ loop.index }}级分类：{{ cat }}</div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>未分类</div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>N/A</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary audit-btn" 
+                                        data-case-id="{{ case.case_id }}"
+                                        data-current-category="{{ case.category|join('/') if case.category else '' }}">
+                                    审核
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center my-5">暂无待审核案例</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 审核表单模态框 -->
+    <div class="modal fade" id="auditModal" tabindex="-1" aria-labelledby="auditModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="auditModalLabel">案例审核</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="auditForm">
+                        <input type="hidden" id="caseid" name="caseid">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">案例ID</label>
+                            <p id="displayCaseId" class="form-control-plaintext"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">当前分类</label>
+                            <p id="currentCategory" class="form-control-plaintext"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newCategory" class="form-label">修正分类</label>
+                            <input type="text" class="form-control" id="newCategory" name="newCategory" 
+                                   placeholder="请输入修正后的分类，用/分隔不同级别" required>
+                            <div class="form-text">例如：操作系统/更新/系统更新</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="auditComment" class="form-label">审核意见</label>
+                            <textarea class="form-control" id="auditComment" name="auditComment" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitAudit">提交审核</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+// Toast 提示函数
+function showToast(type, message) {
+    const toastContainer = document.querySelector('.toast-container');
+    const toastEl = document.createElement('div');
+    toastEl.className = `toast ${type} fade show`;
+    toastEl.innerHTML = `
+        <div class="toast-header">
+            <strong class="me-auto">${type === 'success' ? '成功' : '错误'}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">${message}</div>
+    `;
+    
+    toastContainer.appendChild(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+    toast.show();
+    
+    toastEl.addEventListener('hidden.bs.toast', () => {
+        toastEl.remove();
+    });
+}
+
+// 打开审核模态框
+function openAuditModal(caseId, currentCategory) {
+    console.log('打开审核模态框:', { caseId, currentCategory });
+    document.getElementById('caseid').value = caseId;
+    document.getElementById('displayCaseId').textContent = caseId;
+    document.getElementById('currentCategory').textContent = currentCategory || '未分类';
+    document.getElementById('newCategory').value = currentCategory;
+    
+    const modal = new bootstrap.Modal(document.getElementById('auditModal'));
+    modal.show();
+}
+
+// 提交审核结果
+async function submitAudit(event) {
+    event.preventDefault();
+    
+    const caseId = document.getElementById('caseid').value;
+    const newCategory = document.getElementById('newCategory').value;
+    const comment = document.getElementById('auditComment').value;
+    
+    if (!newCategory) {
+        showToast('error', '请输入修正后的分类');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/audit-case', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                case_id: caseId,
+                audit_result: {
+                    category: newCategory.split('/'),
+                    comment: comment,
+                    auditor: 'admin'
+                }
+            })
+        });
+
+        const data = await response.json();
+        if (data.status === 'success') {
+            showToast('success', '审核提交成功');
+            bootstrap.Modal.getInstance(document.getElementById('auditModal')).hide();
+            location.reload(); // 刷新页面以显示更新后的数据
+        } else {
+            throw new Error(data.message || '审核提交失败');
+        }
+    } catch (error) {
+        showToast('error', `提交失败: ${error.message}`);
+    }
+}
+
+// 加载待审核案例
+async function loadPendingCases() {
+    try {
+        console.log('开始加载待审核案例...');
+        const response = await fetch('/get_pending_audits');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP错误: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('获取到的案例数据:', data);
+        
+        // 如果页面已经有数据（由服务器端渲染），则不需要更新
+        const existingTable = document.querySelector('#pendingCasesTable tbody');
+        if (existingTable && existingTable.children.length > 0) {
+            console.log('页面已有数据，无需更新');
+            return;
+        }
+        
+        // 如果没有数据，则刷新页面
+        if (!data || data.length === 0) {
+            console.log('没有待审核案例');
+            return;
+        }
+        
+        location.reload(); // 如果需要更新数据，直接刷新页面
+        
+    } catch (error) {
+        console.error('加载案例失败:', error);
+        showToast('error', `加载失败: ${error.message}`);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM加载完成，开始设置事件监听器');
+    
+    // 为所有审核按钮添加点击事件监听
+    document.body.addEventListener('click', function(e) {
+        const auditBtn = e.target.closest('.audit-btn');
+        if (auditBtn) {
+            console.log('审核按钮被点击');
+            const caseId = auditBtn.dataset.caseId;
+            const currentCategory = auditBtn.dataset.currentCategory;
+            console.log('案例信息:', { caseId, currentCategory });
+            openAuditModal(caseId, currentCategory);
+        }
+    });
+
+    // 为提交审核按钮添加点击事件监听
+    const submitBtn = document.getElementById('submitAudit');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', submitAudit);
+        console.log('提交审核按钮事件监听器已设置');
+    } else {
+        console.error('未找到提交审核按钮');
+    }
+
+    // 初始加载案例
+    console.log('开始加载待审核案例');
+    loadPendingCases();
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+.table th {
+    background-color: #f8f9fa;
+}
+
+.toast-container {
+    z-index: 9999;
+}
+
+.toast {
+    min-width: 300px;
+    background-color: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.toast.success {
+    border-left: 4px solid #28a745;
+}
+
+.toast.error {
+    border-left: 4px solid #dc3545;
+}
+
+.categories div {
+    margin-bottom: 0.25rem;
+}
+
+.categories div:last-child {
+    margin-bottom: 0;
+}
+
+.form-control-plaintext {
+    padding: 0.375rem 0;
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+</style>
+{% endblock %} 

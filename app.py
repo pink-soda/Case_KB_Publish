@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 10:34:47
+LastEditTime: 2024-12-13 17:12:20
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -31,6 +31,7 @@ import shutil
 from process_emails_hierarchy import create_initial_hierarchy, update_hierarchy
 import json
 import time
+import math
 
 # 配置日志
 logging.basicConfig(
@@ -204,16 +205,49 @@ def get_case_details():
             'message': str(e)
         }), 500
 
-@app.route('/get-pending-audits', methods=['GET'])
+@app.route('/get_pending_audits')
 def get_pending_audits():
-    """获取待审核的案例列表"""
     try:
-        pending_cases = audit_handler.get_pending_audits()
-        return jsonify({
+        app.logger.info("开始获取待审核案例")
+        audit_handler = AuditHandler()
+        cases = audit_handler.get_pending_audits()
+        
+        app.logger.info(f"从 AuditHandler 获取到 {len(cases)} 个案例")
+        app.logger.debug(f"原始案例数据: {cases}")
+        
+        # 确保所有案例都有必要的字段，并处理特殊值
+        formatted_cases = []
+        for case in cases:
+            app.logger.debug(f"处理案例数据: {case}")
+            
+            # 处理 case_score，确保它是 JSON 可序列化的
+            case_score = case.get('case_score')
+            if case_score is None or (isinstance(case_score, float) and (math.isnan(case_score) or math.isinf(case_score))):
+                case_score = None
+            
+            formatted_case = {
+                'case_id': case.get('case_id', '未知ID'),
+                'category': case.get('category', []),
+                'case_score': case_score,  # 使用处理后的 case_score
+                'case_review': case.get('case_review', '待审核')
+            }
+            formatted_cases.append(formatted_case)
+        
+        app.logger.info(f"返回待审核案例数量: {len(formatted_cases)}")
+        app.logger.debug(f"格式化后的案例数据: {formatted_cases}")
+        
+        response_data = {
             'status': 'success',
-            'cases': pending_cases
-        })
+            'cases': formatted_cases
+        }
+        app.logger.debug(f"最终返回的JSON数据: {response_data}")
+        
+        #return jsonify(response_data)
+        return jsonify(formatted_cases)
+
     except Exception as e:
+        app.logger.error(f"获取待审核案例失败: {str(e)}")
+        app.logger.exception("详细错误信息：")
         return jsonify({
             'status': 'error',
             'message': str(e)
@@ -291,7 +325,7 @@ def query_category():
             raise Exception("知识图谱数据库验证失败，请检查数据")
         category_hierarchy = kg.get_category_hierarchy()
         
-        # 使用LLM进行分类（这里会自动进行最多3次尝试）
+        # 使用LLM进行分类（这里会自进行最多3次试）
         llm_handler = LLMHandler()
         analysis_result = llm_handler.analyze_description_with_categories(
             description=case_description,
@@ -372,10 +406,10 @@ def tag_description():
             category_hierarchy=category_hierarchy
         )
         
-        # 打印原始的分析结果
+        # 打印原始的析结果
         #logger.info(f"LLM分析原始结果: {analysis_result}")
         
-        # 修改返回格式，使其更适合前端显示
+        # 修改回格式，使其更适合前端显示
         formatted_result = {
             'status': 'success',
             'result': {
@@ -444,7 +478,7 @@ def search_similar_cases():
             if 'category' in case and case['category']:
                 case_categories.extend(case['category'] if isinstance(case['category'], list) else [cat.strip() for cat in case['category'].split(',')])
             
-            case['categories'] = list(set(case_categories))  # 去重
+            case['categories'] = list(set(case_categories))  # 重
             #logger.debug(f"Processed categories for case {case['case_id']}: {case['categories']}")
             
             # 计算匹配分数 - 使用更宽松的匹配逻辑
@@ -477,7 +511,7 @@ def generate_email():
         data = request.get_json()
         reference_case_id = data.get('reference_case_id')
         progress_description = data.get('progress_description')
-        reference_emails = data.get('reference_emails', '')  # 获取历史邮件内容
+        reference_emails = data.get('reference_emails', '')  # 获取历史件内容
         case_info = data.get('case_info', {})
         #logger.debug(f"用户进度描述: {progress_description}")
         #logger.debug(f"参考案例历史邮件: {reference_emails}")
@@ -503,7 +537,7 @@ def generate_email():
         
     except Exception as e:
         logger.error(f"生成邮件失败: {str(e)}")
-        logger.error(traceback.format_exc())  # 添加错误堆栈跟踪
+        logger.error(traceback.format_exc())  # 添加错误栈跟踪
         return jsonify({
             'success': False,
             'message': str(e)
@@ -515,7 +549,7 @@ def load_case_email():
         data = request.get_json()
         case_id = data.get('case_id')
         
-        # 构建PDF文件路径
+        # 建PDF文件路径
         pdf_path = f'e:/Case_KB/emails/{case_id}.pdf'
         
         if not os.path.exists(pdf_path):
@@ -600,7 +634,7 @@ def upload_pdf():
         if 'file' not in request.files:
             return jsonify({
                 'success': False,
-                'message': '没有文件被上传'
+                'message': '有文件被上传'
             })
             
         file = request.files['file']
@@ -616,7 +650,7 @@ def upload_pdf():
             os.makedirs('temp', exist_ok=True)
             file.save(temp_path)
             
-            # 使用PyMuPDF提取PDF内容
+            # 使用PyMuPDF取PDF内容
             doc = fitz.open(temp_path)
             content_blocks = []
             
@@ -651,7 +685,7 @@ def upload_pdf():
         else:
             return jsonify({
                 'success': False,
-                'message': '不支持的文件格式'
+                'message': '不支持的文件式'
             })
             
     except Exception as e:
@@ -817,7 +851,7 @@ def email_classification():
         except Exception as e:
             logger.error(f"读取分类数据失败: {str(e)}")
     
-    # 获取邮件文件列表
+    # 获取件文件列表
     email_files = []
     if os.path.exists(email_folder):
         for file in os.listdir(email_folder):
@@ -833,7 +867,7 @@ def email_classification():
                     })
                 })
     
-    # 获���分类层级
+    # 获取分类层级
     hierarchy = {}
     if hierarchy_exists:
         try:
@@ -906,7 +940,7 @@ def process_emails_api():
     try:
         print("开始处理邮件请求")  # 调试日志
         email_folder = request.form.get('email_folder')
-        print(f"收到邮件文件夹路径: {email_folder}")  # 调��日志
+        print(f"收到邮件文件夹路径: {email_folder}")  # 调试日志
         
         hierarchy_file = "./category_hierarchy.json"
         cases_file = "./classified_cases.json"
@@ -923,7 +957,7 @@ def process_emails_api():
                 update_hierarchy(email_folder, hierarchy_file, cases_file)
                 message = "分类层级结构更新成功"
             
-            # 读取最新的分类结果
+            # 读取最新的分结果
             with open(hierarchy_file, 'r', encoding='utf-8') as f:
                 hierarchy = json.load(f)
             
@@ -955,7 +989,7 @@ def process_emails_api():
             return redirect(url_for('email_classification'))
             
         except Exception as e:
-            # 如果处理过程中出错，删除可能创建的不完整文件
+            # 果处理过程中错，删除可能创建的不完整文件
             if not files_exist:
                 for file in [hierarchy_file, cases_file]:
                     if os.path.exists(file):
@@ -984,7 +1018,7 @@ app.register_blueprint(case_manager)
 @app.template_filter('yesno')
 def yesno_filter(value, choices='yes,no'):
     """
-    将布尔值转换为自定义的是/否字符串
+    将布尔值转换为自定义的是/否符串
     用法: {{ value | yesno('已处理,未处理') }}
     """
     choices_list = choices.split(',')
@@ -1051,7 +1085,7 @@ def is_file_processed(filename):
 @app.route('/import-to-neo4j', methods=['POST'])
 def import_to_neo4j():
     try:
-        # 获取请求中的分类数据
+        # 获取请求中的类数据
         hierarchy_data = request.get_json()
         
         # 将数据保存到临时文件
@@ -1140,6 +1174,74 @@ def update_file_categories():
             'success': False,
             'message': str(e)
         }), 500
+
+@app.route('/audit-manager')
+def audit_manager():
+    """案例审核管理页面"""
+    try:
+        audit_handler = AuditHandler()
+        cases = audit_handler.get_pending_audits()
+        app.logger.info(f"获取到 {len(cases)} 个待审核案例")
+        
+        return render_template('audit_manager.html', cases=cases)
+    except Exception as e:
+        app.logger.error(f"加载审核管理页面失败: {str(e)}")
+        return render_template('audit_manager.html', cases=[], error=str(e))
+
+@app.route('/test-audit-data')
+def test_audit_data():
+    """测试端点，用于检查审核数据"""
+    try:
+        mongo_handler = MongoHandler()
+        
+        # 检查总案例数
+        total_count = mongo_handler.db.cases.count_documents({})
+        
+        # 获取一个样本案例
+        sample = mongo_handler.db.cases.find_one()
+        
+        # 获取待审核案例
+        audit_handler = AuditHandler()
+        pending_cases = audit_handler.get_pending_audits()
+        
+        return jsonify({
+            'status': 'success',
+            'total_cases': total_count,
+            'sample_case': str(sample),
+            'pending_cases_count': len(pending_cases),
+            'pending_cases': [str(case) for case in pending_cases[:5]]  # 只返回前5个案例
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/test-cases')
+def test_cases():
+    """测试路由，用于检查案例数据"""
+    try:
+        mongo_handler = MongoHandler()
+        
+        # 获取所有案例
+        all_cases = list(mongo_handler.db.cases.find())
+        sample_cases = all_cases[:5]  # 只取前5个
+        
+        # 处理ObjectId
+        for case in sample_cases:
+            case['_id'] = str(case['_id'])
+        
+        return jsonify({
+            'total_cases': len(all_cases),
+            'sample_cases': sample_cases,
+            'fields_info': {
+                'case_score_exists': any('case_score' in case for case in sample_cases),
+                'category_exists': any('category' in case for case in sample_cases),
+                'case_review_exists': any('case_review' in case for case in sample_cases)
+            }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     try:

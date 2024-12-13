@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-09 10:41:47
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 11:09:15
+LastEditTime: 2024-12-13 12:52:06
 FilePath: \test\category_classifier.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -202,13 +202,15 @@ class CategoryHierarchyBuilder:
                     raise Exception("无法解析LLM返回的JSON格式")
             
             # 验证所需字段
-            required_fields = ['level1', 'level2', 'level3', 'similarity', 'matched_path', 'reasoning']
+            required_fields = ['level1', 'level2', 'level3', 'similarity_level1', 'similarity_level2', 'similarity_level3', 'matched_path_level1', 'matched_path_level2', 'matched_path_level3', 'reasoning']
             missing_fields = [field for field in required_fields if field not in result]
             if missing_fields:
                 raise ValueError(f"响应缺少必要字段: {', '.join(missing_fields)}")
             
             # 确保similarity是浮点数
-            result['similarity'] = float(result['similarity'])
+            result['similarity_level1'] = float(result['similarity_level1'])
+            result['similarity_level2'] = float(result['similarity_level2'])
+            result['similarity_level3'] = float(result['similarity_level3'])
             
             return result
             
@@ -231,8 +233,10 @@ class CategoryHierarchyBuilder:
             # 使用新的专用解析方法
             result = self._parse_classification_response(response)
             
+            similarity_score = float(result['similarity_level1'])*0.4 + float(result['similarity_level2'])*0.1 + float(result['similarity_level3'])*0.5
+            
             # 如果是第一个案例或没有匹配到现有分类
-            if not self.hierarchy or result['similarity'] < self.similarity_threshold:
+            if not self.hierarchy or similarity_score < self.similarity_threshold:
                 self._add_to_hierarchy(result['level1'], result['level2'], result['level3'])
                 
             # 存储已分类的案例

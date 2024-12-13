@@ -53,7 +53,9 @@ def get_completed_cases_from_csv():
                 'case_status': str(case_data.get('案例进度', '')),
                 'case_log': str(case_data.get('有无上传日志', '')),
                 'case_evaluation': str(case_data.get('案例总结', '')),
-                'case_email': str(case_data.get('案例详情', ''))
+                'case_email': str(case_data.get('案例详情', '')),
+                'case_review': str(case_data.get('案例评审', '')),
+                'case_score': str(case_data.get('案例置信度评分', '')),
             }
             result.append(case)
         

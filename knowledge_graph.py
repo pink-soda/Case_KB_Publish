@@ -87,6 +87,15 @@ class KnowledgeGraph:
 
     def import_categories_from_json(self):
         try:
+             # 首先检查是否已有数据
+            with self.driver.session() as session:
+                result = session.run("""
+                    MATCH (n:Category) 
+                    RETURN count(n) as count
+                """)
+                count = result.single()['count']
+                if count > 0:
+                    return False, "分类数据已存在于Neo4j中，无需重复导入"
             # 读取JSON文件
             with open('category_hierarchy.json', 'r', encoding='utf-8') as file:
                 categories = json.load(file)

@@ -2,13 +2,16 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:27:37
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-13 10:12:49
+ * @LastEditTime: 2024-12-13 13:19:23
  * @FilePath: \Case_KB\templates\email_classification.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Toast 容器移到最外层 -->
+<div class="toast-container"></div>
+
 <div class="container mt-4">
     <h2>Case分类管理</h2>
     
@@ -314,22 +317,46 @@
             submitButton.dataset.originalText = submitButton.textContent;
         }
 
-        // 添加导入按钮的点击事件处理
+        // 显示 Toast 消息
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <strong class="me-auto">${type === 'success' ? '成功' : type === 'error' ? '错误' : '警告'}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            toastContainer.appendChild(toast);
+            
+            // 2.7秒后开始淡出动画
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+            }, 2700);
+            
+            // 3秒后移除元素
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 修改导入按钮的处理代码
         const importButton = document.getElementById('importToNeo4j');
         if (importButton) {
             importButton.addEventListener('click', function() {
-                // 获取当前显示的分类层级数据
                 const hierarchyCode = document.getElementById('hierarchyCode');
                 if (!hierarchyCode || !hierarchyCode.textContent) {
-                    showAlert('warning', '没有可导入的分类数据');
+                    showToast('没有可导入的分类数据', 'error');
                     return;
                 }
 
-                // 禁用按钮，显示加载状态
                 importButton.disabled = true;
-                importButton.textContent = '导入中...';
+                importButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>导入中...';
 
-                // 发送导入请求
                 fetch('{{ url_for("import_to_neo4j") }}', {
                     method: 'POST',
                     headers: {
@@ -340,18 +367,22 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showAlert('success', '分类数据已成功导入到Neo4j');
+                        showToast('分类数据已成功导入到Neo4j');
                     } else {
-                        showAlert('danger', '导入失败: ' + data.message);
+                        // 如果是已存在的提示，使用warning类型
+                        if (data.message.includes('已存在')) {
+                            showToast(data.message, 'warning');
+                        } else {
+                            showToast('导入失败: ' + data.message, 'error');
+                        }
                     }
                 })
                 .catch(error => {
-                    showAlert('danger', '导入过程中发生错误: ' + error.message);
+                    showToast('导入过程中发生错误: ' + error.message, 'error');
                 })
                 .finally(() => {
-                    // 恢复按钮状态
                     importButton.disabled = false;
-                    importButton.textContent = '导入到Neo4j';
+                    importButton.innerHTML = '<i class="fas fa-database me-1"></i>导入Neo4j';
                 });
             });
         }
@@ -461,6 +492,40 @@ pre code {
 .btn-success:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast {
+    min-width: 300px;
+    background-color: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    opacity: 1 !important;
+    transition: opacity 0.3s ease-in-out;
+    margin-bottom: 10px;
+    pointer-events: auto;
+}
+
+.toast.success {
+    border-left: 4px solid #28a745;
+}
+
+.toast.error {
+    border-left: 4px solid #dc3545;
+}
+
+.toast.warning {
+    border-left: 4px solid #ffc107;
+}
+
+.toast.fade-out {
+    opacity: 0 !important;
 }
 </style>
 {% endblock %} 
