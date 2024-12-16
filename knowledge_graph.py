@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:41:12
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 10:46:45
+LastEditTime: 2024-12-16 10:51:00
 FilePath: \test\knowledge_graph.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -58,7 +58,7 @@ class KnowledgeGraph:
                     ORDER BY depth
                 """)
 
-                # 处理��个节点
+                # 处理个节点
                 for record in result:
                     name = record['name']
                     parent_name = record['parent_name']
@@ -147,4 +147,24 @@ class KnowledgeGraph:
                 return len(categories) > 0
         except Exception as e:
             logging.error(f"验证数据失败: {str(e)}")
+            return False
+
+    def ensure_category_hierarchy(self, categories):
+        """确保分类层级关系存在，如果不存在则创建"""
+        try:
+            level1, level2, level3 = categories
+            
+            with self.driver.session() as session:
+                # 创建或获取各级节点
+                session.run("""
+                    MERGE (l1:Category {name: $level1})
+                    MERGE (l2:Category {name: $level2})
+                    MERGE (l3:Category {name: $level3})
+                    MERGE (l1)-[:HAS_SUBCATEGORY]->(l2)
+                    MERGE (l2)-[:HAS_SUBCATEGORY]->(l3)
+                """, level1=level1, level2=level2, level3=level3)
+                
+            return True
+        except Exception as e:
+            logging.error(f"确保分类层级关系失败: {str(e)}")
             return False

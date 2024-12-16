@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 17:12:20
+LastEditTime: 2024-12-16 11:10:02
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -267,41 +267,73 @@ def audit_case():
                 'message': '缺少必要参数'
             }), 400
         
+        # 1. 更新 MongoDB
         success = audit_handler.audit_case(case_id, audit_result)
-        
-        if success:
-            return jsonify({
-                'status': 'success',
-                'message': '审核完成'
-            })
-        else:
+        if not success:
             return jsonify({
                 'status': 'error',
-                'message': '审核失败'
+                'message': '更新MongoDB失败'
             }), 500
+
+        # 2. 检查并更新 Neo4j 分类关系
+        kg = KnowledgeGraph()
+        categories = audit_result['category']  # [level1, level2, level3]
+        success = kg.ensure_category_hierarchy(categories)
+        if not success:
+            return jsonify({
+                'status': 'error',
+                'message': '更新Neo4j分类关系失败'
+            }), 500
+
+        # 3. 如果包含新分类，更新本地JSON文件
+        if audit_result.get('has_new_category'):
+            try:
+                with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+                    hierarchy = json.load(f)
+                
+                level1, level2, level3 = categories
+                if level1 not in hierarchy:
+                    hierarchy[level1] = {}
+                if level2 not in hierarchy[level1]:
+                    hierarchy[level1][level2] = []
+                if level3 not in hierarchy[level1][level2]:
+                    hierarchy[level1][level2].append(level3)
+                
+                with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+                    json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                logger.error(f"更新分类层级JSON失败: {str(e)}")
+                return jsonify({
+                    'status': 'error',
+                    'message': '更新分类层级JSON失败'
+                }), 500
+        
+        return jsonify({
+            'status': 'success',
+            'message': '审核完成'
+        })
             
     except Exception as e:
+        logger.error(f"审核失败: {str(e)}")
         return jsonify({
             'status': 'error',
             'message': str(e)
         }), 500
 
 @app.route('/get-category-hierarchy', methods=['GET'])
+@app.route('/category_hierarchy.json')  # 添加别名路由
 def get_category_hierarchy():
     """获取分类层级结构"""
     try:
-        kg = KnowledgeGraph()
-        if not kg.verify_data():
-            raise Exception("知识图谱数据库验证失败，请检查数据")
-        hierarchy = kg.get_category_hierarchy()
-        return jsonify({
-            'status': 'success',
-            'hierarchy': hierarchy
-        })
+        # 优先从本地 JSON 文件读取
+        with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+            hierarchy = json.load(f)
+        return jsonify(hierarchy)
     except Exception as e:
+        logger.error(f"读取分类层级失败: {str(e)}")
         return jsonify({
             'status': 'error',
-            'message': str(e)
+            'message': '读取分类层级失败'
         }), 500
 
 @app.route('/query-category', methods=['POST'])
@@ -322,7 +354,7 @@ def query_category():
         # 获取知识图谱实例
         kg = KnowledgeGraph()
         if not kg.verify_data():
-            raise Exception("知识图谱数据库验证失败，请检查数据")
+            raise Exception("知识图数据库验证失败，请检查数据")
         category_hierarchy = kg.get_category_hierarchy()
         
         # 使用LLM进行分类（这里会自进行最多3次试）
@@ -487,7 +519,7 @@ def search_similar_cases():
             case['similarity_score'] = (matched_tags / len(tags)) * 100
             cases_list.append(case)
         
-        # 按相似度得排序降序）
+        # 按相似得排序降序）
         cases_list.sort(key=lambda x: x['similarity_score'], reverse=True)
         
         #logger.info(f"Found {len(cases_list)} matching cases")
@@ -613,7 +645,7 @@ def get_case_summary():
                 'message': '未找到案例'
             }), 404
             
-        # 获取案例评估字
+        # 获取案例评估
         summary = case.get('case_evaluation', '暂无案例评估')
         
         return jsonify({

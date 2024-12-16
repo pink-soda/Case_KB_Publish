@@ -77,15 +77,15 @@ class AuditHandler:
                 'audit_status': 'completed',
                 'audit_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'category': audit_result['category'],
-                'audit_comment': audit_result.get('comment', ''),
+                'case_comment': audit_result.get('comment', ''),
                 'auditor': audit_result.get('auditor', 'unknown')
             }
             
-            self.mongo.cases.update_one(
+            result = self.mongo.cases.update_one(
                 {'case_id': case_id},
                 {'$set': update_data}
             )
-            return True
+            return result.modified_count > 0
         except Exception as e:
-            print(f"审核案例失败: {str(e)}")
+            logging.error(f"审核案例失败: {str(e)}")
             return False 
