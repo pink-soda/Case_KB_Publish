@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-16 11:10:02
+LastEditTime: 2024-12-16 20:50:34
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -285,9 +285,10 @@ def audit_case():
                 'message': '更新Neo4j分类关系失败'
             }), 500
 
-        # 3. 如果包含新分类，更新本地JSON文件
+        # 3. 如果包含新分类，更新本地文件
         if audit_result.get('has_new_category'):
             try:
+                # 更新 category_hierarchy.json
                 with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
                     hierarchy = json.load(f)
                 
@@ -301,11 +302,46 @@ def audit_case():
                 
                 with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
                     json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+
+                # 更新 classified_cases.json
+                try:
+                    with open('classified_cases.json', 'r', encoding='utf-8') as f:
+                        classified_cases = json.load(f)
+                except FileNotFoundError:
+                    classified_cases = []
+
+                # 查找并更新或添加案例分类
+                case_found = False
+                for case in classified_cases:
+                    if case.get('file_path', '').endswith(f'{case_id}.pdf'):
+                        case['classification'] = {
+                            'level1': level1,
+                            'level2': level2,
+                            'level3': level3
+                        }
+                        case_found = True
+                        break
+
+                # 如果没找到案例，添加新的
+                if not case_found:
+                    classified_cases.append({
+                        'file_path': f'./emails/{case_id}.pdf',
+                        'classification': {
+                            'level1': level1,
+                            'level2': level2,
+                            'level3': level3
+                        }
+                    })
+
+                # 保存更新后的分类结果
+                with open('classified_cases.json', 'w', encoding='utf-8') as f:
+                    json.dump(classified_cases, f, ensure_ascii=False, indent=2)
+
             except Exception as e:
-                logger.error(f"更新分类层级JSON失败: {str(e)}")
+                logger.error(f"更新分类文件失败: {str(e)}")
                 return jsonify({
                     'status': 'error',
-                    'message': '更新分类层级JSON失败'
+                    'message': '更新分类文件失败'
                 }), 500
         
         return jsonify({
@@ -441,7 +477,7 @@ def tag_description():
         # 打印原始的析结果
         #logger.info(f"LLM分析原始结果: {analysis_result}")
         
-        # 修改回格式，使其更适合前端显示
+        # 修改回格式，使其更适合前端示
         formatted_result = {
             'status': 'success',
             'result': {
@@ -531,7 +567,7 @@ def search_similar_cases():
         })
     except Exception as e:
         logger.error(f"Error searching similar cases: {str(e)}")
-        logger.error(traceback.format_exc())  # 添加完整的错误堆栈
+        logger.error(traceback.format_exc())  # 添加完整的错误栈
         return jsonify({
             'status': 'error',
             'message': str(e)
@@ -875,28 +911,44 @@ def email_classification():
                     file_path = case.get('file_path', '')
                     if file_path:
                         file_name = os.path.basename(file_path)
-                        cases_data[file_name] = case.get('classification', {
-                            'level1': '',
-                            'level2': '',
-                            'level3': ''
-                        })
+                        cases_data[file_name] = {
+                            'categories': case.get('classification', {
+                                'level1': '',
+                                'level2': '',
+                                'level3': ''
+                            }),
+                            'confidence': case.get('category_score', {
+                                'level1': 0.0,
+                                'level2': 0.0,
+                                'level3': 0.0
+                            })
+                        }
         except Exception as e:
-            logger.error(f"读取分类数据失败: {str(e)}")
-    
-    # 获取件文件列表
+            logger.error(f"读取分类文件失败: {str(e)}")
+            cases_data = {}  # 出错时使用空字典
+    # 获取邮件文件列表
     email_files = []
     if os.path.exists(email_folder):
         for file in os.listdir(email_folder):
             if file.endswith('.pdf'):
-                processed = file in cases_data
-                email_files.append({
-                    'name': file,
-                    'processed': processed,
-                    'categories': cases_data.get(file, {
+                case_info = cases_data.get(file, {
+                    'categories': {
                         'level1': '',
                         'level2': '',
                         'level3': ''
-                    })
+                    },
+                    'confidence': {
+                        'level1': 0.0,
+                        'level2': 0.0,
+                        'level3': 0.0
+                    }
+                })
+                
+                email_files.append({
+                    'name': file,
+                    'processed': file in cases_data,
+                    'categories': case_info['categories'],
+                    'confidence': case_info['confidence']
                 })
     
     # 获取分类层级
@@ -970,16 +1022,16 @@ def get_classification_status():
 @app.route('/process-emails', methods=['POST'])
 def process_emails_api():
     try:
-        print("开始处理邮件请求")  # 调试日志
+        print("开始处理邮件请求")
         email_folder = request.form.get('email_folder')
-        print(f"收到邮件文件夹路径: {email_folder}")  # 调试日志
+        print(f"收到邮件文件夹路径: {email_folder}")
         
         hierarchy_file = "./category_hierarchy.json"
         cases_file = "./classified_cases.json"
 
         # 检查文件是否存在
         files_exist = os.path.exists(hierarchy_file) and os.path.exists(cases_file)
-        print(f"文件是否存在: {files_exist}")  # 调试日志
+        print(f"文件是否存在: {files_exist}")
         
         try:
             if not files_exist:
@@ -1229,7 +1281,7 @@ def test_audit_data():
         # 检查总案例数
         total_count = mongo_handler.db.cases.count_documents({})
         
-        # 获取一个样本案例
+        # 获取一样本案例
         sample = mongo_handler.db.cases.find_one()
         
         # 获取待审核案例

@@ -26,33 +26,33 @@
         </div>
     </div>
 
-    <!-- 管理员界面部分 -->
+    <!-- 管���员界面部分 -->
     <div class="section">
         <h2 class="border-bottom pb-2">管理员界面</h2>
         <div class="row mt-4">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">案例管理</h5>
-                        <p class="card-text flex-grow-1">管理和查看案例信息。</p>
-                        <a href="{{ url_for('case_manager.show_case_manager') }}" class="btn btn-primary">进入案例管理</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Case分类</h5>
-                        <p class="card-text flex-grow-1">对Case进行自动分类和管理。</p>
+                        <h5 class="card-title">第一步:案例分类</h5>
+                        <p class="card-text flex-grow-1">按案例进行结构分类和管理。</p>
                         <a href="{{ url_for('email_classification') }}" class="btn btn-primary">Case分类管理</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">案例审核</h5>
-                        <p class="card-text flex-grow-1">审核和修正案例分类结果。</p>
+                        <h5 class="card-title">第二步:案例管理</h5>
+                        <p class="card-text flex-grow-1">案例库的构建与更新。</p>
+                        <a href="{{ url_for('case_manager.show_case_manager') }}" class="btn btn-primary">进入案例管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">第三步:案例审核</h5>
+                        <p class="card-text flex-grow-1">审核和修正案例的结构分类结果。</p>
                         <a href="{{ url_for('audit_manager') }}" class="btn btn-primary">进入审核</a>
                     </div>
                 </div>
@@ -67,11 +67,13 @@
     background-color: #f8f9fa;
     padding: 2rem;
     border-radius: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .card {
     transition: transform 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
 }
 
 .card:hover {
@@ -81,6 +83,9 @@
 
 .card-body {
     padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .btn-primary {
@@ -99,6 +104,15 @@ h2 {
 
 .card-text {
     color: #7f8c8d;
+    margin-bottom: 1rem;
+}
+
+.row {
+    margin: 0 -0.5rem;
+}
+
+.col-md-4 {
+    padding: 0 0.5rem;
 }
 </style>
 {% endblock %} 

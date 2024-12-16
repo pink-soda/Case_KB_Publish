@@ -27,106 +27,76 @@ class LLMHandler:
     def analyze_description_with_categories(self, description: str, category_hierarchy: dict) -> dict:
         """
         使用Azure LLM分析描述文本，并根据知识图谱中的类别进行分类
+        返回格式：每个匹配的类别都会返回完整的层级路径，每个层级都有自己的置信度
         """
-        max_attempts = 3
-        attempt = 0
-        last_error = None
+        try:
+            # 格式化类别层级结构
+            formatted_hierarchy = self._format_category_hierarchy(category_hierarchy)
+            
+            # 构建prompt
+            prompt = f"""
+            请分析以下技术支持描述，并从给定的类别层级中选择最合适的类别进行分类。
 
-        while attempt < max_attempts:
-            try:
-                attempt += 1
-                logger.info(f"尝试第 {attempt} 次分类分析")
+            描述文本：
+            {description}
 
-                # 构建prompt，根据尝试次数调整提示的严格程度
-                category_context = self._format_category_hierarchy(category_hierarchy)
-                prompt = f"""
-                作为一个专业的技术支持分类专家，请仔细分析以下描述文本，并从给定的类别层级结构中选择最相关的类别。
-                {'这是重试分析，请更仔细地考虑各个可能的类别。' if attempt > 1 else ''}
+            可选的类别层级：
+            {formatted_hierarchy}
 
-                类别层级结构：
-                {category_context}
+            请以JSON格式返回结果，包含以下字段：
+            1. categories: 匹配的类别列表
+            2. confidence_scores: 对应的置信度列表（0-1之间的浮点数）
+            3. explanation: 分类理由的简要说明
 
-                描述文本：
-                {description}
+            示例返回格式：
+            {{
+                "categories": ["类别1", "类别2"],
+                "confidence_scores": [0.9, 0.8],
+                "explanation": "根据描述中的关键词和问题特征进行分类..."
+            }}
+            """
 
-                请严格按照以下要求进行分析：
-                1. 必须从上述类别层级结构中选择类别，不要创建新的类别
-                2. 可以选择多个相关类别
-                3. 每个选择的类别都需要给出0-1之间的置信度分数
-                4. 如果找不到完全匹配的类别，选择最接近的上级类别
-                5. 至少返回一个最相关的类别
-                {'6. 这是重试分析，如果之前未找到匹配，请考虑更广泛的类别匹配' if attempt > 1 else ''}
+            # 获取LLM的分析结果
+            response = self._call_azure_llm(prompt)
+            result = self._parse_llm_response(response)
+            logger.info(f"LLM原始分析结果: {result}")
 
-                请以JSON格式返回结果，格式如下：
-                {{
-                    "categories": ["类别1", "类别2"],
-                    "confidence_scores": [0.95, 0.85],
-                    "explanation": "这里是选择这些类别的详细解释"
-                }}
-                """
-
-                # 调用Azure LLM API
-                response = self._call_azure_llm(prompt)
-                logger.debug(f"LLM原始响应: {response}")
-
-                # 解析响应
-                result = self._parse_llm_response(response)
-                logger.debug(f"解析后的结果: {result}")
-
-                # 获取所有有效类别
-                valid_categories = set(self._get_all_categories(category_hierarchy))
-                logger.debug(f"有效类别列表: {valid_categories}")
-
-                # 过滤出有效的类别和对应的置信度分数
-                valid_indices = [
-                    i for i, cat in enumerate(result.get('categories', []))
-                    if cat in valid_categories
-                ]
-
-                if not valid_indices:
-                    logger.warning(f"第 {attempt} 次尝试未找到任何有效的类别匹配")
-                    if attempt < max_attempts:
-                        last_error = "未找到有效的类别匹配"
-                        continue
-                    else:
-                        # 所有重试都失败后返回默认结果
-                        return {
-                            'categories': ['未分类'],
-                            'confidence_scores': [0.5],
-                            'explanation': f'经过 {max_attempts} 次尝试，仍无法找到匹配的类别，建议人工审核。'
-                        }
-
-                filtered_result = {
-                    'categories': [result.get('categories', [])[i] for i in valid_indices],
-                    'confidence_scores': [result.get('confidence_scores', [])[i] for i in valid_indices],
-                    'explanation': result.get('explanation', '无分析说明')
-                }
-
-                logger.info(f"第 {attempt} 次尝试成功，最终分类结果: {filtered_result}")
-                return filtered_result
-
-            except Exception as e:
-                last_error = str(e)
-                logger.error(f"第 {attempt} 次尝试失败: {last_error}")
-                logger.error(traceback.format_exc())
+            # 处理每个识别出的类别
+            processed_categories = []
+            processed_confidences = []
+            
+            for i, category in enumerate(result.get('categories', [])):
+                confidence = result.get('confidence_scores', [])[i]
+                # 获取类别的完整路径和每一级的置信度
+                category_path = self._get_category_with_parents(category, category_hierarchy)
                 
-                if attempt >= max_attempts:
-                    return {
-                        'categories': ['未分类'],
-                        'confidence_scores': [0.5],
-                        'explanation': f'经过 {max_attempts} 次尝试后分析失败: {last_error}'
-                    }
+                if category_path:
+                    # 将每一级类别都添加到结果中
+                    for level, cat in enumerate(category_path):
+                        if cat not in processed_categories:
+                            processed_categories.append(cat)
+                            # 父级类别的置信度稍低于子类别
+                            level_confidence = confidence * (0.9 ** (len(category_path) - level - 1))
+                            processed_confidences.append(level_confidence)
+                            logger.info(f"添加类别: {cat}, 置信度: {level_confidence}")
+
+            return {
+                'categories': processed_categories,
+                'confidence_scores': processed_confidences,
+                'explanation': result.get('explanation', '')
+            }
+
+        except Exception as e:
+            logger.error(f"分析失败: {str(e)}")
+            return {
+                'categories': ['未分类'],
+                'confidence_scores': [0.5],
+                'explanation': f'分析失败: {str(e)}'
+            }
 
     def _format_category_hierarchy(self, hierarchy: dict, level: int = 0) -> str:
         """
         递归格式化类别层级结构
-        
-        Args:
-            hierarchy: 类别层级结构字典
-            level: 当前缩进级别
-            
-        Returns:
-            str: 格式化后的类别层级结构文本
         """
         if not hierarchy:
             return ""
@@ -134,26 +104,59 @@ class LLMHandler:
         formatted_lines = []
         indent = "  " * level
         
-        # 处理当前节点
-        name = hierarchy.get('name', '')
-        if name:
-            formatted_lines.append(f"{indent}- {name}")
+        for category, value in hierarchy.items():
+            # 添加当前类别
+            formatted_lines.append(f"{indent}- {category}")
+            
+            if isinstance(value, dict):
+                # 处理子类别
+                if 'children' in value:
+                    for child in value['children']:
+                        if isinstance(child, dict) and 'name' in child:
+                            # 添加子类别
+                            formatted_lines.append(f"{indent}  - {child['name']}")
+                            # 处理三级类别
+                            if 'children' in child:
+                                for grandchild in child['children']:
+                                    if isinstance(grandchild, dict) and 'name' in grandchild:
+                                        formatted_lines.append(f"{indent}    - {grandchild['name']}")
         
-        # 递归处理子节点
-        children = hierarchy.get('children', [])
-        for child in children:
-            child_text = self._format_category_hierarchy(child, level + 1)
-            formatted_lines.append(child_text)
-        
-        return "\n".join(filter(None, formatted_lines))
+        return "\n".join(formatted_lines)
 
     def _get_all_categories(self, hierarchy: dict) -> set:
         """
-        递归获取所有类别名称
+        递归获取所有类别名称，包括所有层级
         """
-        categories = {hierarchy.get('name', '')}
-        for child in hierarchy.get('children', []):
-            categories.update(self._get_all_categories(child))
+        logger.debug(f"正在处理层级: {hierarchy}")
+        categories = set()
+        
+        # 处理当前层级
+        if isinstance(hierarchy, dict):
+            for key, value in hierarchy.items():
+                logger.debug(f"处理键: {key}, 值类型: {type(value)}")
+                # 添加当前类别
+                categories.add(key)
+                
+                if isinstance(value, dict):
+                    # 处理子类别
+                    if 'children' in value:
+                        # 添加当前节点的名称
+                        if 'name' in value:
+                            categories.add(value['name'])
+                        # 递归处理子节点
+                        for child in value['children']:
+                            if isinstance(child, dict) and 'name' in child:
+                                categories.add(child['name'])
+                                # 继续处理更深层的子节点
+                                if 'children' in child:
+                                    for grandchild in child['children']:
+                                        if isinstance(grandchild, dict) and 'name' in grandchild:
+                                            categories.add(grandchild['name'])
+                    else:
+                        # 处理没有children的节点
+                        categories.update(self._get_all_categories(value))
+        
+        logger.debug(f"当前层级收集到的类别: {categories}")
         return categories - {''}  # 移除空字符串
 
     def _call_azure_llm(self, prompt: str) -> str:
@@ -294,3 +297,55 @@ class LLMHandler:
         except Exception as e:
             logger.error(f"生成邮件失败: {str(e)}")
             raise Exception(f"生成邮件失败: {str(e)}")
+
+    def _get_category_with_parents(self, category: str, hierarchy: dict) -> list:
+        """
+        获取类别及其所有父类别
+        返回格式: [一级分类, 二级分类, 三级分类]
+        """
+        logger.info(f"开始查找类别 '{category}' 的父类")
+        logger.info(f"当前层级结构: {json.dumps(hierarchy, ensure_ascii=False, indent=2)}")
+        
+        def search_in_hierarchy(current_category: str, current_hierarchy: dict, path: list = None) -> list:
+            if path is None:
+                path = []
+                
+            for level1, value1 in current_hierarchy.items():
+                logger.debug(f"检查一级分类: {level1}")
+                current_path = [level1]
+                
+                # 检查一级分类是否匹配
+                if current_category == level1:
+                    logger.info(f"找到一级分类匹配: {current_path}")
+                    return current_path
+                
+                if isinstance(value1, dict):
+                    logger.debug(f"检查 {level1} 的子分类")
+                    # 检查二级分类
+                    if 'children' in value1:
+                        for child in value1['children']:
+                            if isinstance(child, dict):
+                                child_name = child.get('name')
+                                logger.debug(f"检查二级分类: {child_name}")
+                                if child_name == current_category:
+                                    current_path.append(child_name)
+                                    logger.info(f"找到二级分类匹配，完整路径: {current_path}")
+                                    return current_path
+                                
+                                # 检查三级分类
+                                if 'children' in child:
+                                    for grandchild in child['children']:
+                                        if isinstance(grandchild, dict):
+                                            grandchild_name = grandchild.get('name')
+                                            logger.debug(f"检查三级分类: {grandchild_name}")
+                                            if grandchild_name == current_category:
+                                                current_path.extend([child_name, grandchild_name])
+                                                logger.info(f"找到三级分类匹配，完整路径: {current_path}")
+                                                return current_path
+            
+            logger.warning(f"未找到类别 '{current_category}' 的父类")
+            return []
+
+        result = search_in_hierarchy(category, hierarchy)
+        logger.info(f"类别 '{category}' 的最终完整路径: {result}")
+        return result

@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-12 11:07:46
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-12 20:43:04
+LastEditTime: 2024-12-16 21:03:23
 FilePath: \Case_KB\process_emails.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -13,6 +13,25 @@ from llm_handler import LLMHandler
 import fitz  # 确保在文件顶部导入 PyMuPDF
 import traceback
 import requests  # 添加到文件顶部的导入语句中
+import time
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    logger.addHandler(handler)
+
+def get_email_files(email_folder: str) -> list:
+    """获取邮件文件列表"""
+    email_files = []
+    for root, _, files in os.walk(email_folder):
+        for file in files:
+            if file.lower().endswith('.pdf'):
+                email_files.append(os.path.join(root, file))
+    return email_files
 
 def read_email_content(file_path):
     """读取邮件文件内容"""
@@ -37,78 +56,101 @@ def read_email_content(file_path):
         print(f"无法读取文件 {file_path}: {str(e)}")
         return None
 
-def create_initial_hierarchy(email_folder_path, hierarchy_file, cases_file):
-    """初始创建分类层级结构"""
+def save_results(hierarchy: dict, cases: list, hierarchy_file: str, cases_file: str):
+    """保存分类结果到文件"""
     try:
-        # 确保输出目录存在
-        os.makedirs(os.path.dirname(hierarchy_file), exist_ok=True)
-        os.makedirs(os.path.dirname(cases_file), exist_ok=True)
+        # 只有当文件路径包含目录时才创建目录
+        hierarchy_dir = os.path.dirname(hierarchy_file)
+        cases_dir = os.path.dirname(cases_file)
         
-        # 初始化空的层级结构和案例列表
-        builder = CategoryHierarchyBuilder(LLMHandler(), 
-                                     initial_hierarchy={}, 
-                                     initial_cases=[])
+        if hierarchy_dir:
+            os.makedirs(hierarchy_dir, exist_ok=True)
+        if cases_dir:
+            os.makedirs(cases_dir, exist_ok=True)
         
-        # 获取所有邮件文件
-        email_files = []
-        for root, _, files in os.walk(email_folder_path):
-            for file in files:
-                if file.lower().endswith('.pdf'):  # 只处理 PDF 文件
-                    email_files.append(os.path.join(root, file))
+        # 保存层级结构
+        with open(hierarchy_file, 'w', encoding='utf-8') as f:
+            json.dump(hierarchy, f, ensure_ascii=False, indent=2)
         
+        # 保存案例数据
+        with open(cases_file, 'w', encoding='utf-8') as f:
+            json.dump(cases, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        raise Exception(f"保存结果失败: {str(e)}")
+
+def create_initial_hierarchy(email_folder: str, hierarchy_file: str, cases_file: str) -> dict:
+    """创建初始的分类层级结构"""
+    try:
+        # 获取邮件文件列表
+        email_files = get_email_files(email_folder)
         if not email_files:
-            raise Exception("没有找到邮件文件")
+            raise Exception("未找到邮件文件")
         
-        total_files = len(email_files)
-        print(f"找到 {total_files} 个邮件文件")
+        # 初始化分类器
+        llm_handler = LLMHandler()
+        builder = CategoryHierarchyBuilder(llm_handler, cases_file=cases_file)
         
-        processed_files = []
-        for i, email_file in enumerate(email_files, 1):
+        processed_count = 0
+        retry_delay = 3  # 初始重试延迟时间（秒）
+        
+        # 处理每个邮件文件
+        for i, file_path in enumerate(email_files, 1):
             try:
-                print(f"处理第 {i}/{total_files} 个文件: {email_file}")
-                email_content = read_email_content(email_file)
-                if email_content is None:
-                    continue
-                        
-                result = builder.process_case(email_content)
-                builder.classified_cases[-1]['file_path'] = email_file
-                processed_files.append(email_file)
+                print(f"处理第 {i}/{len(email_files)} 个文件: {file_path}")
                 
-                if i % 10 == 0 or i == total_files:
+                # 读取邮件内容
+                email_content = read_email_content(file_path)
+                if not email_content:
+                    print(f"警告：文件 {file_path} 内容为空，跳过")
+                    continue
+                
+                # 处理案例
+                result = builder.process_case(email_content, file_path)
+                processed_count += 1
+                
+                # 定期保存结果
+                if processed_count % 2 == 0 or i == len(email_files):
                     save_results(
                         builder.get_current_hierarchy(),
                         builder.get_classified_cases(),
-                        hierarchy_file,
-                        cases_file
+                        'category_hierarchy.json',
+                        'classified_cases.json'
                     )
-                    
-            except Exception as e:
-                print(f"处理文件 {email_file} 时出错: {str(e)}")
-                print(f"错误详情:\n{traceback.format_exc()}")
-                continue
-        
-        if not processed_files:
-            raise Exception("没有成功处理任何文件")
                 
+            except Exception as e:
+                error_msg = f"处理文件 {file_path} 时出错: {str(e)}"
+                print(error_msg)
+                
+                # 检��是否是API限流错误
+                if "Azure OpenAI API 限流错误" in str(e):
+                    print(f"API限流，等待{retry_delay}秒后继续...")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                    i -= 1  # 重试当前文件
+                    continue
+                
+                logger.error(error_msg)
+                logger.error("错误详情:", exc_info=True)
+        
+        if processed_count == 0:
+            raise Exception("没有成功处理任何文件")
+        
         # 最后保存一次结果
         save_results(
             builder.get_current_hierarchy(),
             builder.get_classified_cases(),
-            hierarchy_file,
-            cases_file
+            'category_hierarchy.json',
+            'classified_cases.json'
         )
-        print("初始分类层级结构创建完成！")
         
-        # 返回处理结果
-        return {
-            'status': 'success',
-            'hierarchy': builder.get_current_hierarchy(),
-            'cases': builder.get_classified_cases()
-        }
+        # 返回构建的层级结构
+        return builder.get_current_hierarchy()
         
     except Exception as e:
-        error_msg = f"创建分类层级结构失败: {str(e)}\n错误详情:\n{traceback.format_exc()}"
+        error_msg = f"创建分类层级结构失败: {str(e)}"
         print(error_msg)
+        logger.error(error_msg)
+        logger.error("错误详情:", exc_info=True)
         raise Exception(error_msg)
 
 def load_existing_data(hierarchy_file, cases_file):
@@ -140,18 +182,6 @@ def find_new_files(email_folder_path, processed_files):
                 new_files.append(file_path)
     return new_files
 
-def save_results(hierarchy, cases, hierarchy_file, cases_file):
-    """保存分类结果到文件"""
-    os.makedirs(os.path.dirname(hierarchy_file), exist_ok=True)
-    with open(hierarchy_file, 'w', encoding='utf-8') as f:
-        json.dump(hierarchy, f, ensure_ascii=True, indent=2)
-    
-    os.makedirs(os.path.dirname(cases_file), exist_ok=True)
-    with open(cases_file, 'w', encoding='utf-8') as f:
-        json.dump(cases, f, ensure_ascii=True, indent=2)
-    
-    print(f"结果已保存到: {hierarchy_file} 和 {cases_file}")
-
 def update_hierarchy(email_folder_path, hierarchy_file, cases_file):
     """更新现有的分类层级结构"""
     try:
@@ -166,9 +196,9 @@ def update_hierarchy(email_folder_path, hierarchy_file, cases_file):
             print("没有发现新的邮件文件")
             return
         
-        # 初始化LLM处理器和分类构建器
+        # 始化LLM处理器和分类构建器
         llm_handler = LLMHandler()
-        builder = CategoryHierarchyBuilder(llm_handler)
+        builder = CategoryHierarchyBuilder(llm_handler, cases_file=cases_file)
         
         # 如果有现有数据，将其加载到builder中
         if existing_hierarchy:
@@ -190,7 +220,7 @@ def update_hierarchy(email_folder_path, hierarchy_file, cases_file):
             
             try:
                 # 处理邮件并获取分类结果
-                result = builder.process_case(email_content)
+                result = builder.process_case(email_content, email_file)
                 
                 # 添加文件路径到案例中
                 builder.classified_cases[-1]['file_path'] = email_file
@@ -237,9 +267,9 @@ def update_hierarchy(email_folder_path, hierarchy_file, cases_file):
         print(error_msg)
         raise Exception(error_msg)
 
-def save_hierarchy(hierarchy, file_path):
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+#def save_hierarchy(hierarchy, file_path):
+#    with open(file_path, 'w', encoding='utf-8') as f:
+#        json.dump(hierarchy, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
     # 设置输入输出路径
@@ -250,7 +280,8 @@ if __name__ == "__main__":
     # 检查是否存在分类文件
     if not os.path.exists(hierarchy_file) or not os.path.exists(cases_file):
         print("首次运行，创建初始分类层级结构...")
-        create_initial_hierarchy(email_folder, hierarchy_file, cases_file)
+        hierarchy = create_initial_hierarchy(email_folder, hierarchy_file, cases_file)
+        save_results(hierarchy, [], hierarchy_file, cases_file)
     else:
         print("更新现有分类层级结构...")
         update_hierarchy(email_folder, hierarchy_file, cases_file) 

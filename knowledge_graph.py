@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:41:12
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-16 10:51:00
+LastEditTime: 2024-12-16 11:29:56
 FilePath: \test\knowledge_graph.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -24,7 +24,7 @@ class KnowledgeGraph:
         """获取完整的分类层级结构"""
         try:
             with self.driver.session() as session:
-                # 1. 找到所有根节点
+                # 1. 找到所有根节点（一级分类）
                 root_query = session.run("""
                     MATCH (root:Category)
                     WHERE NOT ()-[:HAS_SUBCATEGORY]->(root)
@@ -37,13 +37,6 @@ class KnowledgeGraph:
                     
                 root_names = result['root_names']
                 logging.info(f"找到根节点: {root_names}")
-
-                # 如果有多个根节点，创建一个虚拟的顶层节点
-                hierarchy = {
-                    'name': '所有分类',
-                    'children': []
-                }
-                nodes = {'所有分类': hierarchy}
 
                 # 2. 获取所有节点和它们的关系
                 result = session.run("""
@@ -58,7 +51,11 @@ class KnowledgeGraph:
                     ORDER BY depth
                 """)
 
-                # 处理个节点
+                # 创建节点字典
+                nodes = {}
+                hierarchy = {}  # 直接使用字典存储一级分类
+
+                # 处理所有节点
                 for record in result:
                     name = record['name']
                     parent_name = record['parent_name']
@@ -66,23 +63,19 @@ class KnowledgeGraph:
                     if name not in nodes:
                         nodes[name] = {'name': name, 'children': []}
 
-                    # 如果是根节点，将其添加到虚拟顶层节点下
+                    # 如果是根节点（一级分类）
                     if not parent_name and name in root_names:
-                        hierarchy['children'].append(nodes[name])
+                        hierarchy[name] = nodes[name]
                     # 否则添加到其父节点下
                     elif parent_name and parent_name in nodes:
                         nodes[parent_name]['children'].append(nodes[name])
 
                 logging.info(f"构建的层级结构: {hierarchy}")
-                
-                # 如果只有一个根节点，直接返回该根节点的结构
-                if len(root_names) == 1:
-                    return nodes[root_names[0]]
                 return hierarchy
 
         except Exception as e:
             logging.error(f"获取类别层级结构失败: {str(e)}")
-            logging.error(f"错误详情: ", exc_info=True)  # 添加详细的错误信息
+            logging.error(f"错误详情: ", exc_info=True)
             return {}
 
     def import_categories_from_json(self):

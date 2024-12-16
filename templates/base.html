@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:34:56
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-13 13:02:14
+ * @LastEditTime: 2024-12-16 16:59:05
  * @FilePath: \Case_KB\templates\base.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -44,10 +44,10 @@
                         <a class="nav-link" href="{{ url_for('show') }}">主页面</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('case_manager.show_case_manager') }}">案例管理</a>
+                        <a class="nav-link" href="{{ url_for('email_classification') }}">案例分类</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('email_classification') }}">Case分类</a>
+                        <a class="nav-link" href="{{ url_for('case_manager.show_case_manager') }}">案例管理</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('audit_manager') }}">案例审核</a>
