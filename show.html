@@ -825,7 +825,7 @@
             // 获取新的标签数据
             const newResult = window.latestRecognitionResult;
             
-            // 合并新旧标签，避免重复（使用完整的分类路径进���比较）
+            // 合并新旧标签，避免重复（使用完整的分类路径进行比较）
             if (newResult.categories) {
                 newResult.categories.forEach((category, index) => {
                     if (!currentResult.categories.includes(category)) {
@@ -1107,7 +1107,7 @@
                     generatedEmail.textContent = data.email;
                     updateProgress(100, '完成', '邮件生成完成');
                     
-                    // 显示复��按钮
+                    // 显示复制按钮
                     document.querySelector('.copy-button').style.display = 'block';
                     
                     // 初始化模板选择功能
@@ -1276,7 +1276,6 @@
             }
 
             updateProgress(30, '分析中...', '正在分析案例类别');
-
             try {
                 const response = await fetch('/query-category', {
                     method: 'POST',
@@ -1304,8 +1303,8 @@
 
                     updateProgress(100, '完成', '案例分类完成');
                 } else {
-                    updateProgress(0, '错误', '分类失败');
-                    addMessageToChat('分类失败，请尝试手动输入描述进行分类。', 'system');
+                    updateProgress(0, '错误', data.message || '分类失败');
+                    addMessageToChat(data.message || '分类失败，请尝试手动输入描述进行分类。', 'system');
                 }
             } catch (error) {
                 console.error('Error:', error);

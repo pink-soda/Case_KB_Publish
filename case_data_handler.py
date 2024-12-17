@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 14:12:58
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-17 11:22:12
+LastEditTime: 2024-12-17 21:57:45
 FilePath: \test\case_data_handler.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -10,6 +10,7 @@ import pandas as pd
 import logging
 import chardet
 import os
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class CaseDataHandler:
     def __init__(self):
         try:
             # 使用完整路径
-            csv_path = 'e:\\Case_KB\\cases.csv'
+            csv_path = 'e:\\Case_KB\\unfinished_cases.csv'
             
             # 检查文件是否存在
             if not os.path.exists(csv_path):
@@ -48,7 +49,7 @@ class CaseDataHandler:
                     detected_encoding = detect_encoding(csv_path)
                     self.df = pd.read_csv(csv_path, encoding=detected_encoding)
             
-            logger.info("CaseDataHandler 初始化成功")
+            #logger.info("CaseDataHandler 初始化成功")
             
         except Exception as e:
             logger.error(f"CaseDataHandler 初始化失败: {str(e)}")
@@ -88,8 +89,30 @@ class CaseDataHandler:
     def get_case_description(self, case_id):
         """获取案例描述"""
         try:
-            case = self.df[self.df['案例编号'] == case_id].iloc[0]
-            return case['案例定义']
+            logger.info(f"尝试获取案例 {case_id} 的描述")
+            # 检查数据框是否为空
+            if self.df.empty:
+                logger.error("数据框为空")
+                return None
+            
+            # 检查是否存在匹配的案例
+            matching_cases = self.df[self.df['案例编号'] == case_id]
+            if matching_cases.empty:
+                logger.error(f"未找到案例ID: {case_id}")
+                return None
+            
+            case = matching_cases.iloc[0]
+            description = case['案例定义']
+            
+            # 检查描述是否为空
+            if pd.isna(description) or description == '':
+                logger.error(f"案例 {case_id} 的描述为空")
+                return None
+            
+            logger.info(f"成功获取案例描述: {description[:100]}...")
+            return description
+        
         except Exception as e:
             logger.error(f"获取案例描述失败: {str(e)}")
+            logger.error(traceback.format_exc())
             return None

@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-17 16:40:10
+LastEditTime: 2024-12-17 22:47:52
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -377,44 +377,73 @@ def query_category():
     try:
         data = request.get_json()
         case_id = data.get('case_id')
+        logger.info(f"收到分类请求，case_id: {case_id}")
         
         if not case_id:
+            logger.error("未提供案例编号")
             return jsonify({
                 'status': 'error',
                 'message': '未提供案例编号'
             }), 400
-            
-        # 从MongoDB读取案例描述
-        case = mongo_db.cases.find_one({'case_id': case_id})
-        if not case:
+        
+        # 从 CaseDataHandler 中读取案例描述
+        case_handler = CaseDataHandler()
+        case_definition = case_handler.get_case_description(case_id)
+        
+        # 详细记录案例定义的状态
+        if case_definition is None:
+            logger.error(f"案例 {case_id} 未找到描述")
             return jsonify({
                 'status': 'error',
-                'message': '未找到案例'
+                'message': '未找到案例描述'
             }), 404
             
-        # 尝试从多个可能的字段获取描述信息
-        case_definition = case.get('case_definition') or case.get('case_evaluation') or ''
-        
-        if not case_definition:
-            return jsonify({
-                'status': 'error',
-                'message': '案例缺少描述信息'
-            }), 400
+        logger.info(f"获取到案例定义: {case_definition[:100]}...")
         
         # 获取知识图谱实例
         kg = KnowledgeGraph()
         try:
             category_hierarchy = kg.get_category_hierarchy() or {}
+            logger.info(f"获取到分类层级结构: {list(category_hierarchy.keys())}")
+            
+            if not category_hierarchy:
+                logger.error("分类层级结构为空")
+                return jsonify({
+                    'status': 'error',
+                    'message': '分类层级结构为空，请先导入分类数据'
+                }), 500
+                
         except Exception as e:
             logger.error(f"获取知识图谱数据失败: {str(e)}")
-            raise Exception("知识图谱数据库连接失败，请检查连接设置")
+            logger.error(traceback.format_exc())
+            return jsonify({
+                'status': 'error',
+                'message': '知识图谱数据库连接失败，请检查连接设置'
+            }), 500
 
-        # 使用LLM进行分类
-        llm_handler = LLMHandler()
-        analysis_result = llm_handler.analyze_description_with_categories(
-            description=case_definition,
-            category_hierarchy=category_hierarchy
-        )
+        # 使用 LLM 进行分类
+        try:
+            llm_handler = LLMHandler()
+            analysis_result = llm_handler.analyze_description_with_categories(
+                description=case_definition,
+                category_hierarchy=category_hierarchy
+            )
+            logger.info(f"LLM分析结果: {analysis_result}")
+            
+            if not analysis_result:
+                logger.error("LLM返回空结果")
+                return jsonify({
+                    'status': 'error',
+                    'message': 'LLM分析失败，请稍后重试'
+                }), 500
+                
+        except Exception as e:
+            logger.error(f"LLM分析失败: {str(e)}")
+            logger.error(traceback.format_exc())
+            return jsonify({
+                'status': 'error',
+                'message': f'LLM分析出错: {str(e)}'
+            }), 500
         
         # 格式化返回结果
         formatted_result = {
@@ -426,6 +455,7 @@ def query_category():
             }
         }
         
+        logger.info(f"返回格式化结果: {formatted_result}")
         return jsonify(formatted_result)
         
     except Exception as e:
@@ -1263,7 +1293,7 @@ def update_file_categories():
                 if level3 not in hierarchy[level1][level2]:
                     hierarchy[level1][level2].append(level3)
         
-        # 保存更新后的层级��构
+        # 保存更新后的层级结构
         with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
             json.dump(hierarchy, f, ensure_ascii=False, indent=2)
         
