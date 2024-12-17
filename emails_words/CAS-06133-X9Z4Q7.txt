@@ -1,0 +1,138 @@
+邮件主题：回复: 回复:【外来邮件，注意核实】回复: [案例号: CAS-06133-X9Z4Q7 ] % |P2|ICBC|软件开发中心政府版系统异常蓝屏问题 % 初次响应 CMIT:0001362
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-25 15:42:32.232000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈软件开发中心出现2台电脑出现偶发性蓝屏，已上传相关dump日志。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-25 15:45:59.313000+00:00
+邮件内容:
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-28 11:39:29.944000+00:00
+邮件内容:
+许先生，您好：
+       您提供的两个dump分析如下，供您参考：
+liyue-hwclient.DMP：
+       该dump bugcheck为7f，其中参数1为。表明在调用先前异常的处理程序期间发生异常。通常，这两个异常是串行处理的。但是，有几个异常不能串行处理，在这种情况下，处理器会发出双重故障信号。双重故障有两个常见原因： 1. 内核堆栈溢出。当一个保护页面被命中并且内核试图推送一个陷阱帧时，就会发生这种溢出。由于没有剩余堆栈，导致堆栈溢出，导致双重故障。2. 另一个常见原因是硬件问题。
+其对应的陷阱帧如下：
+0: kd> .trap 0xfffff8034e28ae50
+NOTE: The trap frame does not contain all registers.
+Some register values may be zeroed or incorrect.
+rax=fffff803496e1960 rbx=0000000000000000 rcx=ffffac8644e81000
+rdx=fffff803496e1960 rsi=0000000000000000 rdi=0000000000000000
+rip=fffff803496dccae rsp=ffffac8644e80fd0 rbp=0000000000000000
+r8=0000000000000000  r9=ffffac8644e81568 r10=0000000000000000
+r11=0000000000000000 r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei ng nz na po cy
+HwUsbClient+0xccae:
+fffff803`496dccae e84d010000      call    HwUsbClient+0xce00 (fffff803`496dce00)
+也就是说HwUsbClient在进行USB的irp query时触发陷阱，造成内存溢出，这是蓝屏的直接原因。那么为什么HwUsbClient会触发陷阱呢，通过call stack的查询，可以看到在进行IRP操作时一直在循环尝试，进入lock。这是不正常的，也导致内存堆栈的不断增加。
+以下为HwClient的版本：
+0: kd> lmvm HwUsbClient
+Browse full module list
+start             end                 module name
+fffff803`496d0000 fffff803`496f4000   HwUsbClient   (no symbols)           
+    Loaded symbol image file: HwUsbClient.sys
+    Image path: \SystemRoot\system32\drivers\HwUsbClient.sys
+    Image name: HwUsbClient.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Fri Sep 18 10:00:57 2020 (5F6414D9)
+    CheckSum:         00021C97
+    ImageSize:        00024000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+下一步动作：
+请检查是否有HwUsbClient的更新版本，可以尝试更新。由于此次蓝屏是double fault问题，因此请尝试插拔发生蓝屏时的USB设备，观察是否问题可以稳定复现，如仅为偶发问题，可暂时忽略。
+MEMORY TMS lanping.DMP：
+       该dump bugcheck为0xD1，与正在处理的TMS问题一致，由于vwifimf filter driver没有完成并释放由自身创建的NBL- ffff888b05519da0，将其传给nwifi导致错误蓝屏。以下为部分dump 截图：
+以下为vwifimf的版本信息，请检查是否为当前案例处理的TMS版本
+下一步动作：
+建议与case：CAS-05796-S4W5H4一并处理。
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-29 17:01:56.158000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，经您的确认，此case将暂做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-06133-X9Z4Q7
+问题描述：
+=====================
+用户反馈软件开发中心出现2台电脑出现偶发性蓝屏，已上传相关dump日志。
+问题分析：
+=====================
+用户上传两个dump已分析完毕，其中NBL问题由case：CAS-05796-S4W5H4继续跟踪处理；另外华为云桌面在处理IRP相关操作时的策略管控问题已进行相关修改，蓝屏问题不再复现。
+问题总结：
+=====================
+经用户确认，目前问题已解决，暂无其他问题，可关闭此case。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。
+
+====第5封邮件====
+
+发件人：Windows Server技术支持
+发送时间：2022-05-05 17:37:33.521000+00:00
+邮件内容:
+通软公司根据蓝屏机器dump给出如下分析报告，请操作系统参考并协助排查。谢谢。
+vwifimf.sys是一个过滤驱动，主要作用就是处理无线802.1x数据包，所以每个802.1x相关数据包都会经过vwifimf驱动，表现为由vwifimf申请的内存，所以查看到数据包的内存是由vwifimf.sys申请，这是正常现象。
+产品通过NdisFRegisterFilterDriver中的SendNetBufferListsHandler（开始发送数据包函数）和SendNetBufferListsCompleteHandler（发送完成数据包函数）来实现802.1x数据包的发送。主要有两种场景需要处理，一个是我们关心的802.1x数据包场景，需要重组数据包，另一个是其他数据包场景，程序直接转发，不做任何多余处理。
+其他数据包场景，程序会按照标准的方式由SendNetBufferListsHandler调用NdisFSendNetBufferLists向下层驱动转发处理，完成后再由SendNetBufferListsCompleteHandler调用NdisFSendNetBufferListsComplete向上层驱动转发处理。
+需要重组802.1x数据包场景，程序会在SendNetBufferListsHandler接口中，针对原始的NBL，直接调用NdisFSendNetBufferListsComplete完成请求。然后分配一段内存，重组NBL请求。新重组的NBL 会设置SourceHandle等字段，用于标识是否为重组数据包，并调用NdisFSendNetBufferLists转发给下层驱动。完成后会在SendNetBufferListsCompleteHandler中释放重组的NBL，并且不会再调用NdisFSendNetBufferListsComplete向上层驱动转发处理。
+从dump信息看，该数据包为需要重组的数据包，程序在调用SendNetBufferListsHandler发送数据包时，会将SourceHandle设置成与FilterHandle值一样。现在发现在系统回调SendNetBufferListsCompleteHandler之后，SourceHandle和FilterHandle的值就不一样了，导致系统崩溃。怀疑是被其他驱动修改或破坏导致的。
+TMS端能看到的信息有限，我们将符号文件提供，请操作系统帮忙排查，SourceHandle和FilterHandle值不一样的原因。
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+中国工商银行软件开发中心（珠海）
+许  翔
+系统一部
+电话：17606669571
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ 
+	-----原始邮件-----
+	
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2022-05-06 11:41:44.528000+00:00
+邮件内容:
+许先生，您好：
+       TMS提供的分析报告在大概两年前最初发现NBL蓝屏问题的时候就已经这样说明了（历史沟通可参见附件1）。之后TMS进行过几次软件更新，问题得以缓解。今年该问题再次出现，再次讨论此问题的目的是希望可以明确在TMS和神州网信两方的能力范围内进行进一步排查。这里所谓的进一步排查是指针对一次明确的蓝屏事件，TMS可以进行断点调试，来证明确实如产品流程设计所言，对问题NBL进行了过滤处理。而从dump上的已知信息来看，并不是TMS所指出的重组数据包由自身的SendNetBufferListsCompleteHandler中来进行释放，而是交给NdisFSendNetBufferListsComplete。
+       因为dump是蓝屏时的内存信息记录，尽管我们在之前的分析中也尝试过很多方式进行vwifimf的跟踪，包括使用TMS提供的private symbol也并没有从操作系统的层面解析到引发蓝屏的NBL的SourceHandle和FilterHandle的动态过程信息。因此无法证明在需要重组的NBL创建之初，“调用SendNetBufferListsHandler发送数据包时，会将SourceHandle设置成与FilterHandle值”。这也是我们在之前希望TMS可以进行断点调试的原因。这样可以自证vwifimf的逻辑处理是否与流程图一致。在TMS之前提供的一份调试日志中，其结果是晚于dump生成时间的，并没有记录引发蓝屏的NBL相关参数。无法与流程图所述进行比对，对当前的问题分析并没有帮助（具体可参见附件2）。因此需要TMS增加调试手段对NBL引发蓝屏前的处理过程进行记录，没有TMS的日志信息，仅凭dump的结果记录，操作系统层面是无法分析过滤驱动内部的处理过程的。
+因此我们的建议是：
+1.       固定一台频繁复现蓝屏的电脑，TMS在其软件内部增加调试手段及记录。
+2.       结合TMS给出的流程图， 跟踪vwifimf内部对NBL的处理过程，调试跟踪其FilterSendNetBufferListsComplete函数入参及函数内部的相关变量值，记录SendNetBufferListsCompleteHandler处理NBL时的相关参数信息。
+3.       待成功抓取后，我们可以以dump内容从操作系统层面进行辅助验证。
+
+====第7封邮件====
+
+发件人：Windows Server技术支持
+发送时间：2022-05-23 11:05:36.538000+00:00
+邮件内容:
+关于TMS提出的问题，请神州网信工程看一下。请两边厂商密切联系，并尽快分析出问题所在给出相关解决方案。
+-----原始邮件-----
+
+====第8封邮件====
+
+发件人：Wei Liang
+发送时间：2022-05-23 16:47:51.872000+00:00
+邮件内容:
+Hi All：
+关于vwifimf.sys导致系统蓝屏的问题，神州网信与工行一直以来保持紧密沟通，蓝屏dump的详细分析结果会第一时间发送给工行同事，本次的分析主要围绕案例：CAS-05796-S4W5H4进行，请查看附件邮件获取全部的详细信息，在此不再详述。
+目前仅凭蓝屏dump的结果记录，操作系统层面是无法分析过滤驱动内部的处理过程。需要TMS的大力配合为vwifimf.sys驱动增加跟踪调试日志，对NBL引发蓝屏前的处理过程进行记录。增加跟踪调试日志的需求在3月29日提出，至今未收到符合神州网信要求的调试日志（4月26日收到的日志中时间戳与蓝屏时间不对应，不具备参考价值），为了帮助工行用户尽早摆脱蓝屏问题的困扰，请TMS方按以下要求提供调试日志，谢谢！
+具体调试要求如下：
+1、固定一台频繁复现蓝屏的电脑，TMS在其软件内部增加调试手段及记录。
+2、请TMS跟踪vwifimf内部对NBL的处理过程，调试跟踪其FilterSendNetBufferListsComplete函数入参及函数内部的相关变量值，记录SendNetBufferListsCompleteHandler处理NBL时的相关参数信息。
+3、待TMS按以上要求成功获取对应调试日志后，神州网信协助分析与调试日志同一时间生成的蓝屏dump文件。

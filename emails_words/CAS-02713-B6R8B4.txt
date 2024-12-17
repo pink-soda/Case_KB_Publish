@@ -1,0 +1,189 @@
+邮件主题：回复: 回复: [案例号: CAS-02713-B6R8B4 ] % |P2|ICBC|工行苏州分行用户反馈补丁安装问题 % 初次响应 CMIT:0001508
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2020-08-03 11:47:37.232000+00:00
+邮件内容:
+杨先生，您好，
+很高兴与您电话沟通，根据沟通的结果，需要您收集并反馈如下数据信息
+数据收集
+一、首先，离线或在线安装对应补丁，复现问题现象（报错出现）
+二、收集Cbs.log和dism.log
+1）C:\Windows\Logs\CBS\Cbs.log
+2）C:\Windows\Logs\DISM\dism.log
+三、收集WindowsUpdate.Log
+1）右键点击屏幕左下角的“开始”按钮 – 选择“Windows Powershell（管理员）“，输入命令get-windowsupdatelog
+2）会在桌面生成Windowsupdate.log
+四、Windows事件日志
+1）右键点击屏幕左下角的“开始”按钮 -> 事件查看器 -> 应用程序和服务日志 -> Microsoft -> Windows 
+2）WindowsUpdateClient -> Operational，右键点击“Operational”，选择“将所有事件另存为”，选择保存位置，另存为命名即可,例如123.evtx。
+五、将上述标黄色字体所示的4个文件压缩后，上传文件上传系统
+数据上传：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBCSUZHOU
+密码：ICBCSUZHOU
+注意，如果遇到如下所示页面，点击后退即可看到页面
+--------------
+服务电话： 400-818-0055
+
+====第2封邮件====
+
+发件人：yangs_sz@js.icbc.com.cn
+发送时间：2020-08-03 11:58:36.558000+00:00
+邮件内容:
+老师您好， 
+        相关信息已经收集并上传，请您查收。 
+
+====第3封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-08-03 15:00:39.402000+00:00
+邮件内容:
+贾工你好 
+        经过分行同事协助分析，系统在安装补丁的时候报错vUserHci.exe，安装常规重置windows缓存过程中，在删除C:\Windows\SoftwareDistribution报错：wtpmtp.dll 该驱动为我行TMS禁用策略之一。在解除TMS控制后，可以清理缓存并成功安装补丁。这个只能作为一个临时解决方案，能否在日志中分析相关的库文件调用？并提供6月补丁安装必须调用该文件？ 
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2020-08-03 16:53:47.475000+00:00
+邮件内容:
+吴先生，您好
+我对最近3个类似涉及到WpdMtp.dll文件拒绝访问的案例进行了整理总结：
+序号
+CAS号
+分类
+案例名称
+案例现象
+建议操作
+案例分析
+进展/结果
+1
+CAS-02564-J6C0B1
+Windows升级失败
+|P2|ICBC|深圳分行升级V2020-L失败
+V0-H 1020升级V2020-L时在进行到32%左右，升级程序自动闪退。
+影响范围：1台
+1）关闭防病毒软件，问题现象依旧
+2）运行DISM /Online /Cleanup-image /Scanhealth。报错“Error STATUS_ACCESS_DENIED”
+1）根据setupact.log发现升级过程dism.exe applying image 访问C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll被拒绝访问（0x5）
+客户采用只保留个人信息不保留应用的方式升级成功。
+2
+CAS-02695-W0F0D7
+Windows升级失败
+|P2|ICBC|杭州分行升级失败
+升级第一阶段31%发生直接退出问题，且无报错生成。
+同时，用户反馈升级失败后DSP文档安全防护系统重启。
+影响范围：1台
+1）以管理员身份运行Dism /Mount-WIM /WimFile:E:\install.wim /Index:1 /MountDir:E:\Mount。运行到64%报错：拒绝访问
+1）根据setupact.log发现Apply Image 61%出现访问 C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll (Error = 5) 访问被拒绝。
+2）根据Dism.log发现Mount Install.wim过程，访问 C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll (Error = 5) 访问被拒绝。
+3）Application.evtx发现 - 事件1000：升级过程中C:\Program Files (x86)\DSPClient\CEMS\vUserHci.exe程序崩溃。
+错误模块路径: C:\Program Files (x86)\DSPClient\CEMS\EDSM\vEdsmFileMon.dll
+建议客户暂时托管TMS软件，再次进行升级测试，尚未反馈结果。
+3
+CAS-02713-B6R8B4
+Windows更新
+|P2|ICBC|工行苏州分行用户反馈补丁安装问题
+安装补丁KB4561621时出现无法安装的报错，报错信息8024200d.
+影响范围：5-6台
+1）客户将TMS软件进行脱管后安装补丁。
+1）根据反馈与TMS下发策略导致Wpdmtp.dll驱动只读有关
+客户将TMS软件进行脱管后安装补丁成功。
+Log信息
+--
+|P2|ICBC|深圳分行升级V2020-L失败
+CAS-02564-J6C0B1
+Setupact.log
+[7952] RestoreFileNodeList:(2254)
+[7952] C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll (Error = 5) 
+2020-07-08 10:24:58, Error                 SP     SPWIMCallback: Error in apply of C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll. GLE [5]
+[7952] RestoreFilesCallback:(3887)
+[7952] EnumImageDataEntries:(1052)
+[7952] GetImageErrorCode:(2837)
+[7952] GetImageErrorCode:(2837)
+[7952] ImageWorkerThread:(198)
+[7952] ImageWorkerThread:(198)
+[7952] RestoreAllData:(1025)
+[7952] WIMApplyImageInternal:(709)
+2020-07-08 10:25:01, Error                 SP     CApplyWIM: Failure while applying image 1 for C:\$WINDOWS.~BT\Sources\Install.wim. Error 0x80070005[gle=0x00000005]
+2020-07-08 10:25:01, Info                  MOUPG  Action: 93%, Delta: 260.46s, 93 ticks, Avg: 0.357 ticks/s
+2020-07-08 10:25:01, Info                  MOUPG  Action progress: [93%]
+2020-07-08 10:25:01, Info                  MOUPG  Task progress: [23%]
+2020-07-08 10:25:01, Info                  MOUPG  Overall progress: [38%]
+2020-07-08 10:25:01, Info                  MOUPG  Mapped Global progress: [38%]
+2020-07-08 10:25:01, Error                 SP     Operation failed: Apply WIM file PathForNewOSFile (compact), index 1 to C:\$WINDOWS.~BT\NewOS. Error: 0x80070005[gle=0x000000b7]
+--
+-- 
+|P2|ICBC|杭州分行升级失败
+CAS-02695-W0F0D7
+Dism.log
+Wim:         [E:\install.wim]
+Image Index: [1]
+Mount Path:  [E:\Mount]
+[5808] [0x80070005] RestoreFileNodeList:(2188): 拒绝访问。
+[5808] [0xc144012e] 
+2020-07-30 16:38:03, Error                 DISM   DISM WIM Provider: PID=5808 E:\Mount\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll (HRESULT=0x80070005) - CWimManager::WimProviderMsgLogCallback
+[5808] [0x80070005] RestoreFilesCallback:(3821): 拒绝访问。
+[5808] [0x80070005] EnumImageDataEntries:(1052): 拒绝访问。
+[5808] [0x80070005] RestoreAllData:(1023): 拒绝访问。
+[5808] [0x80070005] WIMApplyImageInternal:(709): 拒绝访问。
+[5808] [0x80070005] ImageStubMountDirectory:(985): 拒绝访问。
+[5808] [0x80070005] WIMMountImageHandle:(1275): 拒绝访问。
+Setupact.log
+[3752] RestoreFileNodeList:(2254)
+[3752] C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll (Error = 5) 
+2020-07-29 16:29:10, Error                 SP     SPWIMCallback: Error in apply of C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll. GLE [5]
+Application.evtx
+--------------
+服务电话： 400-818-0055
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2020-08-04 10:18:24.710000+00:00
+邮件内容:
+杨先生，您好
+刚刚电话未能联系到您。
+*  根据与吴毓杰先生的沟通结果，出于应用厂商定位此问题底层Root Cause的原因，还需要您配合复现出现问题的环境后，再抓取一下Process Monitor日志。
+*  具体抓取步骤您可以参考附件《Process Monitor正常抓取日志》。
+*  如果有问题，您可以回复此邮件，我可以电话指导收集步骤。日志收集完毕后，您可以联系吴毓杰先生回传文件。
+--------------
+服务电话： 400-818-0055
+
+====第6封邮件====
+
+发件人：yangs_sz@js.icbc.com.cn
+发送时间：2020-08-04 11:01:25.980000+00:00
+邮件内容:
+您好， 
+        您的邮件已收悉，正在收取日志中。 
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2020-08-11 09:32:12.751000+00:00
+邮件内容:
+杨先生、吴先生,您好!
+案例总结：
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题，如果您后续有时间处理此问题，可以回复此邮件重启案例。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。 
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例描述：
+安装补丁KB4561621时出现无法安装的报错，报错信息8024200d
+受影响数量5-6台
+案例进展：
+经过对比测试发现此问题为TMS限制导致安装补丁失败，脱管后已正常安装。
+案例分析：
+一、升级前后WpdMtp.dll文件对比分析 
+1）纯净版V0-H 1020升级6月累计更新补丁前、后对比如下。可以发现，WpdMtp.dll文件的版本由10.0.17134.1升级至了10.0.17134.1550 
+纯净版镜像WpdMtp.dll属性-详细信息（左-升级前，右-升级后）： 
+2）ICBC版本镜像，TMS未脱管的环境下安装6月累计更新后，未看到对应的文件版本，但通过修改日期，可以判断并未升级至1550版本，因为1550版本升级成功后，修改日期会变成安装补丁成功的时间点。、 
+ICBC镜像WpdMtp.dll属性-详细信息： 
+3）经过查看“安全”标签，发现ICBC镜像中wpdmtp.dll的ACL被篡改。正常的WdpMtp.dll应有SYSTEM的完全控制权限 
+（左图-ICBC镜像升级后WdpMtp.dll-属性-安全选项，右图-纯净版镜像WdpMtp.dll-属性-安全选项） 
+二、升级过程Procmon日志对比分析 
+1）使用ICBC的镜像，TMS未脱管尝试安装补丁，发现只有一条关于wpdmtp.dll的条目，而且访问SoftwareDistribution文件夹下的wpdmtp.dll被ACCESS DENIED。需要的访问是：Write Attributes, Sychronize。 
+同时后续没有在C:\Windows\WinSxS文件夹下替换旧版本wpdmtp.dll文件，所以升级后此文件仍为旧版本。 
+2）对比纯净版本安装补丁成功，访问同样路径的wpdmtp.dll文件是SUCCESS，最后被创建到了C:\Windows\WinSxS对应的文件夹下。所以这与最初纯净版wpdmtp.dll文件升级1550版本成功所对应。 
+--------------
+服务电话： 400-818-0055

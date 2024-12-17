@@ -1,0 +1,69 @@
+邮件主题：回复: [案例号: CAS-12144-J2S7V0 ] 张超：% |P2|ICBC|工行用户反馈V2020-L版本系统补丁安装失败问题 % 初次响应 CMIT:0001338
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-09-12 09:36:39.593000+00:00
+邮件内容:
+许先生，您好
+很高兴与您电话沟通， 您可以参考问题分析、建议操作内容。
+问题定义: 
+V2020-L版本系统补丁安装失败问题，涉及1台设备，目前没有具体补丁号
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+问题分析：
+当前计算机为V2020-L版本，安装7月补丁时出现报错。
+尝试更新驱动程序时，报错："访问被拒绝"，此问题与蓝牙驱动 bth.inf 相关。
+2024-09-09 18:34:09, Info                  CBS            STAGE index: 147, phase: 1, result 0, inf: hidbth.inf
+2024-09-09 18:34:09, Info                  CBS            STAGE index: 148, phase: 1, result 0, inf: BthLEEnum.inf
+2024-09-09 18:34:09, Info                  CBS            STAGE index: 149, phase: 1, result 5, inf: bth.inf
+2024-09-09 18:34:09, Info                  CBS    Doqe: Recording result: 0x80070005, for Inf: bth.inf
+2024-09-09 18:34:09, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 0 out of 0. Percent progress: 4.
+2024-09-09 18:34:12, Info                  CBS    DriverUpdateStageUpdates failed [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-09-09 18:34:12, Error                 CBS    Doqe: Failed staging driver updates [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-09-09 18:34:12, Info                  CBS    Perf: Doqe: Staging ended.
+2024-09-09 18:34:12, Error                 CBS    Failed staging drivers, rebooting and trying again [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-09-09 18:34:12, Info                  CBS    Shtd: progress thread terminating. [HRESULT = 0x00000000 - S_OK]
+建议操作：
+某些管控、安全软件可能阻止了驱动程序的安装，根据之前类似案例的处理经验，建议暂时卸载TMS后重启计算机，再尝试安装更新。
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-09-13 09:52:51.643000+00:00
+邮件内容:
+许先生，您好
+很高兴与您电话沟通，还需您进行如下日志收集。
+工具下载链接：
+Procmon: https://cduc.cmgos.com/download.php?id=1148&token=SOpiUWzWQV2jjRu0jOeKp8ZP7QJTMJBw
+CMGELogCollector : https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg
+日志收集：
+一、Procmon日志。
+1）下载ProcessMonitor工具
+2）在问题计算机上，卸载TMS之后下载解压附件ProcessMonitor.zip。双击Procmon.exe运行，到达此页面，会有有大量条目出现，当前已经开始抓取；
+3）复现问题（进入应用点击按钮，安装补丁 复现问题报错，记录时间点）。返回Process Monitor窗口，单击Capture（如下图所示），停止抓取
+4）点击File, 点击Save. 选择"All events" and "Native Process Monitor Format (PML)"点击OK。 
+压缩并将问题日志、以及问题时间点反馈。
+二、工具收集
+1）在出现问题的计算机上，下载附件《CMGELogCollector.zip》文件并解压到本地磁盘。双击运行exe文件，同意后，按照下图勾选系统日志，组策略信息、网络信息、软件信息，系统进程、更新日志，点击收集。 
+2）收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并定为压缩文件。 
+3）将压缩文件上传。
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-08 10:52:58.131000+00:00
+邮件内容:
+许先生，您好
+很高兴与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+V2020-L版本系统补丁安装失败问题，涉及1台设备，目前没有具体补丁号
+案例进展：
+根据提供的日志报错HRESULT = 0x80070005 - E_ACCESSDENIED
+怀疑由于管控软件引起注册表拒绝访问 建议卸载，后续没有反馈Processmonitor，确认问题已经解决 归档案例。
+--------------

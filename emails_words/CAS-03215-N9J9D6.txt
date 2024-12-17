@@ -1,0 +1,66 @@
+邮件主题：回复: [案例号: CAS-03215-N9J9D6 ] % | P3 | Lenovo | 休眠唤醒，出现蓝屏，客户需求分析Dump文件 % 初次响应 CMIT:0001704
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-28 18:04:46.879000+00:00
+邮件内容:
+徐达 先生 您好, 
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 联想设备在安装 CMGE V2020-L系统后进入休眠状态再唤醒后出现蓝屏报错。
+问题范围: 分析上传dump文件定位问题。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第2封邮件====
+
+发件人：Xu Da
+发送时间：2020-10-29 08:47:16.032000+00:00
+邮件内容:
+Hi Chengxiao，
+我这边下载下来上传到如下地址，可以从如下地址下载，谢谢
+http://42.159.104.29:8000/s/yRAF426pEgWqj2F
+密码：LpCsM2ig
+Best regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd.
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326
+Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-30 16:39:27.904000+00:00
+邮件内容:
+Hi 徐达，
+经过分析蓝屏dump暂时得到以下结论：系统在改变电源状态时，有设备长事件未能及时关闭/开启电源。
+但是最终的报错驱动是ACPI.SYS，设备为ACPI_HAL\PNP0C08\0。
+此设备应该是总线类设备，参照官方文档以后建议排查ACPI BIOS驱动。
+分析过程：
+1.     系统信息：
+2.     Bugcheck 显示蓝屏问题由于设备完成电源IRP超时。
+3.     跟踪报错IRP列出被block设备。
+4.     列举此设备当前操作。定位至相关线程。
+5.     打印此线程堆栈可以看到是此线程在唤醒计算机时用时过长导致。
+参考文档：
+参考链接：https://docs.microsoft.com/zh-cn/windows-hardware/drivers/kernel/acpi-driver
+我将继续分析排查此dump并及时与您更新最新进展。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第4封邮件====
+
+发件人：Xu Da
+发送时间：2020-10-30 17:01:58.697000+00:00
+邮件内容:
+Chengxiao，
+多谢分析，这个Case可以Close了。如后续客户有进一步的需求，售前会再评估是否需要重启。谢谢
+Best regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd.
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326
+Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 

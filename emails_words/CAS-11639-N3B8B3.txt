@@ -1,0 +1,49 @@
+邮件主题：回复: [案例号: CAS-11639-N3B8B3 ] （杨换军）% |P2|ICBC|工行用户反馈V2022-L版本系统无法安装KB5037768和KB5037035补丁问题 % 初次响应 CMIT:0001334
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-06-28 14:40:01.139000+00:00
+邮件内容:
+许先生，您好
+根据当前的案例日志，怀疑此问题为0x80071ab1 - ERROR_LOG_GROWTH_FAILED导致安装失败。
+可以参考如下建议操作修复。
+建议操作：
+1）以管理员权限打开cmd命令行，运行如下命令：
+fsutil resource setautoreset true c:\
+chkdsk /f c:
+2）重启计算机完成磁盘修复操作。
+问题定义: 
+工行反馈V2022-L版本系统无法安装补丁KB5037768和KB5037035问题，涉及1台设备，补丁安装报错代码为80071ab1
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+日志分析：
+2024-06-17 11:18:50, Info                  CBS    Failure in poqexec.exe while processing updates. [HRESULT = 0x80071ab1 - ERROR_LOG_GROWTH_FAILED]
+2024-06-17 11:18:51, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 1 out of 1. Percent progress: 22.
+2024-06-17 11:19:02, Info                  CBS    Attempting to remove poqexec from SetupExecute
+2024-06-17 11:19:02, Info                  CBS    Removed poqexec from SetupExecute.
+2024-06-17 11:19:02, Info                  CBS    Configured poqexec to not pend to SetupExecute.
+2024-06-17 11:19:02, Error                 CBS    Startup: Failed while processing critical primitive operations queue. [HRESULT = 0x80071ab1 - ERROR_LOG_GROWTH_FAILED]
+2024-06-17 11:19:02, Info                  CBS    Startup: Succesfully flushed NtfsLog.etl
+2024-06-17 11:19:02, Info                  CBS    Transaction UoW: {2D00136F-2C58-11EF-918D-98FA9B4239F4} for CbsTransactionClose
+2024-06-17 11:19:02, Info                  CBS    Setting ExecuteState key to: CbsExecuteStateResolvePending | CbsExecuteStateFlagRollback
+2024-06-17 11:19:02, Info                  CBS    SetProgressMessage: progressMessageStage: -1, ExecuteState: CbsExecuteStateResolvePending | CbsExecuteStateFlagRollback, SubStage: 0
+2024-06-17 11:19:02, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 1 out of 1. Rollback.
+2024-06-17 11:19:02, Info                  CBS    Setting original failure status: 0x80071ab1, last forward execute state: CbsExecuteStatePrimitives [2]
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-07-08 14:37:03.196000+00:00
+邮件内容:
+许先生，您好
+很高兴与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+工行反馈V2022-L版本系统无法安装补丁KB5037768和KB5037035问题，涉及1台设备，补丁安装报错代码为80071ab1
+案例进展：
+提供解决方案问题不再复现，归档案例
+--------------

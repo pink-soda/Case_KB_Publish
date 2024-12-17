@@ -1,0 +1,93 @@
+邮件主题：回复: [案例号: CAS-04505-J0K0K4 ] % 售前反馈需要协助分析兴业银行dump文件 % 初次响应 CMIT:0001456
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2021-07-20 16:56:14.933000+00:00
+邮件内容:
+Hi，刘伟：
+我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+用户反馈在插入安全U盘会蓝屏，协助分析蓝屏dump
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+从dump来看，有如下分析及建议：
+Dump bugcheck为7e，系统线程在执行错误处理程序时发生内存访问冲突导致的蓝屏问题。以下为部分call stack信息
+fffff30f`6aaf11e8 fffff804`597e0a21 : 00000000`0000007e ffffffff`c0000005 fffff804`66ba2816 fffff30f`6aaf2208 : nt!KeBugCheckEx
+fffff30f`6aaf11f0 fffff804`597a3552 : ffff988a`00000003 fffff30f`6aaf2c10 fffff30f`6aaed000 fffff30f`6aaf3000 : nt!PspSystemThreadStartup$filt$0+0x44
+fffff30f`6aaf1230 fffff804`597d1b62 : fffff30f`6aaf2c10 fffff30f`6aaf1810 fffff30f`6aaf18f0 00000000`0010001f : nt!_C_specific_handler+0xa2
+fffff30f`6aaf12a0 fffff804`5972a450 : fffff30f`6aaf18f0 00000000`00000000 fffff30f`6aaf1810 00000000`00000000 : nt!RtlpExecuteHandlerForException+0x12
+fffff30f`6aaf12d0 fffff804`59637c24 : fffff30f`6aaf2208 fffff30f`6aaf1f50 fffff30f`6aaf2208 00000000`00000000 : nt!RtlDispatchException+0x430
+fffff30f`6aaf1a20 fffff804`597da9c2 : 00000000`00001000 fffff30f`6aaf22b0 ffff8000`00000000 00000000`00000058 : nt!KiDispatchException+0x144
+fffff30f`6aaf20d0 fffff804`597d6cae : ffff988a`00000000 ffff8785`00000001 ffff988a`77014000 ffff8785`6c1fee00 : nt!KiExceptionDispatch+0xc2
+fffff30f`6aaf22b0 fffff804`66ba2816 : ffff988a`77010060 ffff988a`20206f49 ffff988a`00000808 00000000`43646948 : nt!KiPageFault+0x42e (TrapFrame @ fffff30f`6aaf22b0)
+fffff30f`6aaf2440 fffff804`66ba330b : ffff988a`770101d0 ffff988a`77010408 ffff988a`79f529d0 ffff988a`770101d0 : HIDCLASS!HidpDeleteDeviceObjects+0x5a
+fffff30f`6aaf2470 fffff804`66ba370a : 00000000`00000000 ffff988a`79f52900 ffff988a`77010408 ffff988a`79f529d0 : HIDCLASS!HidpCleanUpFdo+0x11b
+fffff30f`6aaf24a0 fffff804`66ba0d24 : ffff988a`770101b0 ffff988a`79f52f20 ffff988a`79f529d0 00000000`00000002 : HIDCLASS!HidpRemoveDevice+0x1ba
+fffff30f`6aaf24f0 fffff804`66b9b25a : ffff988a`770101b0 ffff988a`79f529d0 fffff804`66b8e638 00000000`00000001 : HIDCLASS!HidpFdoPnp+0x4ca4
+fffff30f`6aaf2560 fffff804`66b71fe8 : ffff988a`770101d0 ffff988a`770101b0 ffff988a`7700dd00 00000000`00000011 : HIDCLASS!HidpIrpMajorPnp+0x6a
+fffff30f`6aaf25a0 fffff804`5968db99 : ffff988a`77010060 00000000`00000000 ffff988a`79f529d0 00000000`69706e00 : HIDCLASS!HidpMajorHandler+0xe8
+fffff30f`6aaf2630 fffff804`59c7253d : 00000000`00000000 ffff988a`77010060 fffff30f`6aaf2720 ffff988a`79f529d0 : nt!IofCallDriver+0x59
+fffff30f`6aaf2670 fffff804`59cf0f39 : 00000000`00000002 fffff30f`6aaf2739 ffff988a`75edcbb0 ffff988a`7700dd00 : nt!IopSynchronousCall+0xe5
+fffff30f`6aaf26e0 fffff804`5976b9cd : ffff8785`711de430 ffff988a`75edcbb0 00000000`0000000a ffff988a`7700dd00 : nt!IopRemoveDevice+0x105
+从call stack中并未发现与三方应用有关，蓝屏原因为HID在处理删除设备对象时引发的pagefault。HID类库属于windows driver,在传输过程中会涉及到其他module，因此也不排除其他三方module加载导致此问题。
+https://docs.microsoft.com/en-us/windows-hardware/drivers/hid/hid-architecture
+vertarget
+Windows 10 Kernel Version 17763 MP (4 procs) Free x64
+Product: WinNt, suite: TerminalServer SingleUserTS
+Built by: 17763.1.amd64fre.rs5_release.180914-1434
+Machine Name:
+Kernel base = 0xfffff804`59615000 PsLoadedModuleList = 0xfffff804`59a30670
+Debug session time: Fri Jul 16 15:29:19.128 2021 (UTC + 8:00)
+System Uptime: 0 days 0:02:41.982
+!address fffff80466ba2816
+Usage:                  Module
+Base Address:           fffff804`66b70000
+End Address:            fffff804`66bab000
+Region Size:            00000000`0003b000
+VA Type:                BootLoaded
+Module name:            HIDCLASS.SYS
+Module path:            [\SystemRoot\System32\drivers\HIDCLASS.SYS]
+User mode下的加载module情况：
+建议：
+1， 系统补丁更新至最新版本
+2， 硬件驱动更新至最新版本，尤其是usb驱动
+如上述操作无效，则需要联系TSM厂商进行排查分析。
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2021-07-23 14:41:22.544000+00:00
+邮件内容:
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2021-07-23 14:41:48.529000+00:00
+邮件内容:
+Hi，刘伟：
+如刚才线下沟通，目前用户暂无后续支持要求，此case经您同意，做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-04505-J0K0K4
+问题描述：
+=====================
+用户反馈在插入安全U盘会蓝屏，协助分析蓝屏dump。
+问题分析：
+=====================
+如之前dump分析，蓝屏原因为系统线程在执行错误处理程序时发生内存访问冲突导致。HID在处理删除设备对象时引发的pagefault。HID类库属于windows driver,在传输过程中会涉及到其他module，因此也不排除其他三方module加载导致此问题。：
+建议：
+1.	系统补丁更新至最新版本
+2.	硬件驱动更新至最新版本，尤其是usb驱动
+如上述操作无效，则需要联系TSM厂商进行排查分析。
+问题总结：
+=====================
+经用户确认，目前用户暂无后续支持要求，此case将做关闭处理。
+以上，如您后续有任何问题，可随时与我们联系，谢谢
+
+====第4封邮件====
+
+发件人：Liu Wei
+发送时间：2021-07-23 14:45:04.798000+00:00
+邮件内容:
+谢谢！

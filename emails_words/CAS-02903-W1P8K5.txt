@@ -1,0 +1,59 @@
+邮件主题：回复: [案例号: CAS-02903-W1P8K5 ] % |P3|ICBC|神州网信政府版系统在使用无线网络过程蓝屏 % 初次响应 CMIT:0001958
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2020-09-15 15:22:34.311000+00:00
+邮件内容:
+毓杰，您好：
+如刚才电话沟通，目前针对伍玉霞.dmp的分析已完成，已找到发生蓝屏问题的原因，经您同意，此case将暂做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-02903-W1P8K5
+问题描述：
+=====================
+CMGE在使用无线网络过程蓝屏。
+问题分析：
+=====================
+此次蓝屏Dump的Bugcheck为0x50（PAGE_FAULT_IN_NONPAGED_AREA），与之前memory-copy.dmp并不完全相同，虽然不是由于special pool引发的crash，但通过NBLTracking，我们还是得到了部分额外信息，为方便理解，以下将着重分析vwifimf.sys在处理802.1x数据包过程中的代码流程及逻辑，code部分的修改及完善，需要TMS进行。
+1.	从call stack得知，Crash蓝屏发生在网卡返回发送完成的通知后，即最终由ndis!ndisCallSendCompleteHandler调用各层驱动处理exception
+kd> dt NDIS_EXPAND_STACK_CALLOUT_PARAMS 0xffff9704`0d757190
+   +0x000 Status           : 0n659
+   +0x008 FilterHandle     : 0xffffc082`207db250 Void //vwifimf.sys
+   +0x010 FilterContext    : 0xffffc082`1fc13d60 Void
+   +0x018 CancelId         : 0xfffff800`5f4b1e28 Void
+   +0x018 Request          : 0xfffff800`5f4b1e28  Unknown value 0x40f98b48
+   +0x018 NetDevicePnPEvent : 0xfffff800`5f4b1e28 _NET_DEVICE_PNP_EVENT
+  +0x018 NetPnPEventNotification : 0xfffff800`5f4b1e28 _NET_PNP_EVENT_NOTIFICATION
+   +0x018 StatusIndication : 0xfffff800`5f4b1e28 _NDIS_STATUS_INDICATION
+   +0x018 NextHandler      : 0xfffff800`5f4b1e28     void  +0
+   +0x020 Nbls             : 0xffffc082`3655b9c0  _NET_BUFFER_LIST
+   +0x028 Port             : 0
+   +0x02c PathType         : 1 ( NdisSendCompletePath )
+   +0x030 NumNbls          : 0
+   +0x034 Flags            : 0
+2.	结合TMS反馈的分析结果（见8/29分析报告），ndis!ndisCallSendCompleteHandler的完成过程中，需要调用vwifimf!FilterSendNetBufferListsComplete
+3.	是否需要调用vwifimf!FilterSendNetBufferListsComplete的依据为判断传入参数-NBL数据结构中的SourceHandle和NDIS_HANDLE中的FilterHandle是否相同，即是否为经重组的802.1x数据包。
+基于上述流程分析，现在的问题集中在满足什么条件的数据包需要重组，由于vwifimf.sys作为过滤驱动在调用初始阶段会申请一段内存地址pool，并在之后的调用过程中进行单独维护，因此vwifimf.sys决定以下几个因素：
+*  filter的条件由vwifimf.sys声明
+*  重组的数据包场景由vwifimf.sys定义
+*  重组数据包之后的调用流程由vwifimf.sys决定
+以此次收集的dump日志为例，当前需要处理的NBL为0xffffc082`3655b9c0 。通过trace NBL，发现最初的Source指向 Native WiFi Filter Driver，以表明这并不是一个由vwifimf.sys分配出来的NBL.。并且经验证，Source的NBL中，nwifi.sys的相关结果是有效的。
+kd> !nbl 0xffffc082`3655b9c0  
+    NBL                ffffc0823655b9c0    Next NBL           NULL
+    First NB           ffffc0822345db10    Source             ffffc08217eee8a0 - Native WiFi Filter Driver-0000
+    Context stack      ffffc0823655bb40    Pool               ffffc08220a32640 - nwifi
+    Flags              FREED_BACK_TO_NDIS
+但是当NBL经过vwifimf.sys之后，传入NdisFSendNetBufferListsComplete的NBL变成另外一个由vwifimf.sys分配的NBL，即vwifimf.sys完成了对该数据包的重组。
+kd> !ndiskd.nbl 0xffffc082`25917500
+    NBL                ffffc08225917500    Next NBL           NULL
+    First NB           ffffc08225917680    Source             ffffc082207db250 - NDIS Sample LightWeight Filter 1-0000
+    Context stack      ffffc0822b503210    Pool               ffffc0821f1c49c0 - 
+Flags              NBL_ALLOCATED, NBL_CONTEXT_ALLOCATED
+这时NBL的Source Handle指向Filter Handle ffffc082207db250，这个NBL对于nwifi.sys来说是非法的，vwifimf.sys不应该再调用ndis!NdisFSendNetBufferListsComplete，因此导致系统蓝屏。具体可参见以下文档：
+https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ndis/nf-ndis-ndisfsendnetbufferlistscomplete <https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ndis/nf-ndis-ndisfsendnetbufferlistscomplete> 
+Note  A filter driver should keep track of send requests that it originates and make sure that it does not call the NdisFSendNetBufferListsComplete function when such requests are complete.
+问题总结：
+=====================
+请TMS厂商根据自身代码的条件声明，场景定义进行对于802.1x数据包重组部分的代码修改。
+如确实已完成对802.1x数据包的重组行为，则需要加强代码验证逻辑，在验证重组数据包的安全性之后，传入Windows允许的handle信息，或跳过调用ndis!NdisFSendNetBufferListsComplete的代码部分。
+经与用户沟通，目前完成此dump的分析工作，同意关闭此case。
+以上，如您后续有任何问题，可随时与我们联系，谢谢

@@ -1,0 +1,144 @@
+邮件主题：回复: [案例号:CAS-08315-T3P9K6] %|P2|ICBC|工行用户反馈系统待机后无法唤醒% 案例重新分配 CMIT:0001671
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-02-28 11:02:25.250000+00:00
+邮件内容:
+许先生，您好：
+如刚才电话沟通，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈系统待机后无法唤醒，此问题为必现问题，只要待机至系统黑屏后便卡死。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+请您使用附件CMGELogCollectorV2.zip，配置手动触发dump，方法如下：
+*  下载附件中的日志收集工具CMGELogCollectorV2.zip至本地。
+*  点击“内存转储配置”标签，勾选“我已得到神州网信工程师指导”项后，再勾选“设置手动触发内存转储”项
+*  点击“设置”按钮，进行设置，完成后重启计算机使设置生效。
+问题复现：
+待出现所述问题系统卡死后，通过“按住左shift键 +右shift键不放，再连按两次波浪号键“~”（Esc下方）”的方式触发NMI蓝屏，之后将c:\windows\memory.dmp回传给我，用于分析。谢谢
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-03-01 10:07:23.483000+00:00
+邮件内容:
+许先生，您好：
+       收到工行技术支持邮箱变更的通知，现将邮件重新发一下给您，请您参照以下内容指导用户，另已将日志收集工具上传至FTP的/upload/CAS-08315-T3P9K6位置，请您知悉，谢谢。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-03-02 17:03:04.762000+00:00
+邮件内容:
+许先生，您好：
+查看您上传的两个dump，问题基本一致，均是在机器唤醒阶段，dwm未将桌面成功展示，引发的黑屏现象。
+具体分析如下：
+查看堆栈信息，问题发生在dxg驱动上，而该驱动属于系统驱动。
+# Child-SP         Return           Call Site
+0 ffff9b8856d4db20 fffff8031e994e06 nt!KiSwapContext+0x76
+1 ffff9b8856d4dc60 fffff8031e9945fb nt!KiSwapThread+0x2c6
+2 ffff9b8856d4dd30 fffff8031e993d1f nt!KiCommitThreadWait+0x13b
+3 ffff9b8856d4ddd0 fffff8071bc6acad nt!KeWaitForSingleObject+0x1ff
+4 ffff9b8856d4deb0 fffff8071bc64b82 dxgmms2!VIDMM_GLOBAL::WaitForFences+0x28d
+5 ffff9b8856d4dfd0 fffff8071bc5fab1 dxgmms2!VIDMM_GLOBAL::QueueDeferredCommand+0x1c2
+6 ffff9b8856d4e060 fffff8071bc69266 dxgmms2!VIDMM_GLOBAL::VidMmMapGpuVirtualAddressInternal+0x241
+7 ffff9b8856d4e1c0 fffff8071bc031b9 dxgmms2!VIDMM_GLOBAL::VidMmMapGpuVirtualAddress+0xa6
+8 ffff9b8856d4e210 fffff8071b9cdac2 dxgmms2!VidMmMapGpuVirtualAddress+0x19
+9 ffff9b8856d4e250 fffff8071b9d227e dxgkrnl!DXGDEVICE::CreateAllocation+0x20b2
+a ffff9b8856d4e520 fffff8071b9b3b78 dxgkrnl!DXGDEVICE::CreateStandardAllocation+0x2f6
+b ffff9b8856d4e870 fffff88b7a6aa950 dxgkrnl!DxgkCddCreateAllocation+0x268
+c ffff9b8856d4ebb0 fffff88b7a6a9194 cdd!CDDPDEV::CreateAllocation+0x190
+d ffff9b8856d4ed10 fffff88b7a6a967e cdd!CddBitmapHw::RecreateDeviceAllocations+0xc4
+e ffff9b8856d4eda0 fffff88b7a6a9d60 cdd!CddBitmapHw::InitBitmap+0x8e
+f ffff9b8856d4edd0 fffff88b79009100 cdd!DrvCreateDeviceBitmapEx+0x2d0
+10 ffff9b8856d4ef00 fffff88b79097000 win32kfull!hsurfCreateCompatibleSurface+0x24c
+11 ffff9b8856d4f010 fffff88b79074e5b win32kfull!GreCreateCompatibleBitmapInternal+0x264
+12 ffff9b8856d4f180 fffff88b790753fa win32kfull!CreateOrGetRedirectionBitmap+0x1d7
+13 ffff9b8856d4f230 fffff88b7907b78e win32kfull!SetRedirectedWindow+0xc6
+14 ffff9b8856d4f2a0 fffff88b790c3bba win32kfull!_SetLayeredWindowAttributes+0x8e
+15 ffff9b8856d4f370 fffff88b79076022 win32kfull!ComposeWindow+0x8a
+16 ffff9b8856d4f3a0 fffff88b79075d62 win32kfull!ComposeWindowIfNeeded+0x5e
+进而查看system进程，会发现部分可疑线程
+查看该线程的堆栈信息，发现dxg相关的线程最终等在tmcomm 这个驱动上，且被Asiainfo Security 的TMBMSRV.exe 占有.
+System (ffff9f0bcf8b2040) ffff9f0bd79ff700 4.390           0s      109ms            1304 WrLpcReply  45s.140 Waiting
+WaitBlockList:
+    Object           Type      Other Waiters Info
+    ffff9f0bd79ffd48 Semaphore             0 Limit: 1
+LPC Msg          ServerProcess                 ServerThread
+ffffca8a87bbece0 TMBMSRV.exe(ffff9f0bda355580) Message Queued
+ # Call Site
+ 0 nt!KiSwapContext+0x76
+ 1 nt!KiSwapThread+0x2c6
+ 2 nt!KiCommitThreadWait+0x13b
+ 3 nt!KeWaitForSingleObject+0x1ff
+ 4 nt!AlpcpWaitForSingleObject+0x2a
+ 5 nt!AlpcpSignalAndWait+0x17b
+ 6 nt!AlpcpReceiveSynchronousReply+0x56
+ 7 nt!AlpcpProcessSynchronousRequest+0x372
+ 8 nt!LpcpRequestWaitReplyPort+0x86
+ 9 nt!NtRequestWaitReplyPort+0x6e
+ a nt!KiSystemServiceCopyEnd+0x13
+ b nt!KiServiceLinkage+0x0
+ c tmcomm!KmSetCommPortAPIs+0x7f1
+ d tmcomm!InitKmLPC+0x23d
+ e tmcomm!KmCallUmEx+0x26
+ f tmactmon+0xb487
+10 tmactmon+0xbb92
+11 tmactmon+0xc59b
+12 tmactmon+0xc33a
+13 tmevtmgr!TMEvtCommunicateRoutine+0x2503
+14 tmevtmgr!TMEvtCommunicateRoutine+0x1996
+15 nt!ObpCallPreOperationCallbacks+0xfa
+16 nt!ObpPreInterceptHandleCreate+0x9b
+17 nt!ObpCreateHandle+0x9bc
+18 nt!ObOpenObjectByPointer+0xc3
+19 nt!PsOpenProcess+0x2ad
+1a nt!NtOpenProcess+0x23
+1b nt!KiSystemServiceCopyEnd+0x13
+1c nt!KiServiceLinkage+0x0
+1d dxgmms2!VIDMM_GLOBAL::SendWnfNotificationToProcess+0x7f
+1e dxgmms2!VIDMM_GLOBAL::SendTrimWnf+0x6b
+1f dxgmms2!VIDMM_GLOBAL::HandleTrimWnf+0x463
+20 dxgmms2!VIDMM_WORKER_THREAD::Run+0x1e18
+21 dxgmms2!VidMmWorkerThreadProc+0x9
+22 nt!PspSystemThreadStartup+0x47
+23 nt!KiStartSystemThread+0x16
+根据上述发现, 建议升级或者卸载Asiainfo Security 这个软件. 然后验证下是否还有无法唤醒的问题. 谢谢!
+
+====第4封邮件====
+
+发件人：win10技术支持
+发送时间：2023-03-07 15:50:24.177000+00:00
+邮件内容:
+此问题已解决，江老师已整改，目前已解决。
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+中国工商银行软件开发中心（珠海）
+许  翔
+系统一部
+电话：17606669571
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ 
+________________________________
+	-----原始邮件-----
+	
+====第5封邮件====
+
+发件人：Li Qi
+发送时间：2023-03-07 17:29:50.477000+00:00
+邮件内容:
+许先生，您好：
+       感谢您的回复，经您的确认，当前问题已解决，此case将做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-08315-T3P9K6
+问题描述：
+=================
+用户反馈系统待机后无法唤醒，此问题为必现问题，只要待机至系统黑屏后便卡死。
+问题分析：
+=================
+经dump分析，此问题系Asiainfo Security 的TMBMSRV.exe 占有dxg驱动，进而系统hang住，导致dwm进程无法展示桌面。需要用户更新或卸载Asiainfo Security解决此问题。
+问题总结：
+=================
+经用户确认，目前问题已解决，该问题做关闭处理。
+以上为此问题的案例总结，如有任何问题，可随时与我们联系，谢谢

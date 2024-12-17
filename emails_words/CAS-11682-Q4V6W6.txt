@@ -1,0 +1,56 @@
+邮件主题：回复:  [案例号: CAS-11682-Q4V6W6 ] % 招商银行用户反馈批量激活即将到期问题 % 初次响应 CMIT:0001413
+
+====第1封邮件====
+
+发件人：Shi Guannan
+发送时间：2024-07-05 11:02:02.100000+00:00
+邮件内容:
+董先生，您好！
+感谢您的电话接听。
+问题定义: 
+招商银行批量激活用户设备弹框提示“你的Windows 许可证即将过期”；激活客户端显示“授权截止日期：2025/1/26”、“激活授权将22天后过期，请将计算机接入服务器所在网络。”
+问题范围: 
+协助您分析并处理上述问题。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+问题分析: 
+目前阶段考虑为独立客户端问题，而非服务器问题。建议先从客户端本地收集日志，以便进一步问题排查。
+日志收集：
+a)    日志收集工具
+请您从以下链接下载日志收集工具
+https://cduc.cmgos.com/download.php?id=1456&token=d9aMjTbOl7VQ1HRqOnW0kq1crZLYRj6a
+解压后双击运行CMGELogCollector.exe，勾选所有选项，点击收集 获取对应的系统日志，将生成的日志压缩包通过CDUC上传。
+b)      OAGTool
+1）从以下链接下载OAGTool
+https://cduc.cmgos.com/download.php?id=1319&token=prNvZHfxbRnNpIMHb1bQ3emYL9TWHGYw [cduc.cmgos.com] <https://urldefense.com/v3/__https:/cduc.cmgos.com/download.php?id=1319&token=prNvZHfxbRnNpIMHb1bQ3emYL9TWHGYw__;!!LpKI!lB-GQzoYBtyuEXlGdlntoVPQ41mFJZwwExh6tYhXYAhEWDlnwujeQrtMTmgqVOQHuzbvsh6udTDq$> 
+2）复制并解压到问题设备上。
+3）右键点击getHardware.bat，选择以管理员权限执行
+ 4）运行完成后会在当前目录生成hardware.txt文件，将此文件通过CDUC上传。
+日志上传方法：
+您可以登陆https://cduc.cmgos.com [cduc.cmgos.com] <https://urldefense.com/v3/__https:/cduc.cmgos.com/__;!!LpKI!lB-GQzoYBtyuEXlGdlntoVPQ41mFJZwwExh6tYhXYAhEWDlnwujeQrtMTmgqVOQHuzbvsqCxAEm1$> ，通过数据上传系统上传您所收集的日志信息。（用户名密码区分大小写）
+用户名：ZSYHDYC
+密码：ZSYHDYC
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 
+
+====第2封邮件====
+
+发件人：Shi Guannan
+发送时间：2024-07-22 14:57:23.390000+00:00
+邮件内容:
+董先生，您好！
+感谢您的电话接听。
+确认您的问题已经解决，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如有其他问题，您可以随时联系我们。
+案例总结：
+----
+问题定义：
+招商银行批量激活用户设备弹框提示“你的Windows 许可证即将过期”；激活客户端显示“授权截止日期：2025/1/26”、“激活授权将22天后过期，请将计算机接入服务器所在网络。”
+问题总结：
+问题设备重装后问题解决。
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 

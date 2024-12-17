@@ -1,0 +1,159 @@
+邮件主题：回复: [案例号: CAS-02119-Z1X2D3 ] % |普通事件| Dell |CMGE系统远程连接无法复制黏贴 % 初次响应 CMIT:0001142
+
+====第1封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-03 11:53:04.961000+00:00
+邮件内容:
+Hi Lianbin,
+如刚刚电话沟通，请确认用户是通过什么方式进行远程桌面连接以及用户使用的CMIT系统版本，谢谢！
+热线电话：400-818-0055
+
+====第2封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-03 14:10:10.351000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+用的是系统本身的远程，系统中的远程设置已勾选了
+版本是win10 企业版G CMIT(V0-H.1020.000)
+和其他品牌笔记本的也是企业版 CMIT，都是一样情况
+客户目前连接的是内网
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第3封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-03 14:16:07.713000+00:00
+邮件内容:
+Hi Lianbin
+感谢您的回复，根据与您的沟通，我谨在此阐述问题涉及的范围定义：
+问题范围：用户反馈通过系统本身的远程桌面连接，无法进行复制黏贴。
+问题定义：协助用户分析此问题。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+热线电话：400-818-0055
+
+====第4封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-07 11:32:07.194000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Binbin
+是的，如果有新的消息麻烦告知，我们好告知客户，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第5封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-07 12:08:16.434000+00:00
+邮件内容:
+Hi Lianbin,
+我在本地环境进行测试，并没有复现用户的问题。正常情况下，两台CMGE系统远程连接的时候，是可以进行复制粘贴的。
+建议用户按照如下步骤进行尝试:
+1， 进入远程桌面连接---点击本地资源---确认勾选剪贴板。
+2， 点击详细信息---勾选驱动器
+3， 在两台CMGE系统上分别重启 rdpclip.exe 进程。具体方法如下：
+打开任务管理器，查看进程，找到 rdpclip.exe 进程， 关闭此进程。之后点击开始->运行->输入“rdpclip.exe ” 并回车，重新运行此程序。
+4， 如果尝试以上方法之后还是不行，建议用户关掉杀毒软件之后再次尝试远程连接复制功能。
+热线电话：400-818-0055
+
+====第6封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-07 13:58:20.599000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Binbin
+好的，感谢.
+我这边让客户确定下.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第7封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-09 09:35:14.700000+00:00
+邮件内容:
+Hi Lianbin,
+请问如下方法可以解决用户的问题吗？
+热线电话：400-818-0055
+
+====第8封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-09 09:37:38.458000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Binbin
+我们还在跟客户确定，在等待客户信息，回复后及时反馈给你，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第9封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-13 10:59:14.534000+00:00
+邮件内容:
+Hi Lianbin,
+按照case处理流程，需要与您确认case进展，请问用户那边有反馈消息吗？
+热线电话：400-818-0055
+
+====第10封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-13 11:18:18.589000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Binbin
+方案有提供给客户，可是客户现在又告知暂时没有空尝试，表示先结案，后续有需要再联系，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第11封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-13 11:20:31.403000+00:00
+邮件内容:
+Hi Lianbin
+那我先将此案例进行归档处理，后续如果有需要您可以再随时开启此案例。
+热线电话：400-818-0055
+
+====第12封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-13 11:23:19.311000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Binbin
+感谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第13封邮件====
+
+发件人：Wang Binbin
+发送时间：2020-04-13 12:53:10.775000+00:00
+邮件内容:
+Hi Lianbin，
+根据您的回复，最终用户暂时没有时间尝试解决方案，此问题我将暂时归档。 
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结： 
+----
+问题定义：用户反馈通过系统本身的远程桌面连接，无法进行复制黏贴。。
+问题解决：为用户发送解决方案，但是用户暂时没有时间尝试，所以暂时归档案例。
+热线电话：400-818-0055

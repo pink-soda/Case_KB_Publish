@@ -1,0 +1,114 @@
+邮件主题：回复: [案例号: CAS-02799-V1X1M8 ] % 邢台市人民医院反馈升级客户端句柄数占用过多导致系统性能降低问题 % 初次响应 CMIT:0001707
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-17 17:55:38.773000+00:00
+邮件内容:
+韩先生 您好，
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: CMGE V2020-L系统内置更新客户端运行占用系统资源过多。
+问题范围: 协助分析解决更新客户端软件系统资源占用问题。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+临时解决方案建议：根据之前电话电话沟通，目前您的使用环境中并无互联网连接，内网中也没有提供WSUS（系统更新）服务器服务。而且也没有为终端设备进行系统更新的需求，所以建议您关闭CMIT更新客户端服务以避免资源占用问题。
+具体操作步骤如下：
+1.     如下图所示以管理员权限打开服务管理器。
+2.     从服务列表中找到 CMIT更新客户端 服务
+3.     双击打开 CMIT更新客户端服务
+同时，烦请您提供更新客户端服务运行/停止前后系统资源监视器截图。（开始菜单中输入“资源监视器”，然后以管理员方式打开。勾选 CmitUpdateAgent.exe）
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-19 15:05:45.554000+00:00
+邮件内容:
+董女士/韩先生 您好，
+经之前的电话沟通请您协助提供以下信息以及日志：
+-      CMGE操作系统版本号
+-      CUA版本号 （通过开始菜单/更新客户端/更新客户端-配置/帮助可以查看）
+日志收集工具以及日志收集步骤操作文档已随附件发送，请解压缩全部文件至C:\TEMP文件夹下执行。
+日志上传地址：https://cduc.cmgos.com/index.php
+用户名：xtsrmyy
+密码：xtsrmyy
+===========================
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-20 11:24:13.714000+00:00
+邮件内容:
+董女士 您好，
+如之前电话沟通，您将联系现场工程师进行问题排查以及日志收集现特将排查步骤以及日志收集工具及收集步骤发送给您以便现场工程师进行操作。
+同时也烦请您提供时间安排计划。以下是需要进行的问题排查，日志收集工具/操作步骤请查收附件。其它具体细节请您参照往来邮件历史。
+排查问题：
+1.     CMIT 更新客户端版本信息。（操作步骤请参照上一封邮件）
+2.     在问题设备上停止CMIT更新客户端服务，并截取服务关闭前后资源监视器截图。
+停止CMIT更新客户端操作步骤如下：
+1.     如下图所示以管理员权限打开服务管理器。
+2.     从服务列表中找到 CMIT更新客户端 服务
+3.     双击打开 CMIT更新客户端服务
+同时，烦请您提供更新客户端服务运行/停止前后系统资源监视器截图。（开始菜单中输入“资源监视器”，然后以管理员方式打开。勾选 CmitUpdateAgent.exe）
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第4封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-20 11:26:26.619000+00:00
+邮件内容:
+FYI
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-21 17:03:40.999000+00:00
+邮件内容:
+董女士 您好，
+由于之前电话未能联系上您所以发送邮件了解问题排查及日志收集进展。如果您在排查或日志收集过程中遇到问题请您随时联系，我们将及时为您处理。
+感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-24 10:52:26.935000+00:00
+邮件内容:
+董女士 您好，
+由于之前电话未能联系上您所以发送邮件了解问题排查及日志收集进展。如果您在排查或日志收集过程中遇到问题请您随时联系，我们将及时为您处理。
+感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-09-15 17:45:56.616000+00:00
+邮件内容:
+董女士/韩先生 您好，
+附件内含最新版本升级客户端，此版本修复了句柄数增加问题。请您卸载现有升级客户端后安装最新版本然后反馈是否仍然存在系统性能问题。
+如果您在卸载/安装过程中遇到任何问题请随时联系，我们将及时为您提供帮助。
+感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第8封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-09-17 17:31:25.769000+00:00
+邮件内容:
+Hi Lyman，
+如之前沟通，最新版本升级客户端安装文件已经发送给用户。此版本修复了句柄数增加问题。
+所以此案例将关闭归档。如果在更新了最新版本升级客户端后仍然存在句柄数增加问题请及时与我们联系，我们将及时为您提供帮助。
+感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 

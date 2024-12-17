@@ -1,0 +1,176 @@
+邮件主题：回复: [案例号: CAS-11247-W4J2C4 ] % |P2|ICBC|工行用户反馈V2020-L版本系统调用外设失败问题 % 初次响应 CMIT:0001480
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-04-22 16:56:49.415000+00:00
+邮件内容:
+许先生， 您好
+问题定义: 
+反馈V2020-L版本系统调用外设（打印机、高拍仪）失败问题，用户称外设驱动已安装，涉及2台电脑 
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+建议操作：
+针对“不能为wriiten”问题的dump日志，都指向D:\nctb\nctb_2405_gnDK\DeviceServer\driver\CAMA_ESEAL.dll
+建议厂商查看为何此dll抛出错误，检测相关组件兼容性
+0:008> lmvm CAMA_ESEAL
+Browse full module list
+start    end        module name
+04050000 04063000   CAMA_ESEAL C (export symbols)       CAMA_ESEAL.dll
+    Loaded symbol image file: CAMA_ESEAL.dll
+    Image path: D:\nctb\nctb_2405_gnDK\DeviceServer\driver\CAMA_ESEAL.dll
+    Image name: CAMA_ESEAL.dll
+    Browse all global symbols  functions  data
+    Timestamp:        Mon Aug  4 17:14:03 2014 (53DF4EDB)
+    CheckSum:         00000000
+    ImageSize:        00013000
+    File version:     1.1.0.14
+    Product version:  1.1.0.14
+    File flags:       8 (Mask 1F) Private
+    File OS:          40004 NT Win32
+    File type:        2.0 Dll
+    File date:        00000000.00000000
+    Translations:     0804.04b0
+    Information from resource tables:
+        CompanyName:      云南南天电子信息产业股份有限公司
+        ProductName:      PRx
+        InternalName:     PRx
+        OriginalFilename: PRx.dll
+        ProductVersion:   1, 1, 0, 14
+        FileVersion:      1, 1, 0, 14
+        LegalTrademarks:  南天NANTIAN
+日志收集：
+针对Cssp崩溃问题由于dump无法进一步看到信息，建议收集日志收集工具，如果后续还有dump可以继续上传。
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-05-06 10:15:17.009000+00:00
+邮件内容:
+许先生，您好
+刚刚与潘老师电话沟通，您可以将具体收集方式转发潘老师
+*   Cssp是另外一台机器的另一个软件崩溃问题
+*   由于dump无法进一步看到信息，建议收集日志收集工具，如果后续还有dump可以继续上传。
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2024-05-16 10:59:19.763000+00:00
+邮件内容:
+许先生，您好
+来信是想咨询当前案件进展状况。 目前还未收到进一步的日志
+如果有其他疑问可回复此邮件。谢谢 
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2024-05-22 09:48:13.898000+00:00
+邮件内容:
+许先生，您好
+根据反馈的cssp dump日志，目前分析如下：
+*   崩溃的进程是D:\ICBC\CsspDeviceServer\CsspDeviceServer.exe，运行时间是19s，报错代码4000001。
+*   抛错的地址是6fe5f9c3 (libstdc___6!ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x00000163)，这是D:\ICBC\CsspDeviceServer\libstdc++-6.dll定义的。
+建议操作：
+*   当前需要D:\ICBC\CsspDeviceServer\libstdc++-6.dll的厂商确认其软件是否有对应该时间段的Log记录。
+*   同时D:\ICBC\CsspDeviceServer\libstdc++-6.dll抛出exception，由于没有private symbol，所以需要三方软件厂商对报错当时的行为进行解析
+日志分析：
+System Uptime: 0 days 2:11:15.831
+Process Uptime: 0 days 0:00:19.000
+  Kernel time: 0 days 0:00:05.000
+  User time: 0 days 0:00:04.000
+Name                 Ses PID            PEB      Mods Handle GDI Handles Active Thrds
+==================== === ============== ======== ==== ====== =========== ============
+csspdeviceserver.exe   1 4468 (0n17512) 00253000  131    548          69           12
+CommandLine: "D:\ICBC\CsspDeviceServer\CsspDeviceServer.exe" 
+Last event: 4468.4e04: Unknown exception - code 40000015 (first/second chance not available)
+Last exception (.exr -1)
+============================================
+ExceptionAddress: 6fe5f9c3 (libstdc___6!ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x00000163)
+   ExceptionCode: 40000015
+  ExceptionFlags: 00000000
+NumberParameters: 0
+lmvm libstdc___6
+Browse full module list
+start    end        module name
+6fe40000 6ffbf000   libstdc___6 T (export symbols)       libstdc++-6.dll
+    Loaded symbol image file: libstdc++-6.dll
+    Image path: D:\ICBC\CsspDeviceServer\libstdc++-6.dll
+    Image name: libstdc++-6.dll
+    Browse all global symbols  functions  data  Symbol Reload
+    Timestamp:        unavailable (00000000)
+    CheckSum:         0018076B
+    ImageSize:        0017F000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+Crashing Stack
+============================================
+DbgID ThreadID         User Kernel COM-Initialized   Create Time (UTC)
+0     4e04 (0n19972) 4s.031 5s.703 ApartmentType_STA 04/10/2024 10:39:23.083 AM
+  # Child-SP Return   Call Site                                                                       Source
+  0 0067b4fc 6fe5f9c3 libstdc___6!ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x163 
+  1 0067b500 6fe57be9 libstdc___6!ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x163 
+  2 0067b530 6fef3860 libstdc___6!ZN10__cxxabiv111__terminateEPFvvE+0x9 
+  3 0067b550 8195e2b3 libstdc___6!ZSt9use_facetINSt7__cxx1110moneypunctIcLb0EEEERKT_RKSt6locale+0x0 
+  4 0067b664 e7a995e5 0xffffffff8195e2b3 
+……
+fc4 0067f564 e4aba6e5 0xffffffff9680e5aa 
+fc5 0067f568 b4e580be 0xffffffffe4aba6e5 
+fc6 0067f56c 68cf27e0 0xffffffffb4e580be 
+fc7 0067f66c 68cf5eee Qt5Core!ZNK15QJsonParseError11errorStringEv+0x2560 
+fc8 0067f680 74a485d5 Qt5Core!ZN11QTextStream12readLineIntoEP7QStringx+0xce 
+fc9 0067f6b4 0043375b msvcrt!free+0x65                                                               
+fca 0067f700 00434e5b CsspDeviceServer+0x3375b 
+fcb 0067f770 00413dda CsspDeviceServer+0x34e5b 
+fcc 0067f8b0 00414602 CsspDeviceServer+0x13dda 
+fcd 0067f980 0041ccaf CsspDeviceServer+0x14602 
+fce 0067fa10 0041076b CsspDeviceServer+0x1ccaf 
+fcf 0067faa0 00438902 CsspDeviceServer+0x1076b 
+fd0 0067fe50 00401539 CsspDeviceServer+0x38902 
+fd1 0067fe88 74a5801a CsspDeviceServer+0x1539 
+fd2 0067fe9c 0040138b msvcrt!_onexit+0x3a                                                            
+fd3 0067fed0 749405c9 CsspDeviceServer+0x138b 
+fd4 0067ff70 76fb78bd kernel32!BaseThreadInitThunk 
+fd5 0067ff88 76fb788d ntdll!__RtlUserThreadStart 
+fd6 0067ffe4 00000000 ntdll!_RtlUserThreadStart 
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2024-05-28 09:22:41.677000+00:00
+邮件内容:
+许先生，您好
+根据昨天电话沟通的结果，之前邮件是关于潘先生2台机器app崩溃问题的分析
+如果有任何反馈，可以回复此邮件。
+--------------
+
+====第6封邮件====
+
+发件人：Liu Jian
+发送时间：2024-06-06 10:19:00.328000+00:00
+邮件内容:
+经与工行沟通，此案例已解决，可以关闭
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2024-06-11 10:47:51.419000+00:00
+邮件内容:
+许先生，您好
+很高兴与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+反馈V2020-L版本系统调用外设（打印机、高拍仪）失败问题，用户称外设驱动已安装，涉及2台电脑  
+案例进展：
+提供案例分析，D:\ICBC\CsspDeviceServer\libstdc++-6.dll触发异常引入三方供应商查看，经确认可以归档案例。
+--------------

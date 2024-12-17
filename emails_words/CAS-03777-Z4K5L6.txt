@@ -1,0 +1,133 @@
+邮件主题：回复: [案例号: CAS-03777-Z4K5L6 ] % | P3 | Dell产线 | V2020-L在设备准备阶段或者OOBE阶段低概率Hang机 % 初次响应 CMIT:0001633
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2021-02-07 13:52:28.021000+00:00
+邮件内容:
+Hi Xu Da,
+目前根据mini dump看到的信息如下，的确如用户描述一样，怀疑与显卡相关驱动有关。建议抓取Full dump进行进一步问题排查。
+IRQL_NOT_LESS_OR_EQUAL (a)
+An attempt was made to access a pageable (or completely invalid) address at an
+interrupt request level (IRQL) that is too high.  This is usually
+caused by drivers using improper addresses.
+If a kernel debugger is available get the stack backtrace.
+Arguments:
+Arg1: ffff80853dc191d1, memory referenced --- 无法被访问的虚拟内存地址
+Arg2: 0000000000000002, IRQL --- 发生错误时的中断请求等级，2代表DISPATCH_LEVEL
+此值通常由如下原因引发:
+*  调用一个在DISPATCH_LEVEL时无法在DISPATCH_LEVEL处调用的函数
+*  忘记释放自旋锁。
+*  当代码必须为不可分页时将其标记为可分页（例如，因为该代码获得了自旋锁或在延迟的过程调用中被调用）。
+Arg3: 0000000000000000, bitfield : --- 触发错误时的操作，读
+       bit 0 : value 0 = read operation, 1 = write operation
+       bit 3 : value 0 = not an execute operation, 1 = execute operation (only on chips which support this level of status)
+Arg4: fffff80426729df4, address which referenced memory --- 错误发生时的指令指针地址
+*  此bugcheck code通常是由于内核模式设备驱动引用不正确的地址造成的。
+*  此bug check表明在中断请求等级（IRQL）升高时，尝试访问无效的地址。这可能是内存指针错误或设备驱动代码的可分页性问题。
+==================
+Process                    Thread           CID       UserTime KernelTime ContextSwitches Wait Reason Time State
+dwm.exe (ffff808530e860c0) ffff8085315020c0 4a0.534         0s         0s           11939 UserRequest   0s Running on CPU 5
+Irp List:
+    IRP              File
+    ffff808535c269a0 
+    ffff8085313999a0 
+    ffff80853133b9a0 
+ # Child-SP         Return           Call Site                                    Info                         Source
+ 0 fffffd86d6e1ed68 fffff8042686b8e9 nt!KeBugCheckEx+0x0                                                       open start of function
+ 1 fffffd86d6e1ed70 fffff80426867cd4 nt!KiBugCheckDispatch+0x69                                                open start of function
+ 2 fffffd86d6e1eeb0 fffff80426729df4 nt!KiPageFault+0x454                         TrapFrame @ fffffd86d6e1eeb0 open start of function
+ 3 fffffd86d6e1f040 fffff804267299a7 nt!KiExitDispatcher+0x94                                                  open start of function
+ 4 fffffd86d6e1f0b0 fffffcb6414b1281 nt!KeSetEvent+0xb7                                                        open start of function
+ 5 fffffd86d6e1f140 fffffcb64148bcf7 win32kfull!SetWakeBit+0x91                                                open start of function
+ 6 fffffd86d6e1f170 fffffcb64148b820 win32kfull!WakeSomeone+0xbb                                               open start of function
+ 7 fffffd86d6e1f1b0 fffffcb6417c385b win32kfull!EditionWakeThreadForInput+0x20                                 open start of function
+ 8 fffffd86d6e1f1e0 fffffcb6417c0cf8 win32kbase!ApiSetEditionWakeThreadForInput+0x4b                           open start of function
+ 9 fffffd86d6e1f220 fffffcb6417baf1e win32kbase!CMouseProcessor::DetectAndApplyMouseMovePostStrategy+0x118     open start of function
+ a fffffd86d6e1f3e0 fffffcb6417ba616 win32kbase!CMouseProcessor::ProcessMouseMove+0x206                        open start of function
+ b fffffd86d6e1f5f0 fffffcb6417b9a0f win32kbase!CMouseProcessor::ComputeAndDeliverMouseMove+0x46               open start of function
+ c fffffd86d6e1f630 fffffcb6418231c5 win32kbase!CMouseProcessor::ProcessMouseEvent+0x21b                       open start of function
+ d fffffd86d6e1f800 fffffcb6414d4c98 win32kbase!ProcessMouseEvent+0x25                                         open start of function
+ e fffffd86d6e1f830 fffffcb6417bfc5a win32kfull!EditionHandleMitSignal+0x68                                    open start of function
+ f fffffd86d6e1f8b0 fffffcb6417bfbf2 win32kbase!ApiSetEditionHandleMitSignal+0x46                              open start of function
+10 fffffd86d6e1f8f0 fffffcb6417bcc0f win32kbase!IOCPDispatcher::HandleThreadDispatcherSignal+0x66              open start of function
+11 fffffd86d6e1f930 fffffcb6417bcbc3 win32kbase!IOCPDispatcher::Dispatch+0x1f                                  open start of function
+12 fffffd86d6e1f990 fffffcb6417bb975 win32kbase!UserDispatchMITCompletion+0x3f                                 open start of function
+13 fffffd86d6e1f9d0 fffff8042686b305 win32kbase!NtMITDispatchCompletion+0x85                                   open start of function
+14 fffffd86d6e1fa00 00007ffd20f27644 nt!KiSystemServiceCopyEnd+0x25                                            open start of function
+15 00000033a8d7f178 0000000000000000 0x7ffd20f27644  
+This thread is crashing
+============================
+同时，发生崩溃的是dwm.exe进程里面的ffff8085315020c0线程，等待原因是：UserRequest
+关于DWM - Desktop Window Manager桌面窗口管理器
+DWM执行桌面合成。通过桌面合成，DWM可以在桌面上实现视觉效果以及各种功能，例如玻璃窗框，3-D窗口过渡动画，Windows Flip和Windows Flip3D以及高分辨率支持。
+相关链接：https://docs.microsoft.com/en-us/windows/win32/dwm/dwm-overview
+建议操作：
+一、按照如下方式配置Full Dump并尝试抓取：
+1）进入OOBE阶段后，同时按下Shift+F10调出命令提示符；
+2）可以使用如下命令，从网盘下载脚本文件（也可以使用其他方法：例如U盘）
+3）运行脚本文件，按下任意键重启计算机；
+4）设置完毕，如果发生Hang问题，可以尝试：在当问题发生时迅速按下键盘左shift+右shift按住不放，连按两次波浪号键“~”（Esc下方），触发蓝屏；
+5）等待蓝屏信息收集完毕，设备自动重启进入系统后，收集Dump 文件C:\Windows\Memory.DMP。
+二、安装最新的CMGE更新，并确认问题是否还复现
+--------------
+
+====第2封邮件====
+
+发件人：Xu Da
+发送时间：2021-02-07 15:42:42.718000+00:00
+邮件内容:
+Jiawei，
+感谢支持及快速响应，
+由于临近春节，不知道客户方面具体什么时候可以回复，所以暂时close此问题，如客户有进一步需求再做讨论。谢谢。
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2021-02-08 09:51:30.146000+00:00
+邮件内容:
+徐先生 您好!
+很高兴收到您的邮件反馈，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。 
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+系统版本：CMGE V2020-L
+问题描述：
+Hang机问题，V2020-L在设备准备阶段或者OOBE阶段低概率Hang机，即使能登录到桌面，激活后进入audit mode，也会出现低概率Hang机现象
+问题复现步骤：
+1.  安装V2020-L
+2.  在Win PE中使用DISM命令提取驱动
+3.  重启系统，部署驱动
+客户问题是否可以固定复现：可以
+OEM其他机型是否可以复现：目前在Latitude 3510上发现
+CMIT标准环境是否可以复现：可以
+目前客户需求：
+协助分析问题，Dump文件参考附件
+其它信息：
+Phenomenon:
+The system hang up at break seal phase and login to system in audit mode.
+Sometimes it hangs at preparing devices phase. Sometimes, it hangs at OOBE phase. Even one system can log in OS firstly, when it enters into audit mode after activation, it still hangs.
+The reproduce steps are:
+•   Install Windows CMGE OS, either by FI or clean installation;
+•   Extract drivers by DISM command in Win PE;
+•   Reboot system to deploy drivers.
+Troubleshooting:
+•   By the dump log, it may be related to Intel UHD Graphics driver. By removing this driver from driver package, the issue cannot be reproduced. 
+•   If install all drivers including UHD Graphics driver by Device Manager instead of DISM, the issue cannot be reproduced. But then, when run sysprep.exe to package the drivers, it hangs.
+•   The issue can also be reproduced by Windows 1809 and 2004.
+•   The issue can be reproduced by the latest BIOS 1.5.2, but not by previous BIOS.
+•   It’s an intermittent issue, about 5%~6% failure rate.
+建议操作：
+一、按照如下方式配置Full Dump并尝试抓取：
+1）进入OOBE阶段后，同时按下Shift+F10调出命令提示符；
+2）可以使用如下命令，从网盘下载脚本文件（也可以使用其他方法：例如U盘）
+3）运行脚本文件，按下任意键重启计算机；
+4）设置完毕，如果发生Hang问题，可以尝试：在当问题发生时迅速按下键盘左shift+右shift按住不放，连按两次波浪号键“~”（Esc下方），触发蓝屏；
+5）等待蓝屏信息收集完毕，设备自动重启进入系统后，收集Dump 文件C:\Windows\Memory.DMP。
+二、安装最新的CMGE更新，并确认问题是否还复现
+--------------

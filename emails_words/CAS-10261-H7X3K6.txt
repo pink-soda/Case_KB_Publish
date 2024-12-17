@@ -1,0 +1,57 @@
+邮件主题：回复: [案例号: CAS-10261-H7X3K6 ] % 售前-兴业银行V2020-L升级到V2022-L黑屏 % 初次响应 CMIT:0001284
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-11-13 15:35:27.752000+00:00
+邮件内容:
+陈先生，您好：
+如刚才电话沟通，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+兴业银行反馈，联想M79Z在从V2020 升级到V2022L的 升级过程出现黑屏并回滚的现象。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+*  CMGELogCollector：
+解压附件后运行CMGELogCollector.exe，如下图勾选，额外勾选“升级日志”，点击“收集”，运行几分钟后会在桌面生成日志压缩包。
+日志上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。
+用户名：xyyhchen
+密码：xyyhchen
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-11-15 14:44:56.097000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，经您上传日志的分析，目前升级失败的具体原因为0xC1900101 - 0x30018，发生在first boot的Pre SysPrep阶段。从报错来看，它代表的意思是在系统升级过程中由于无法响应设备驱动厂商的驱动升级所以整个升级过程中断。具体可参考以下链接：https://learn.microsoft.com/zh-cn/troubleshoot/windows-client/deployment/windows-10-upgrade-resolution-procedures
+进一步查看setupapi.dev.log，一些可能有问题的驱动程序如下：
+1.        PCI\VEN_6766&DEV_3D02&SUBSYS_3D026766&REV_00\4&2B8B638F&0&0020 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493].
+2.        HDAUDIO\FUNC_01&VEN_10EC&DEV_0897&SUBSYS_17AA3157&REV_1004\4&36AA5A73&0&0001 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493]
+3.        PCI\VEN_10EC&DEV_8168&SUBSYS_315717AA&REV_15\01000000684CE00000 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493].
+4.        Query-removal during install of 'ACPI\PNP0B00\4&23337A2A&0' was vetoed by 'ACPI\PNP0B00\4&23337a2a&0' (veto type 6: PNP_VetoDevice).
+上面标黄的部分就是有问题的几个dev驱动，我看了下具体报错，基本上是阻止卸载进而后续导致冲突引发（错误代码0x17）。分别涉及到PCI,ACPI和HDAUDIO，主要集中在系统设备，声音以及PNP设备上，您可以打开设备管理器，找到怀疑的设备，点击属性，查看详细信息-设备实例路径查看，
+当找到问题设备后，右键选择卸载设备：
+完成上述操作后，重新进行系统升级查看是否可以升级成功。如过程中有任何问题，可随时与我联系，谢谢。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-11-16 15:08:15.581000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，经您的确认，当前问题在卸载显卡驱动后可以正常系统升级成功，此case将做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-10261-H7X3K6
+问题描述：
+=================
+用户反馈：从V2020-L 升级到V2022-L 的升级过程中出现黑屏回滚，升级失败的问题
+问题分析：
+=================
+      经日志分析，升级失败问题发生在first boot的Pre SysPrep阶段，与设备厂商驱动有关，建议用户检查设备驱动的连接情况。具体可参照之前邮件内容。
+案例总结：
+=================
+经用户确认，当前问题在卸载显卡驱动后可以正常系统升级成功。以上，问题已解决。经用户同意，该case将做关闭处理，如有其他问题，可随时联系我们，谢谢。

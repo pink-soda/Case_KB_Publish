@@ -1,0 +1,213 @@
+邮件主题：回复: [案例号: CAS-03450-L1Z0R0 ] % |普通事件|联想|用户打印机无法批量打印文档 % 初次响应 CMIT:0001464
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-10 10:40:32.675000+00:00
+邮件内容:
+陈先生, 您好!
+问题定义: 使用神州网信系统，直连打印机，打印测试页和文档，当只打印一张时都是正常的，当打印两张及以上时系统就会报错“打印出错”，替换打印机无效；用户更换系统为win10专业版或其他版本都正常，换回神州网信时问题复现。用户重置了系统无效。
+问题范围: 协助您分析并处理上述问题。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+问题分析：
+我在本地环境测试直连打印机可以连续打印，没有复现类似问题。并且之前没有客户上报相似的案例，所以针对此问题还需进一步收集数据进行问题定位。
+如下日志收集可以从驱动、打印机设置、打印服务、日志报错和系统行为方面进行排查。
+日志收集：
+一、计算机硬件品牌、具体型号。有问题的打印机品牌、具体型号。
+二、驱动程序版本、打印机设置和服务截图信息
+1）在设备管理器，找到“打印机”，右键属性当前有问题的打印机设备。
+2）在“详细信息”找到“驱动程序版本”并截图反馈
+3）在控制面板-硬件和声音-设备和打印机，右键-打印机属性
+4）将“安全”“高级”截图反馈。
+5）打印多页文档复现问题，之后立刻同时按下Windows+R，运行services.msc，将Print Spooler属性的“常规”“登录”“回复”页面截图反馈。
+三、工具收集
+1）首先，再次离线升级，复现问题现象（报错出现） 
+2）下载附件zip文件并解压到本地磁盘，双击运行exe文件，同意后，按照默认设置勾选，点击收集。 
+3）收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并定为压缩文件。 
+4）将压缩文件上传。 
+数据上传： 
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：FSSNHQRMFY
+密码：FSSNHQRMFY
+--------------
+服务电话： 400-818-0055
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-14 09:29:02.767000+00:00
+邮件内容:
+陈先生, 您好!
+还未收到您的日志反馈。如果有问题或需要协助请回复此邮件，我将与您取得沟通。
+--------------
+服务电话： 400-818-0055
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-15 10:11:02.633000+00:00
+邮件内容:
+陈先生，您好
+我检索了很多此问题的材料，怀疑与打印机设置有关系
+1）您可以尝试在打印机属性中，找到下面的选项并将其禁用。查看打印是否正常
+2）在打印设置中，将“调整”改为1,1,1 2,2,2 3,3,3模式，查看打印是否正常
+--------------
+服务电话： 400-818-0055
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-17 13:51:55.697000+00:00
+邮件内容:
+陈先生，您好
+是否尝试上述方法？还未收到您反馈的日志文件。
+--------------
+服务电话： 400-818-0055
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-18 10:21:22.423000+00:00
+邮件内容:
+陈先生，您好
+案例分析：
+我在网上搜索了相关材料，很多与您现象一样的问题最后的解决方案都是关闭Mopier Mode(多份原件打印模式)
+如果没有合适的内部内存空间，将会只有1份发送的备份被打印出来
+什么是mopier mode?
+Mopier是合成形式的单词，由来是“multiple original copy“。
+*  在启用模式下，打印机会收到一份文档的拷贝，并且打印多份对照拷贝。
+*  在禁用模式下，必须发送多份所打印文档的拷贝给打印机，以便打印多份对照拷贝。
+使用mopier模式需要设备必须储存整个打印作业（这可能比打印机的独立内存大很多）。这同样意味着设备必须拥有一个内部硬盘（尽管一些拥有很大内存型号的打印机可以通过保留一部分内存作为RAM磁盘的方式多份拷贝相对较小的文档）。所以对于大多数打印机（没有硬盘）这个选项是不相关的，应该通过禁用mopier mode设置的方式让打印机驱动知道这个结果（手动或者通过“自动发现“机制）。
+建议操作：
+由于神州网信政府版对于直连打印机没有做出任何限制，所以在系统层面能够提供的帮助有限，不过您可以尝试按照如下建议进行操作：
+1）完全卸载当前打印机的驱动程序，到设备官网下载、安装最新的、支持Windows 10 x64版本的驱动程序；
+2）打印机属性 – 设备设置中，找到“多份元件打印模式“并将其禁用。
+3）确认高级 – 使用后台打印，以便程序更快地结束打印选项按照如下选择
+--------------
+服务电话： 400-818-0055
+
+====第6封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-18 15:35:15.567000+00:00
+邮件内容:
+陈先生，您好
+了解到您所使用的是Word 2007版本，可能如下方案对此问题会有帮助。
+我简单翻译了一下：
+问题现象：你无法打印多份Microsoft Office 2007文档。如果你在打印对话框中输入了一个大于1的数值，则只有1份文件被打印。此问题发生在使用如下打印机的情况下：
+*         Brother 4500 ML Laser
+*         Brother HL 960
+*         Brother HL630
+*         Brother HL640
+*         Canon BJC-5100
+*         Epson Stylus 600 Inkjet Color
+*         Hewlett-Packard DeskJet 1200C
+*         Hewlett-Packard 1600
+*         Hewlett-Packard DeskJet 550C, 560C, 660C, 693C, 694C, 855C, or 870CSE when you are not using the latest printer driver
+*         Hewlett-Packard LaserJet 5M, Standard
+*         Hewlett-Packard LaserJet 5P when you are using the HPPCL5MS printer driver version G.1.20
+*         Hewlett-Packard LaserJet 5Si
+*         Hewlett-Packard LaserJet 6MP
+*         Hewlett-Packard OfficeJet SERIES
+*         NEC SilentWriter II model 90 PostScript when you are using the Microsoft Windows 95 printer driver
+问题原因：如果下列之一条件成立，此问题可能会发生：
+*         你正在使用Windows 3.1或更早版本Windows的打印机驱动
+*         注册表包含Word 2007设置的部分受到损坏
+*         你所使用的打印机不支持多个备份打印作业
+临时解决方案：
+Method 1: 禁用后台打印
+1.    Click the Microsoft Office Button, and then click Word Options.
+2.    Click Advanced. Then, under Print, click to clear the Print in backgroundcheck box.
+3.    Click OK.
+Method 2: 更改打印机驱动spool设置
+1.    Click Start, and then click Printers and Faxes.
+2.    Right-click the printer icon for the printer that you are using, and then click Properties.
+3.    Click the Advancedtab, and then click to select Print directly to the printer.
+4.    Click OK.
+Method 3: 将图形模式从vector更改为raster
+Note The following steps may not apply to every printer. For steps that are specific to the printer that you are using, contact the printer manufacturer.
+1.    Click Start, and then click Printers and Faxes.
+2.    Right-click the printer icon for the printer that you are using, and then click Properties.
+3.    Click the Graphicstab.
+4.    Under Graphics mode, click Use Raster Graphics, click Apply, and then click OK.
+Method 4: 为文件添加一个额外页
+Sometimes you can print multiple copies by adding a blank page to the end of the document. To do this in Word 2007, follow these steps:
+1.    Press CTRL+END to move to the end of the document.
+2.    On the Inserttab, click Page Break in the Pages group.
+Method 5: 升级三方打印机驱动程序
+如果你正在使用三方打印机驱动程序，联系打印机驱动供应商看看是否存在可用的打印机驱动更新。如果存在打印机驱动更新，升级至这个版本的驱动程序。
+Method 6: 配置特定于打印机的设置
+Use one of the following workarounds as appropriate.
+Hewlett-Packard DeskJet 870CSE
+1.    Click Start, and then click Printers and Faxes.
+2.    Right-click the printer icon for Hewlett-Packard DeskJet 870CSE, and then click Properties.
+3.    Click the Papertab.
+4.    Click Ordered Printing.
+Note When you enable Ordered printing, you can print the pages from back to front.
+5.    Click OKtwo times.
+Epson Stylus 600 InkJet Color
+1.    Click the Microsoft Office Button, and then click Word Options.
+2.    Click Advanced.
+3.    Under Print, click Auto Sheetfeeder in the Default Traylist.
+4.    Click OK.
+Hewlett-Packard LaserJet 5P
+If you are using a Hewlett-Packard LaserJet 5P printer that uses the Hppcl5ms.drv printer driver, follow these steps:
+1.    Click Start, and then click Printers and Faxes.
+2.    Right-click the printer icon for the Hewlett-Packard LaserJet 5P printer, and then click Properties.
+3.    Click the Print Qualitytab.
+4.    Under Graphics Mode, click Raster.
+5.    Click OKtwo times.
+参考链接：https://support.microsoft.com/zh-cn/help/918790/you-cannot-print-multiple-copies-of-a-word-2007-document
+--------------
+服务电话： 400-818-0055
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-22 10:06:08.764000+00:00
+邮件内容:
+陈先生，您好，
+鉴于刚刚的电话沟通结果，您可以采取如下方式进行问题排查：
+1）纯净版CMGE操作系统，只安装1-最新的打印机驱动（支持Windows 10 64位），2-Office 
+2）多份打印确认是否打印正常
+3）逐一安装其他三方软件、插件和驱动程序
+4）确认是否可以正常多份打印
+根据案例处理规则我将持续跟踪案例，有任何进展您可以回复此邮件。
+--------------
+服务电话： 400-818-0055
+
+====第8封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-24 13:07:29.501000+00:00
+邮件内容:
+陈先生，您好，
+如果涉及管理员权限问题，首先确认客户是否在管理员组内，如果确认可以尝试如下操作：
+1）同时按下Windows+R键，运行gpedit.msc
+2）导航至：计算机配置/windows设置/安全设置/本地策略/安全选项：“用户账户控制：以管理员批准模式运行所有管理员”
+3）将此设置更改为“已禁用”。
+4）重启计算机生效。
+同时建议您按照之前2封邮件的操作指导进行设置，尝试是否可以解决此问题。
+--------------
+服务电话： 400-818-0055
+
+====第9封邮件====
+
+发件人：Jia Wei
+发送时间：2020-12-31 09:49:26.592000+00:00
+邮件内容:
+陈先生, 您好!
+很高兴与您沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。 
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+使用神州网信系统，直连打印机，打印测试页和文档，当只打印一份时都是正常的，当打印两份及以上时系统就会报错“打印出错”，替换打印机无效；用户更换系统为win10专业版或其他版本都正常，换回神州网信时问题复现。用户重置了系统无效。
+测试如果以管理员身份运行word可以正常打印，但打开之前word文档失败。
+建议操作：
+1）同时按下Windows+R键，运行gpedit.msc
+2）导航至：计算机配置/windows设置/安全设置/本地策略/安全选项：“用户账户控制：以管理员批准模式运行所有管理员”
+3）将此设置更改为“已禁用”。
+4）重启计算机生效。
+测试使用如上方式成功解决此问题。
+--------------
+服务电话： 400-818-0055

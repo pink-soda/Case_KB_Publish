@@ -1,0 +1,128 @@
+邮件主题：回复: [案例号: CAS-05641-N3N3G3 ] % TAM-中再保险蓝屏问题分析 % 初次响应 CMIT:0001355
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2022-01-29 10:36:36.140000+00:00
+邮件内容:
+杜先生，您好
+很高兴与您电话沟通。
+问题定义: 
+中再保险有一台设备最近蓝屏2次了，重启应该可以恢复。希望分析问题原因。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+案例分析：
+从Dump文件Bugcheck看，触发问题的原因是引用了无效的系统内存，操作的驱动是dxgmms2.sys。
+建议操作：
+由于此文件是DirectX Graphics相关驱动，建议您查看其他同型号、无蓝屏问题计算机的显卡驱动版本，对比当前问题机器版本是否有区别，并安装稳定版本的驱动程序。如果安装后仍有蓝屏问题，请回复此邮件。
+具体方法如下：
+1） 右键点击开始按钮，选择“设备管理器”
+2） 查看“显示适配器” – 显卡 – “驱动程序”，查看“驱动程序版本”（注意小版本号）
+如果版本不一样，建议将现有问题机器的显卡驱动卸载并安装稳定版本的驱动。
+Dump分析：
+Bugcheck details
+============================================
+PAGE_FAULT_IN_NONPAGED_AREA (50)
+Invalid system memory was referenced.  This cannot be protected by try-except.
+Typically the address is just plain bad or it is pointing at freed memory.
+Arguments:
+Arg1: ffff860f70ac4000, memory referenced.
+Arg2: 0000000000000000, value 0 = read operation, 1 = write operation.
+Arg3: fffff80358c3910e, If non-zero, the instruction address which referenced the bad memory
+   address.
+Arg4: 0000000000000002, (reserved)
+2: kd> db ffff860f70ac4000
+ffff860f`70ac4000  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4010  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4020  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4030  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4040  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4050  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4060  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+ffff860f`70ac4070  ?? ?? ?? ?? ?? ?? ?? ??-?? ?? ?? ?? ?? ?? ?? ??  ????????????????
+2: kd> !address fffff80358c3910e
+Mapping user range ...
+Mapping system range ...
+Mapping non addressable range ...
+Mapping page tables...
+Mapping hyperspace...
+Mapping HAL reserved range...
+Mapping User Probe Area...
+Mapping system shared page...
+Mapping system cache working set...
+Mapping loader mappings...
+Mapping system PTEs...
+Mapping system paged pool...
+Mapping session space...
+Mapping dynamic system space...
+Mapping PFN database...
+Mapping non paged pool...
+Mapping VAD regions...
+Mapping module regions...
+Mapping process, thread, and stack regions...
+Mapping system cache regions...
+Usage:                  Module
+Base Address:           fffff803`58ba0000
+End Address:            fffff803`58c77000
+Region Size:            00000000`000d7000
+VA Type:                BootLoaded
+Module name:            dxgmms2.sys
+Module path:            [\SystemRoot\System32\drivers\dxgmms2.sys]
+2: kd> lmvm dxgmms2
+Browse full module list
+start             end                 module name
+fffff803`58ba0000 fffff803`58c77000   dxgmms2  # (pdb symbols)          c:\symbols\dxgmms2.pdb\727FFB8F190404CA5F85387D7857B69A1\dxgmms2.pdb
+    Loaded symbol image file: dxgmms2.sys
+    Mapped memory image file: c:\symbols\dxgmms2.sys\673DF6B9d7000\dxgmms2.sys
+    Image path: \SystemRoot\System32\drivers\dxgmms2.sys
+    Image name: dxgmms2.sys
+    Browse all global symbols  functions  data
+    Image was built with /Brepro flag.
+    Timestamp:        673DF6B9 (This is a reproducible build file hash, not a timestamp)
+    CheckSum:         000D81AD
+    ImageSize:        000D7000
+    File version:     10.0.17763.2237
+    Product version:  10.0.17763.2237
+    File flags:       0 (Mask 3F)
+    File OS:          40004 NT Win32
+    File type:        3.7 Driver
+    File date:        00000000.00000000
+    Translations:     0409.04b0
+    Information from resource tables:
+        CompanyName:      Microsoft Corporation
+        ProductName:      Microsoft® Windows® Operating System
+        InternalName:     dxgmms2.sys
+       OriginalFilename: dxgmms2.sys
+        ProductVersion:   10.0.17763.2237
+        FileVersion:      10.0.17763.2237 (WinBuild.160101.0800)
+        FileDescription:  DirectX Graphics MMS
+        LegalCopyright:   © Microsoft Corporation. All rights reserved.
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2022-02-08 16:39:51.528000+00:00
+邮件内容:
+段先生，您好
+来信是想咨询当前案件进展状况。
+如果针对当前案件还有需要我们帮助的地方, 欢迎随时联系我们。
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2022-02-11 10:32:50.578000+00:00
+邮件内容:
+杜先生, 您好!
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+中再保险有一台设备最近蓝屏2次了，重启应该可以恢复。希望分析问题原因。
+案例进展：
+用户表示目前蓝屏问题不再复现，期间更新过BIOS版本。
+从Dump文件Bugcheck看，触发问题的原因是引用了无效的系统内存，操作的驱动是dxgmms2.sys，DirectX Graphics相关驱动，怀疑与显卡驱动相关。
+--------------

@@ -1,0 +1,52 @@
+邮件主题：Re: 回复: [案例号: CAS-07396-S6M5C6 ] % |普通事件|Centerm|系统图片默认打开方式设置为Windows图片查看器问题 % 初次响应 CMIT:0001645
+
+====第1封邮件====
+
+发件人：panjiaming@centerm.com
+发送时间：2022-10-25 20:13:43.332000+00:00
+邮件内容:
+您好！    
+            这个也太复杂了。。
+            主要是我们：
+            1.我们不会以iso形式出货，如果只能这样，等于说我们要从0开始重新做版本。
+            2.这个方案貌似没法应对 当前已经在用的镜像，它的默认应用为画图，这些要如何修改过来。
+是否还有更加符合我们使用场景的方法，感谢~
+________________________________
+ <http://www.centerm.com/foxmail/ctlogomin.png>   ▏聚力金融，智领未来 
+潘家铭 ▏福建升腾资讯有限公司
+ <http://www.centerm.com/foxmail/ctznzdewm.jpg> 
+智能终端事业部   ▏ 软件工程师
+ <http://www.centerm.com/foxmail/phone.png>  18059769998
+ <http://www.centerm.com/foxmail/mail.png>  panjiaming@centerm.com
+ <http://www.centerm.com/foxmail/address.png>  福州市高新区新港大道33号星网锐捷科技园A楼19F
+本邮件及其附件含有升腾公司的保密信息，仅限于发送给上面地址中列出的个人或群组。禁止其他人以任何形式使用（包括但不限于全部或部分地泄露、复制或散发）本邮件中的信息。如果您错收了本邮件，请您尽快电话或邮件通知
+====第2封邮件====
+
+发件人：panjiaming@centerm.com
+发送时间：2022-10-31 15:33:37.559000+00:00
+邮件内容:
+这个需不需要先跑我那个 开启 Windows照片查看器的注册表？
+________________________________
+ <http://www.centerm.com/foxmail/ctlogomin.png>   ▏聚力金融，智领未来 
+潘家铭 ▏福建升腾资讯有限公司
+ <http://www.centerm.com/foxmail/ctznzdewm.jpg> 
+智能终端软件部   ▏ 软件工程师
+ <http://www.centerm.com/foxmail/phone.png>  18059769998
+ <http://www.centerm.com/foxmail/mail.png>  panjiaming@centerm.com
+ <http://www.centerm.com/foxmail/address.png>  福州市金山大道618号橘园洲星网锐捷科技园21号楼3层
+本邮件及其附件含有升腾公司的保密信息，仅限于发送给上面地址中列出的个人或群组。禁止其他人以任何形式使用（包括但不限于全部或部分地泄露、复制或散发）本邮件中的信息。如果您错收了本邮件，请您尽快电话或邮件通知
+====第3封邮件====
+
+发件人：panjiaming@centerm.com
+发送时间：2022-11-01 13:59:36.761000+00:00
+邮件内容:
+这个验证确实可行，感谢~
+________________________________
+ <http://www.centerm.com/foxmail/ctlogomin.png>   ▏聚力金融，智领未来 
+潘家铭 ▏福建升腾资讯有限公司
+ <http://www.centerm.com/foxmail/ctznzdewm.jpg> 
+智能终端软件部   ▏ 软件工程师
+ <http://www.centerm.com/foxmail/phone.png>  18059769998
+ <http://www.centerm.com/foxmail/mail.png>  panjiaming@centerm.com
+ <http://www.centerm.com/foxmail/address.png>  福州市金山大道618号橘园洲星网锐捷科技园21号楼3层
+本邮件及其附件含有升腾公司的保密信息，仅限于发送给上面地址中列出的个人或群组。禁止其他人以任何形式使用（包括但不限于全部或部分地泄露、复制或散发）本邮件中的信息。如果您错收了本邮件，请您尽快电话或邮件通知

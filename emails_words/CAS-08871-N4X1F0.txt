@@ -1,0 +1,69 @@
+邮件主题：回复: [案例号: CAS-08871-N4X1F0 ] % |P2|ICBC|分行周雨霄老师补丁安装失败问题 % 初次响应 CMIT:0001073
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-08 11:07:41.863000+00:00
+邮件内容:
+许先生，您好：
+       如刚才沟通，谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈分行周雨霄老师，补丁安装失败，请协助分析问题原因。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+根据您上传的日志信息，用户此次更新失败为下载补丁过程中校验补丁文件完整性失败导致，请用户删除本地C:\windows\SoftwareDistribution\Download下的缓存文件后，重启电脑再次尝试更新。
+以下为部分日志内容，供参考：
+2023/05/06 14:05:21.6651960 4952  21156 WebServices     *FAILED* [80240439] Web service call
+2023/05/06 14:05:21.6651965 4952  21156 WebServices     Current service auth scheme=0.
+2023/05/06 14:05:21.6651970 4952  21156 WebServices     Current Proxy auth scheme=0.
+2023/05/06 14:05:21.6654129 4952  21156 WebServices     *FAILED* [80240439] Failed in NwsCallWithRetries( LGetAuthorizationCookie"
+2023/05/06 14:05:21.6654186 4952  21156 ProtocolTalker  *FAILED* [80240439] Method failed [CAuthorizationCookieWrapper::InitializeSimpleTargetingCookie:5823]
+2023/05/06 14:05:21.6654433 4952  21156 IdleTimer       WU operation (CAuthorizationCookieWrapper::InitializeSimpleTargetingCookie, operation # 305) stopped; does use network; is at background priority
+2023/05/06 14:05:21.6656602 4952  21156 ProtocolTalker  *FAILED* [80240439] Failed to initialize Simple Targeting Cookie
+2023/05/06 14:05:21.6656633 4952  21156 ProtocolTalker  *FAILED* [80240439] PopulateAuthCookies failed
+2023/05/06 14:05:21.6656643 4952  21156 ProtocolTalker  *FAILED* [80240439] RefreshCookie failed
+2023/05/06 14:05:21.6656659 4952  21156 ProtocolTalker  *FAILED* [80240439] RefreshPTState failed
+2023/05/06 14:05:21.6656674 4952  21156 ProtocolTalker  SyncUpdates round trips: 0
+2023/05/06 14:05:21.6656684 4952  21156 ProtocolTalker  *FAILED* [80240439] Sync of Updates
+2023/05/06 14:05:21.6656720 4952  21156 ProtocolTalker  *FAILED* [80240439] SyncServerUpdatesInternal failed
+2023/05/06 14:05:21.6672980 4952  21156 Agent           *FAILED* [80240439] Synchronize
+2023/05/06 14:05:21.6733083 4952  21156 Agent           * END * Finding updates CallerId = <<PROCESS>>: wscript.exe, Id = 12, Exit code = 0x80240439 (cV = eGMBdrs7qkeiwRTr.1.0.0.2)
+2023/05/06 14:05:21.6786987 4952  21156 IdleTimer       WU operation (CSearchCall::Init ID 12, operation # 304) stopped; does use network; is not at background priority
+2023/05/06 14:05:21.6918570 2684  15808 ComApi          *RESUMED*   Search ClientId = <<PROCESS>>: wscript.exe, ServiceId = 3DA21691-E39D-4DA6-8A4B-B43877BCB1B7 (cV = eGMBdrs7qkeiwRTr.1.0.0)
+2023/05/06 14:05:21.7188475 2684  15808 ComApi          Exit code = 0x00000000, Result code = 0x80240439 (cV = eGMBdrs7qkeiwRTr.1.0.0)
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-06-01 11:03:01.649000+00:00
+邮件内容:
+许先生，您好：
+       您上传的关于分行周雨霄老师的补丁安装失败日志我已查看并分析，结果如下：
+1， 当前该电脑的系统补丁版本过低，系统版本号为17763.2090，从安装补丁内容来看，最新补丁为KB5001634, 记录为21年3月份的补丁。
+2， 本次更新失败的报错为0x80240439，与之前一致，该报错可理解为WU接收的数据格式不合规，同样发生在从WU下载补丁阶段
+3， 结合用户当前的补丁状态，需要用户安装前置SSU，以完成当前累积更新安装的前提条件。
+下一步动作：
+1， 尝试安装21年8月的SSU-KB5005112,下载路径：https://support.cmgos.com/kb/5005112
+2， 之后尝试安装最新累积更新，如23年4月-KB5025229,下载路径： https://support.cmgos.com/kb/5025229
+3， 尝试从WSUS获取更新状态是否异常。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-06-07 10:32:33.167000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，经您的确认，终端已进行系统升级，此case将做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-08871-N4X1F0
+问题描述：
+=================
+用户反馈补丁安装失败，请协助分析问题原因。
+问题分析：
+=================
+经日志分析，用户未安装系统前置SSU，导致系统无法直接进行累积更新安装，建议用户先安装必要的前置补丁，目前该用户已进行系统升级操作。
+问题总结：
+=================
+以上，经用户同意，此case将做关闭处理，如有任何其他问题，可随时与我联系，谢谢。

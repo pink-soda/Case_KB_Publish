@@ -1,0 +1,64 @@
+邮件主题：回复: [案例号: CAS-10921-L5F2K2 ] % |P2|ICBC|工行V2022-L补丁KB5033372安装失败，报错0x8007000d（岳宏达） % 初次响应 CMIT:0001785
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-02-29 10:10:03.807000+00:00
+邮件内容:
+许先生，您好
+问题定义: 
+工行V2022-L补丁KB5033372安装失败，报错0x8007000d（岳宏达）
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+岳宏达机器：
+组件损坏
+amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3636_none_0e5b98f33ef76818\Snipping Tool.lnk
+amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3570_none_0e6af2b73eeb17bd\Snipping Tool.lnk
+建议操作：
+一、请按照以下操作先为以下目录添加administrators的完全控制权限才能删除、替换对应的目录。
+*   C:\Windows\WinSxS\amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3636_none_0e5b98f33ef76818
+*   C:\Windows\WinSxS\amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3570_none_0e6af2b73eeb17bd
+1)       下载如下链接的zip文件，在故障机上解压
+https://cduc.cmgos.com/download.php?id=1286&token=NjvBcwS1tCwh0jNh3Ay3gtB8I16d6RUH
+2)       将对应2个目录下的文件复制、替换到各自目录
+3)       再次验证补丁安装。
+4)       如果替换后安装累计更新依然报错，请再次使用日志收集工具收集对应的更新日志。
+日志分析：
+Event log:
+安装失败: Windows 安装下列更新失败，错误为 0x8024200B: Windows 安全更新程序 (KB5033372)。
+CBS log:
+2024-02-19 17:08:46, Error                 CSI    0000000e (F) Hydration failed with error NTSTATUS_FROM_WIN32(ERROR_INVALID_DATA) . Delta Type: Forward Delta , IntegrityState Valid: true , RetrievedChecksum: 2422642236 , ComputedChecksum: 2422642236[gle=0x80004005]
+2024-02-19 17:08:46, Error                 CSI    0000000f (F) Hydration failed for component Microsoft-Windows-SnippingTool-App, version 10.0.19041.3758, arch amd64, nonSxS, pkt {l:8 b:31bf3856ad364e35} on file Snipping Tool.lnk with NTSTATUS -1073283059. Matching Component = Microsoft-Windows-SnippingTool-App, version 10.0.19041.3636, arch amd64, nonSxS, pkt {l:8 b:31bf3856ad364e35}. FileHasForwardReverseDeltas  = false, GenerateReverseDelta = false[gle=0x80004005]
+2024-02-19 17:08:46, Error                 CSI    00000010 (F) Matching binary Snipping Tool.lnk missing for component Microsoft-Windows-SnippingTool-App, version 10.0.19041.3758, arch amd64, nonSxS, pkt {l:8 b:31bf3856ad364e35}[gle=0x80004005]
+…
+2024-02-20 08:42:37, Info                  CBS    =================================
+2024-02-20 08:42:37, Info                  CBS    Checking System Update Readiness.
+2024-02-20 08:42:37, Info                  CBS    
+2024-02-20 08:42:37, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3636_none_0e5b98f33ef76818\Snipping Tool.lnk
+2024-02-20 08:42:37, Info                  CBS    Repair failed: Missing replacement payload.
+2024-02-20 08:42:37, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-snippingtool-app_31bf3856ad364e35_10.0.19041.3570_none_0e6af2b73eeb17bd\Snipping Tool.lnk
+2024-02-20 08:42:37, Info                  CBS    Repair failed: Missing replacement payload.
+2024-02-20 08:42:37, Info                  CBS    
+2024-02-20 08:42:37, Info                  CBS    Summary:
+2024-02-20 08:42:37, Info                  CBS    Operation: Detect and Repair 
+2024-02-20 08:42:37, Info                  CBS    Operation result: 0x800f081f
+2024-02-20 08:42:37, Info                  CBS    Last Successful Step: Remove staged packages completes.
+2024-02-20 08:42:37, Info                  CBS    Total Detected Corruption: 2
+2024-02-20 08:42:37, Info                  CBS          CBS Manifest Corruption:    0
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-03-05 11:10:58.379000+00:00
+邮件内容:
+许先生，您好
+根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+工行V2022-L补丁KB5033372安装失败，报错0x8007000d（岳宏达）
+案例进展：
+找到替换的崩溃文件，替换后问题不再复现，归档案例。
+--------------

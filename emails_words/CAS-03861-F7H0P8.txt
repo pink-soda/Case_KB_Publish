@@ -1,0 +1,168 @@
+邮件主题：FW: [案例号: CAS-03861-F7H0P8 ] % |P2|ICBC|分行浏览器异常崩溃 % 问题定义 CMIT:0001796
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-08 10:35:20.635000+00:00
+邮件内容:
+李亚茹女士 您好, 
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+使用神州网信系统自带IE浏览器访问业务系统页面时刷新页面发生崩溃问题。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+案例处理信息收集：
+由于在电话中搜集案例处理所需基本信息时无法提供，请您协助完善附件中CMIT案例处理信息收集表-CAS-03861-F7H0P8.docx表格。表格可以随日志一并上传至日志上传系统。
+日志收集：
+请您在问题设备上，以管理员方式运行附件中CMGELogCollector.zip 日志收集工具并上传至日志上传系统。
+日志上传系统：
+登陆页面链接：https://cduc.cmgos.com/index.php
+用户：liyar
+密码：liyar
+注：如果您在登陆系统时遇到下图所示错误，请点击浏览器中后退按钮即可。无需关闭浏览器/页面。
+案例背景信息：
+如电话中沟通经您提及此问题已经由相关开发人员分析排除一段时间并初步判断此问题有可能由于浏览器内存使用较高导致。
+请您提供相关错误信息截屏，以及相关开发人员分析问题时所用日志和分析过程以便我们进行问题分析。
+--------------
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-08 16:17:16.491000+00:00
+邮件内容:
+李女士 您好，
+如之前电话中确认，上午发给您的邮件已经正确送达。如果你对问题定义/范围，日志收集或任何其它相关问题可以随时通过邮件或者拨打我们的服务支持电话与我取得联系。
+感谢您对我们服务的理解和支持。
+电子邮箱： baicx@cmgos.com
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-09 14:45:37.047000+00:00
+邮件内容:
+李女士 您好，
+循例向您了解日志收集情况，由于之前电话未能接听所以特发此邮件了解。如果您在日志收集过程中遇到问题或者有任何相关疑问请随时与我联系。
+电子邮箱： baicx@cmgos.com
+
+====第4封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-10 13:40:04.495000+00:00
+邮件内容:
+李女士 您好，
+您上传的日志已经收到。经过查看相关日志并未发现与问题现象相关报错。同时通过您提供的错误提示报错信息显示，导致问题的原因有可能是zegoliveroom-ie-plugin插件。
+此问题需要首先排除三方插件的可能影响后才能继续进一步分析。经过电话中沟通，建议您首先联系插件厂商排查此问题。
+另外在电话中提及，查看进程加载DLL的工具名称为procexp。查看DLL提供的export function工具名为dependency walker。您可以通过搜索工具名到对应官网下载。
+由于此问题造成原因涉及第三方插件，请您在排除三方插件后再行尝试问题重新。
+电子邮箱： baicx@cmgos.com
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-11 14:17:03.226000+00:00
+邮件内容:
+李女士，您好：
+如之前电话中沟通，此问题报错信息显示可能原因是由于第三方插件zegoliveroom-ie-plugin所导致。
+如果需要进一步排查是否IE浏览器异常则需要排除IE浏览器加载的第三方插件zegoliveroom-ie-plugin进行问题复现。如果问题仍然复现，我们可以分析问题产生的日志文件进行分析。
+明天我将与您再次确认以上情况，期间如果您有任何问题请随时与我联系。
+电子邮箱： baicx@cmgos.com
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-12 16:31:23.064000+00:00
+邮件内容:
+李女士，您好：
+如之前电话沟通，请您在打开“F12 开发人员工具”记录其中“网络，性能以及内存”记录再进行问题复现。待问题复现后将生成的日志上传至日志上传系统。
+同时，在实验环境中进行本地问题复现时并未发现有IE浏览器内存使用超出1GB时崩溃的问题。以下是相关截图供您参考。
+电子邮箱： baicx@cmgos.com
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-16 14:49:58.151000+00:00
+邮件内容:
+李女士，您好：
+关于IE问题的分析如下
+由于IE浏览器内TAB（标签页）的运行模式为32位，所以单个标签页可使用最大内存为2GB。
+Tab标签页进程运行模式：
+单个TAB使用内存接近2GB时（此测试报错临界点约为1.7GB）浏览器标签页会报错并重新载入页面。
+但是通过创建注册表可以强制IE浏览器标签页以64位方式运行。在注册表路径HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main下创建名为TabProcGrowth的DWORD键并确保键值为0
+（需重启IE浏览器）。如下图：
+经测试，当内存使用超出2GB后不会出现内存相关问题（实际使用达5.3GB）。截图如下：
+内存测试所用页面已随附件发送，请您进行注册表创建键值后进行测试。
+电子邮箱： baicx@cmgos.com
+
+====第8封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-17 14:09:07.379000+00:00
+邮件内容:
+李女士，您好：
+感谢您及时反馈确认之前提供给您的解决方案能够有效解决此问题。关于自动化此注册表所需的命令以及使用方法如下：
+请您验证后确认此案例是否可以关闭。
+REG ADD KeyName [/v ValueName | /ve] [/t Type] [/s Separator] [/d Data] [/f]
+        [/reg:32 | /reg:64]
+  KeyName  [\\Machine\]FullKey
+           Machine  Name of remote machine - omitting defaults to the
+                    current machine. Only HKLM and HKU are available on remote
+                    machines.
+           FullKey  ROOTKEY\SubKey
+           ROOTKEY  [ HKLM | HKCU | HKCR | HKU | HKCC ]
+           SubKey   The full name of a registry key under the selected ROOTKEY.
+  /v       The value name, under the selected Key, to add.
+  /ve      adds an empty value name (Default) for the key.
+  /t       RegKey data types
+           [ REG_SZ    | REG_MULTI_SZ | REG_EXPAND_SZ |
+             REG_DWORD | REG_QWORD    | REG_BINARY    | REG_NONE ]
+           If omitted, REG_SZ is assumed.
+  /s       Specify one character that you use as the separator in your data
+           string for REG_MULTI_SZ. If omitted, use "\0" as the separator.
+  /d       The data to assign to the registry ValueName being added.
+  /f       Force overwriting the existing registry entry without prompt.
+  /reg:32  Specifies the key should be accessed using the 32-bit registry view.
+  /reg:64  Specifies the key should be accessed using the 64-bit registry view.
+Examples:
+  REG ADD \\ABC\HKLM\Software\MyCo <file://ABC/HKLM/Software/MyCo> 
+    Adds a key HKLM\Software\MyCo on remote machine ABC
+  REG ADD HKLM\Software\MyCo /v Data /t REG_BINARY /d fe340ead
+    Adds a value (name: Data, type: REG_BINARY, data: fe340ead)
+  REG ADD HKLM\Software\MyCo /v MRU /t REG_MULTI_SZ /d fax\0mail
+    Adds a value (name: MRU, type: REG_MULTI_SZ, data: fax\0mail\0\0)
+  REG ADD HKLM\Software\MyCo /v Path /t REG_EXPAND_SZ /d ^%systemroot^%
+    Adds a value (name: Path, type: REG_EXPAND_SZ, data: %systemroot%)
+    Notice:  Use the caret symbol ( ^ ) inside the expand string
+电子邮箱： baicx@cmgos.com
+
+====第9封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-18 09:54:38.040000+00:00
+邮件内容:
+李女士，您好：
+关于此解决此问题所需创建注册表（路径，键值名称，键值类型以及键值）已经在之前邮件中提供。所需执行命令以及命令格式也已经提供给您。
+创建此注册表仅需执行以下命令便可完成：
+reg add "HKCU\Software\Microsoft\Internet Explorer\Main" /v TabProcGrowth /t REG_DWORD /d 0x0
+您可以将上述命令添加至BAT批处理文件内进行脚本化。
+电子邮箱： baicx@cmgos.com
+
+====第10封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-23 09:38:55.749000+00:00
+邮件内容:
+李女士，你好：
+之前电话中沟通经您确认此案例相关问题已解决，案例可以关闭。我们将关闭归档此案例。
+如果您在今后遇到其它与我们产品相关的问题请随时联系我们。
+感谢您对我们服务的支持与理解。
+电子邮箱： baicx@cmgos.com
+
+====第11封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2021-03-23 09:41:00.673000+00:00
+邮件内容:
+FYI
+电子邮箱： baicx@cmgos.com

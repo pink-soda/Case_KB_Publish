@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-05 14:49:25
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 10:20:24
+LastEditTime: 2024-12-17 16:56:12
 FilePath: \test\case_manager.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -13,34 +13,50 @@ from llm_handler import LLMHandler
 from mongo_handler import MongoHandler
 from knowledge_graph import KnowledgeGraph
 import logging
+from case_sync import build_case_library, update_case_library
 
 logger = logging.getLogger(__name__)
 case_manager = Blueprint('case_manager', __name__, url_prefix='/case_manager')
 mongo_handler = MongoHandler()
 kg = KnowledgeGraph()
-if not kg.verify_data():
-    raise Exception("知识图谱数据库验证失败，请检查数据")
+try:
+    # 尝试获取类别层级结构，如果为空也是允许的
+    category_hierarchy = kg.get_category_hierarchy() or {}
+except Exception as e:
+    logger.error(f"获取知识图谱数据失败: {str(e)}")
+    raise Exception("知识图谱数据库连接失败，请检查连接设置")
 llm_handler = LLMHandler()
 
 def get_completed_cases_from_csv():
     try:
-        df = pd.read_csv('e:\\Case_KB\\cases.csv', encoding='gbk')
+        csv_path = 'e:\\Case_KB\\cases.csv'
+        
+        # 尝试不同的编码方式读取文件
+        try:
+            df = pd.read_csv(csv_path, encoding='utf-8')
+        except UnicodeDecodeError:
+            try:
+                df = pd.read_csv(csv_path, encoding='gbk')
+            except UnicodeDecodeError:
+                # 尝试检测编码
+                import chardet
+                with open(csv_path, 'rb') as f:
+                    result = chardet.detect(f.read())
+                df = pd.read_csv(csv_path, encoding=result['encoding'])
+        
         df['案例进度'] = df['案例进度'].str.strip()
         completed_cases = df[df['案例进度'].str.contains('已完结', na=False)]
         
         # 准备返回的数据，保存所有列
         result = []
         for _, row in completed_cases.iterrows():
-            # 将Series转换为字典，并确保数值类型转换为Python原生类型
             case_data = row.to_dict()
-            # 转换所有数值类型为Python原生类型
-            case_data = {k: int(v) if isinstance(v, pd.Int64Dtype) or isinstance(v, np.int64)  # 使用 np.int64
-                        else float(v) if isinstance(v, np.float64)  # 使用 np.float64
+            case_data = {k: int(v) if isinstance(v, pd.Int64Dtype) or isinstance(v, np.int64)
+                        else float(v) if isinstance(v, np.float64)
                         else str(v) if pd.isna(v)
                         else v 
                         for k, v in case_data.items()}
             
-            # 确保某些关键字段的存在
             case = {
                 'case_id': case_data['案例编号'],
                 'title': str(case_data.get('案例标题', '')),
@@ -61,7 +77,6 @@ def get_completed_cases_from_csv():
         
         return result
     except Exception as e:
-        print(f"错误信息: {str(e)}")
         logger.error(f"Error reading CSV file: {str(e)}")
         return []
 
@@ -80,6 +95,15 @@ def build_library():
                 'message': '案例库不为空，请使用更新功能'
             })
         
+        # 首先同步本地文件
+        success, message = build_case_library()
+        if not success:
+            return jsonify({
+                'success': False,
+                'message': message
+            })
+            
+        # 然后从CSV读取并导入MongoDB
         completed_cases = get_completed_cases_from_csv()
         if not completed_cases:
             return jsonify({
@@ -90,7 +114,7 @@ def build_library():
         inserted_count = mongo_handler.bulk_insert_cases(completed_cases)
         return jsonify({
             'success': True,
-            'message': f'成功导入 {inserted_count} 个案例'
+            'message': f'���功导入 {inserted_count} 个案例'
         })
     except Exception as e:
         logger.error(f"Error building library: {str(e)}")
@@ -102,6 +126,14 @@ def build_library():
 @case_manager.route('/update_library', methods=['POST'])
 def update_library():
     try:
+        # 首先同步本地文件
+        success, message = update_case_library()
+        if not success:
+            return jsonify({
+                'success': False,
+                'message': message
+            })
+            
         completed_cases = get_completed_cases_from_csv()
         current_count = mongo_handler.get_cases_count()
         

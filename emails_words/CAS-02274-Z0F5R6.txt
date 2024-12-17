@@ -1,0 +1,56 @@
+邮件主题：回复: [案例号: CAS-02274-Z0F5R6 ] % |P2|ICBC|工行总行电脑使用中系统蓝屏 % 初次响应 CMIT:0001555
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2020-05-14 12:16:04.865000+00:00
+邮件内容:
+韩先生，您好
+根据和您的电话沟通，目前案例范围：安装行内软件后，开机后loop无法进入操作系统，且自动修复失败。
+一、收集日志：C:\Windows\System32\Logfiles\Srt\SrtTrail.txt
+挂载ISO -> 修复计算机 ->高级选项->命令提示符：xcoyp命令拷贝出来，通过数据上传网站上传。
+二、如下步骤，尝试让系统报出问题sys文件
+挂载ISO -> 修复计算机 ->高级选项->命令提示符：
+1. Disable Auto Recovery via BCDEdit by running the following command:
+bcdedit /set {default} RecoveryEnabled NO
+2. Enable advancedBootMenu:
+Bcdedit /set {default} advancedoptions on
+3. Reboot
+查看报出崩溃的sys文件，并拍照
+为了更安全、快速地传输数据，您可以使用以下账户信息登入神州网信网站。 
+数据上传：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBChanxu
+密码：P@ssw0rd!
+注意，
+--------------
+服务电话： 400-818-0055
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user7a071bfa
+发送时间：2020-05-14 14:33:37.556000+00:00
+邮件内容:
+梁先生您好！
+如之前沟通，此案例将按P2级别处理。谢谢。有问题随时联系
+Best Regards!
+王文磊
+________________________________
+www.cmgos.com <http://www.cmgos.com/> 
+Email: wangwl@cmgos.com <mailto:wangwl@cmgos.com> 
+Mobile: + 86 186 1036 8080
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2020-05-14 15:04:09.023000+00:00
+邮件内容:
+韩先生，您好
+很高兴与您微信沟通，根据沟通的结果，我将暂时归档此问题。此案例将与《|P2|ICBC|工行总行电脑开机自检无法进入系统》案例合并处理。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结
+----------
+案例范围：安装行内软件后，开机后loop无法进入操作系统，且自动修复失败。
+案例进展：与《|P2|ICBC|工行总行电脑开机自检无法进入系统》案例合并处理。
+--------------
+服务电话： 400-818-0055

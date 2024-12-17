@@ -1,0 +1,251 @@
+邮件主题：回复: 回复:回复:【外来邮件，注意核实】回复: [案例号: CAS-04956-B2F6N0 ] % |P2|ICBC|工行用户日历安装 % 初次响应 CMIT:0001721
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-25 15:48:26.869000+00:00
+邮件内容:
+李先生，您好：
+您能否提供电话联系方式，后续方便我们电话沟通问题细节。      
+此外，我谨以此邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户需要安装日历功能，方便日程管理。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+信息收集：
+1） 同时按下Windows+i 键，在系统中找到关于页面。
+2） 截图反馈Windows规格。如下图所示。
+--------------
+
+====第2封邮件====
+
+发件人：李衎
+发送时间：2021-10-25 15:57:25.602000+00:00
+邮件内容:
+你好，我的电话：13992870372.
+我的系统信息如下图
+	-----原始邮件-----
+	
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-26 14:37:57.139000+00:00
+邮件内容:
+李先生, 您好!
+经过本地搭建实验环境测试，您可以尝试如下方法恢复日历功能：
+建议操作：
+1）点击下面的链接，下载communications.zip文件，此文件下载将在2021-11-30过期。
+https://cduc.cmgos.com/download.php?id=320&token=LCIUBlvaY2c8wZc7GL5FM5IezIE7LVh8
+2）下载communications.zip到本地磁盘后解压缩（本示例中解压到C:\根目录，即C:\communications），然后右键点击开始按钮，选择Windows Powershell（管理员）A，打开PowerShell：
+3）运行如下命令，安装日历：
+Add-ProvisionedAppxPackage -online -packagepath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.appxbundle -LicensePath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.xml
+4）运行完毕之后日历安装成功，但新事件功能仍受限制，需要执行如下操作：
+同时按下Windows+R，运行gpedit.msc；在计算机配置 – 管理模板 – Windows组件 – 应用隐私，将允许Windows应用访问日历，改为：已启用 由用户控制，确定。
+5）重启计算机，新事件功能可用。
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-26 15:42:53.217000+00:00
+邮件内容:
+李先生, 您好!
+很高兴收到您的邮件回复，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+用户需要安装日历功能，方便日程管理。
+建议操作：
+1）点击下面的链接，下载communications.zip文件，此文件下载将在2021-11-30过期。
+https://cduc.cmgos.com/download.php?id=320&token=LCIUBlvaY2c8wZc7GL5FM5IezIE7LVh8
+2）下载communications.zip到本地磁盘后解压缩（本示例中解压到C:\根目录，即C:\communications），然后右键点击开始按钮，选择Windows Powershell（管理员）A，打开PowerShell：
+3）运行如下命令，安装日历：
+Add-ProvisionedAppxPackage -online -packagepath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.appxbundle -LicensePath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.xml
+4）运行完毕之后日历安装成功，但新事件功能仍受限制，需要执行如下操作：
+同时按下Windows+R，运行gpedit.msc；在计算机配置 – 管理模板 – Windows组件 – 应用隐私，将允许Windows应用访问日历，改为：已启用 由用户控制，确定。
+5）重启计算机，新事件功能可用。
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-26 17:23:56.803000+00:00
+邮件内容:
+李先生, 您好!
+很高兴与您电话沟通，我在本地环境多次测试日历功能正常，建议卸载此app后重新安装。
+建议操作：
+1）点击开始 – 设置 
+2）选择应用 – 应用和功能 – 点击邮件和日历 – 卸载
+3）卸载完毕后重启计算机，重新使用如下命令安装
+Add-ProvisionedAppxPackage -online -packagepath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.appxbundle -LicensePath C:\communications\Microsoft.WindowsCommunicationsApps_8wekyb3d8bbwe.xml
+4）后续同时按下Windows+R，运行gpedit.msc；在计算机配置 – 管理模板 – Windows组件 – 应用隐私，将允许Windows应用访问日历，改为：已启用 由用户控制，确定。
+5）重启计算机，添加新事件功能可用。
+--------------
+
+====第6封邮件====
+
+发件人：李衎
+发送时间：2021-10-27 09:16:52.017000+00:00
+邮件内容:
+你好，卸载重装后，重启电脑还是这样，进入日历程序就闪退了，无法进行事件添加操作，谢谢。
+	-----原始邮件-----
+	
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-27 10:33:53.425000+00:00
+邮件内容:
+李先生, 您好!
+由于目前我在本地纯净版本系统可以正常安装并使用，目前怀疑此问题是ICBC定制项造成或针对此台机器的特定问题。
+针对此问题，您可以尝试在其他机器上进行安装，确认是否可以正常使用。
+由于涉及到具体的问题排错过程，处理过程会比较复杂。为了进一步定位问题，需要您按照如下操作收集日志信息。
+日志收集： 
+一、命令行收集：
+1）同时按下Windows+X键，再按下A键，在powershell窗口运行如下命令：
+Get-AppxPackage -allusers > C:\appx.txt
+将C:\appx.txt上传
+二、工具收集 
+1）进行打开日历操作，等待日历闪退；
+2）回到桌面，下载附件CMGELogCollector_ICBC.zip文件并解压到本地磁盘，双击运行exe文件，同意后，按照下图勾选，点击收集。 
+3）收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并定为压缩文件。 
+3）将压缩文件上传。 
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：ICBC001
+--------------
+
+====第8封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-28 13:48:37.868000+00:00
+邮件内容:
+李先生, 您好!
+没有收到您的日志反馈，正如我们上午电话沟通的结果，如果您无法将日志文件拷贝，您可以和联系人吴先生<win10sup@sdc.icbc.com.cn>沟通，确认是否有其他方法反馈日志文件。
+--------------
+
+====第9封邮件====
+
+发件人：李衎
+发送时间：2021-10-28 13:55:57.146000+00:00
+邮件内容:
+你好，内网日志外发拦截了，你将日志发给 <win10sup@sdc.icbc.com.cn>了，谢谢！
+	-----原始邮件-----
+	
+====第10封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-28 15:33:31.382000+00:00
+邮件内容:
+李先生，吴先生您好。
+根据您的反馈我查看了一下cduc，今天只有一个win10communications的文件上传，这个里面是之前我给您传的日志appx安装程序。没有看到日志文件。
+请确认上传是否成功，谢谢
+--------------
+
+====第11封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-28 16:33:27.854000+00:00
+邮件内容:
+吴先生，您好
+李先生上传的日志我还未在系统中看到，您上传完毕可以回复此邮件。我将持续跟踪此案例。
+--------------
+
+====第12封邮件====
+
+发件人：Jia Wei
+发送时间：2021-10-29 17:30:14.252000+00:00
+邮件内容:
+李先生，您好， 
+目前由于案例比较复杂，请按照本邮件进行详尽的日志收集，收到后我会持续跟踪此案例：
+您可以安排IT人员进行协助操作。如果有问题请随时回复此邮件。
+日志收集：
+一、设置Dump抓取方式
+1）下载附件Dumpsettings.zip，解压到本地后，右键点击Dumpsettings.bat，以管理员身份运行。
+二、确保服务正常启动
+1）同时按下Windows+R，运行services.msc
+2）找到Windows Error Reporting Service，启动类型改为“自动”
+三、抓取ProcessMonitor日志
+1）下载附件ProcessMonitor.zip，将内容解压至C:\根目录，如下图所示：
+2）按下图以管理员身份运行命令提示符cmd。
+3）逐一运行以下的命令开启Process Monitor Log:
+Cd C:\ProcessMonitor
+procmon /backingfile C:\logfile.pml /NoFilter /AcceptEula /Minimized /Quiet
+4）复现问题，等待日历闪退 
+5）停止日志收集：
+procmon /terminate
+四、其他日志:
+下载邮件中附件中的setupreport.zip到问题的机器上 
+下载后解压， 右键以管理员身份运行setupreport.cmd脚本(脚本会运行5-15分钟，请耐心等待脚本提示运行结束，请勿提前中断)。 
+C盘根目录下会生成一个Setup_Report_xxx 文件夹，这里面包含一些配置信息和日志，只要打包上传这个文件夹即可，无需再手动收集日志。 
+脚本运行注意事项：  
+1. 脚本运行过程中，如果出现以下错误，可以无视： 
+2. 如果命令提示符的左上角出现”选择管理员”/”select administrator”，此时CMD的执行动作是暂停状态。 
+解决方案：在命令提示符界面回车，即可解决。 
+日志清单： 
+C盘根目录下会生成一个Setup_Report_xxx 文件夹，打包上传该文件夹即可。
+需要收集日志清单：
+*  C:\logfile.pml
+*  C:\CrashDumps 整个文件夹
+*  C:\Windows\System32\winevt\Logs 整个文件夹
+*  C盘根目录下的Setup_Report_xxx 文件夹
+将上述文件/文件夹打包压缩，上传
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBC001
+--------------
+
+====第13封邮件====
+
+发件人：李衎
+发送时间：2021-11-01 14:20:28.379000+00:00
+邮件内容:
+你好，我这不需要添加该功能了，请关闭问题，谢谢支持！
+	-----原始邮件-----
+	
+====第14封邮件====
+
+发件人：Jia Wei
+发送时间：2021-11-02 11:39:13.878000+00:00
+邮件内容:
+李先生, 您好!
+很高兴收到您的邮件回复，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+用户需要安装日历功能，方便日程管理。
+案例进展：
+用户邮件确认目前不需要此功能，归档案例。
+建议操作：
+一、设置Dump抓取方式
+1）下载附件Dumpsettings.zip，解压到本地后，右键点击Dumpsettings.bat，以管理员身份运行。
+二、确保服务正常启动
+1）同时按下Windows+R，运行services.msc
+2）找到Windows Error Reporting Service，启动类型改为“自动”
+三、抓取ProcessMonitor日志
+1）下载附件ProcessMonitor.zip，将内容解压至C:\根目录，如下图所示：
+2）按下图以管理员身份运行命令提示符cmd。
+3）逐一运行以下的命令开启Process Monitor Log:
+Cd C:\ProcessMonitor
+procmon /backingfile C:\logfile.pml /NoFilter /AcceptEula /Minimized /Quiet
+4）复现问题，等待日历闪退 
+5）停止日志收集：
+procmon /terminate
+四、其他日志:
+下载邮件中附件中的setupreport.zip到问题的机器上 
+下载后解压， 右键以管理员身份运行setupreport.cmd脚本(脚本会运行5-15分钟，请耐心等待脚本提示运行结束，请勿提前中断)。 
+C盘根目录下会生成一个Setup_Report_xxx 文件夹，这里面包含一些配置信息和日志，只要打包上传这个文件夹即可，无需再手动收集日志。 
+脚本运行注意事项：  
+1. 脚本运行过程中，如果出现以下错误，可以无视： 
+2. 如果命令提示符的左上角出现”选择管理员”/”select administrator”，此时CMD的执行动作是暂停状态。 
+解决方案：在命令提示符界面回车，即可解决。 
+日志清单： 
+C盘根目录下会生成一个Setup_Report_xxx 文件夹，打包上传该文件夹即可。
+需要收集日志清单：
+*  C:\logfile.pml
+*  C:\CrashDumps 整个文件夹
+*  C:\Windows\System32\winevt\Logs 整个文件夹
+*  C盘根目录下的Setup_Report_xxx 文件夹
+将上述文件/文件夹打包压缩，上传
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBC001
+--------------

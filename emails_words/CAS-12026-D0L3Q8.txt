@@ -1,0 +1,60 @@
+邮件主题：回复: [案例号: CAS-12026-D0L3Q8 ] % |P2|ICBC|工行用户反馈V2020-L版本系统补丁安装失败问题 % 初次响应 CMIT:0001073 关文宇
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-08-21 17:44:01.930000+00:00
+邮件内容:
+许先生，您好
+问题定义: 
+工行反馈关文宇V2022-L版本系统安装补丁KB5037768失败问题。需要协助分析处理。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+日志分析：
+目前看到更新安装时处理transaction过程中出现错误，怀疑与ComponentStore有关。
+=============================================================
+2024-08-12 10:52:51, Error                 CSI    00000006@2024/8/12:02:52:51.289 <mailto:00000006@2024/8/12:02:52:51.289>  (F) onecore\base\wcp\componentstore\com\store.cpp(4920): Error E_UNEXPECTED originated in function Windows::COM::CComponentStore::InternalTransact expression: ((HRESULT)0x8000FFFFL)
+[gle=0x80004005]
+…
+2024-08-12 10:52:52, Error                 CSI    00000007 (F) E_UNEXPECTED #168# from Windows::COM::CComponentStore::InternalTransact(...)[gle=0x8000ffff]
+2024-08-12 10:52:52, Error                 CSI    00000008 (F) E_UNEXPECTED #166# from Windows::ServicingAPI::CCSITransaction::ICSITransaction2_Analyze(Flags = 0, riid = {f4d9decb-0250-4ad4-9500-85c7f2f281ec}, ppUnk = NULL, disp = 0)[gle=0x8000ffff]
+2024-08-12 10:52:52, Info                  CBS    Failed to get transaction analysis. [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to get inventory. [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CSI    00000009@2024/8/12:02:52:52.044 <mailto:00000009@2024/8/12:02:52:52.044>  CSI Transaction @0x1e5340a8090 destroyed
+2024-08-12 10:52:52, Info                  CBS    Failed to get CSI Inventory [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to get component state. [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to get current state of the deployment [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to get Transaction State for package: Shared-1FA53FA912152CA522A9ED1809F3C8FF46AF871DD08682ED7A4AE834DDD0BABA~31bf3856ad364e35~amd64~~10.0.19041.4351, update: Deployment-4266000CB6B74D96C9421DCABCE02F421DE1E9D13801B3A97388DB55D4BF37C8_amd64 [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to get current state. [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to populate updates for package: Shared-1FA53FA912152CA522A9ED1809F3C8FF46AF871DD08682ED7A4AE834DDD0BABA~31bf3856ad364e35~amd64~~10.0.19041.4351 [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to add child package to the strategy [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to add child package to the strategy [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to add package: Package_for_ServicingStack_4351~31bf3856ad364e35~amd64~~19041.4351.1.5 [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    Failed to plan staging [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Error                 CBS    Failed to process Multi-phase execution. [HRESULT = 0x8000ffff - E_UNEXPECTED]
+2024-08-12 10:52:52, Info                  CBS    WER: Generating failure report for package: Package_for_ServicingStack_4351~31bf3856ad364e35~amd64~~19041.4351.1.5, status: 0x8000ffff, failure source: CBS Other, start state: Absent, target state: Staged, client id: WindowsUpdateAgent
+=============================================================
+日志收集
+一、针对补丁安装失败，为了确认是否有系统组件损坏，需要进行如下操作反馈最新日志
+进行Checking System Update Readiness.
+1）以管理员身份运行命令提示符cmd
+2）运行如下命令
+Dism /online /cleanup-image /scanhealth
+3）运行后不论成功或失败，使用日志收集工具收集日志并反馈
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-08-28 10:00:15.822000+00:00
+邮件内容:
+许先生，您好
+很高兴收与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+工行反馈关文宇V2022-L版本系统安装补丁KB5037768失败问题。需要协助分析处理。 
+案例进展：
+    根据日志分析怀疑组件库损坏导致，建议scanhealth后收集cbs日志，未反馈日志。根据沟通结果，可以归档案例
+--------------

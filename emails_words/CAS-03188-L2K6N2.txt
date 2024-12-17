@@ -1,0 +1,154 @@
+邮件主题：回复: [案例号: CAS-03188-L2K6N2 ] % |普通事件| Dell |脱域后左下角没有其他账户的选项，不能登录admin账户 % 初次响应 CMIT:0001665
+
+====第1封邮件====
+
+发件人：CRM管理员
+发送时间：2020-10-26 15:41:00.489000+00:00
+邮件内容:
+Hi Team
+案例队列中有一个新案例，请及时处理。
+案例号码：CAS-03188-L2K6N2 <https://crm.cmgos.com/main.aspx?etn=incident&id=%7b13e97643-5e17-eb11-aa99-00155d00122e%7d&pagetype=entityrecord> 
+案例等级：免费
+案例描述：
+案例描述Support邮箱收到DELL接口人发来的邮件，反馈用户脱域后左下角没有其他账户的选项，不能登录admin账户。邮件见注释，内容如下： =============
+Dear Team
+OEM 厂商： Dell
+问题详细描述： 脱域后左下角没有其他账户的选项，不能登录admin账户
+之前尝试过的步骤：
+1． ICBC神州网信的系统
+2． 开启admin账户后，脱域，客户想使用admin账户添加其他域并建立账户
+3． 但是发现无法进入，左下角没有其他账户的选项，不能登录admin账户
+4． 客户确认重装系统可以可以从新加域，但是表示这样工作量太大，希望我们帮忙寻找解决方案
+影响范围：多台
+测试机型（选填）：LATITUDE 7300
+系统版本（选填）： Windows 10 CMIT Government Edition OEM
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+创建人：周明远
+创建时间：2020-10-26 15:38
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-27 09:45:28.887000+00:00
+邮件内容:
+阙先生 您好, 
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 计算机脱域后无法正常登陆计算机。
+问题范围: 协助用户解决计算机登陆加域问题。 
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+针对此问题有几点请您确认以便我们更好的帮你解决实际需求：
+-       请您脱域后登陆屏幕显示完整截图并与用户确认当前显示用户是否为系统镜像内置管理账户用户名。
+-       脱域，加入其它域实际需求与背景是什么？
+-       能否确认这两个域是否处于同一林中？有无信任关系？例如，现有两个域 DOMAIN1，DOMAIN2；PC1加入了DOMAIN1, PC2加入了DOMAIN2；尝试在PC1上登陆DOMAIN2\用户名 账户是否成功，如果成功则无需退域再加域。
+-       计算机退域并加入其它域操作过程中无需重启计算机或注销登陆。可以建议用户使用附件文档步骤操作已避免出现因本地计算机账户信息丢失造成无法正常登陆问题。
+如果您有任何其它问题请随时与我联系，我将及时为您提供帮助。
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第3封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-27 10:01:26.447000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi cheng xiao
+收到信息，感谢！
+获取信息后会进一步Update给你.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第4封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-27 10:14:57.188000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+刚重新查看指导文档，我理解的是针对客户还未脱域操作机器的指导操作，以避免脱域后无账户切换选项的方案。
+之前客户尝试测试退域了2台，重装系统一台解决，另外一台也只能重装吗？或有不重装恢复的方法？
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-27 10:27:35.972000+00:00
+邮件内容:
+阙先生您好，
+文档所述步骤是针对未进行退域操作计算机。
+对于已退域但无法登陆计算机请参照问题列表中第三项尝试。而且需要用户提供登陆界面截图才能判断具体问题。
+联系用户时请同时确认登陆屏幕提示用户是否为本地管理员账户，如果不是那么本地管理员账户的用户名是什么？用户是否有本地管理员账户登陆密码。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第6封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-27 10:55:41.266000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+好的，有获取到相关信息后会进一步Update给你.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-30 16:49:15.822000+00:00
+邮件内容:
+阙先生 您好，
+循例向您更新案例进展：
+-      目前我们在等待用户回复确认相关信息与截屏以便更加准确定位问题。
+-      此外退域/加域操作流程指导已经提供给用户以避免用户所遇登陆问题。目前等待用户反馈中。
+如果您在操作步骤或收集信息过程中遇到任何问题请随时与我们联系，我们将及时为您提供帮助。也烦请您帮助我们收集以上信息及用户反馈。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第8封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-30 17:00:42.445000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+已经在催促客户，客户表示会尽快去测试，请先等待几天，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第9封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-03 13:45:20.452000+00:00
+邮件内容:
+阙先生 您好，
+关于此案例是否有任何用户反馈？如果您在收集日志过程中遇到任何问题请随时与我们联系。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第10封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-11-03 14:20:28.649000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+感谢大力support。
+目前客户表示先不考虑测试，等后面方便的时候再用你提供的 测试，具体时间不定，同意先结案.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753

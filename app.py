@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-16 20:50:34
+LastEditTime: 2024-12-17 16:40:10
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -384,19 +384,35 @@ def query_category():
                 'message': '未提供案例编号'
             }), 400
             
-        # 从CSV读取案例描述
-        case_description = case_handler.get_case_description(case_id)
+        # 从MongoDB读取案例描述
+        case = mongo_db.cases.find_one({'case_id': case_id})
+        if not case:
+            return jsonify({
+                'status': 'error',
+                'message': '未找到案例'
+            }), 404
+            
+        # 尝试从多个可能的字段获取描述信息
+        case_definition = case.get('case_definition') or case.get('case_evaluation') or ''
+        
+        if not case_definition:
+            return jsonify({
+                'status': 'error',
+                'message': '案例缺少描述信息'
+            }), 400
         
         # 获取知识图谱实例
         kg = KnowledgeGraph()
-        if not kg.verify_data():
-            raise Exception("知识图数据库验证失败，请检查数据")
-        category_hierarchy = kg.get_category_hierarchy()
-        
-        # 使用LLM进行分类（这里会自进行最多3次试）
+        try:
+            category_hierarchy = kg.get_category_hierarchy() or {}
+        except Exception as e:
+            logger.error(f"获取知识图谱数据失败: {str(e)}")
+            raise Exception("知识图谱数据库连接失败，请检查连接设置")
+
+        # 使用LLM进行分类
         llm_handler = LLMHandler()
         analysis_result = llm_handler.analyze_description_with_categories(
-            description=case_description,
+            description=case_definition,
             category_hierarchy=category_hierarchy
         )
         
@@ -462,9 +478,13 @@ def tag_description():
             
         # 获取知识图谱实例
         kg = KnowledgeGraph()
-        if not kg.verify_data():
-            raise Exception("知识图谱数据库验证失败，请检查数据")
-        # 从Neo4j获取完整的类别层级结构
+        try:
+            # 尝试获取类别层级结构，如果为空也是允许的
+            category_hierarchy = kg.get_category_hierarchy() or {}
+        except Exception as e:
+            logger.error(f"获取知识图谱数据失败: {str(e)}")
+            raise Exception("知识图谱数据库连接失败，请检查连接设置")
+        # 从Neo4j获取完整的类别级结构
         category_hierarchy = kg.get_category_hierarchy()
         #print("类别层级结构",category_hierarchy)
         llm_handler = LLMHandler()
@@ -1243,7 +1263,7 @@ def update_file_categories():
                 if level3 not in hierarchy[level1][level2]:
                     hierarchy[level1][level2].append(level3)
         
-        # 保存更新后的层级结构
+        # 保存更新后的层级��构
         with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
             json.dump(hierarchy, f, ensure_ascii=False, indent=2)
         

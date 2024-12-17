@@ -1,0 +1,65 @@
+邮件主题：回复: 回复：[案例号: CAS-09145-S2B8T7 ] % VDI-TAM反馈中石油长庆油田VDI客户端重复获取授权问题 % 初次响应 CMIT:0001631
+
+====第1封邮件====
+
+发件人：Wang Binbin
+发送时间：2023-06-13 14:50:25.426000+00:00
+邮件内容:
+刘先生，您好！
+感谢您的电话接听。根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+VDI服务器显示虚机客户端每15分钟发起激活请求导致大量占用VDI授权 。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+临时缓解方案
+1.       重新下发虚机
+2.       将问题虚机的激活配置暂时修改为不可达VDI激活服务器，修改后您可以正常运行虚机，避免占用服务器授权，但虚机本身无法通过服务器激活。
+操作步骤：
+*   以管理员权限打开cmd命令行，切换到CMIT激活客户端安装目录（C:\Program Files\CMITActivation）。
+cd /d “C:\Program Files\CMITActivation”
+*   配置激活服务器地址指向本地127.0.0.1，或其他不可达地址
+CmitClientSet.exe setconfig -mode vdi -host http://127.0.0.1
+*   可以通过命令查询配置是否生效
+CmitClientSet.exe getconfig
+日志收取:
+如果方便收取以下日志，可以协助我们进一步查看设备状态，但虚机本地环境通常比较复杂，不一定能通过日志确定问题原因。
+1）从以下链接下载最新的CMGE日志收集工具：
+https://cduc.cmgos.com/download.php?id=735&token=8RWruuQyrKpGBKf1HvxBcxUt6EVWpFJI
+2）在出现问题的设备上运行CMGELogCollectorV2.exe, 按照下图勾选，点击“收集”生成相关日志。收集完成后将显示日志保存位置。
+3） 从以下链接获取OAGTool ：https://cduc.cmgos.com/download.php?id=797&token=OukxaiOG0PPqkfW8Jy62ekiTfvMHvbCL
+4） 拷贝到本地解压缩后，以管理员身份运行“GetHardwareInventory.bat”。收集完成后将显示日志保存位置。
+日志上传方法：
+*  登陆https://cduc.cmgos.com,通过数据上传系统上传您所收集的日志信息。
+*  用户名：userliu
+*  密码：liu123
+*   
+--------------
+王彬彬 Binbin Wang
+服务电话： 400-818-0055
+电子邮箱： Wangbb@cmgos.com <mailto:Wangbb@cmgos.com> 
+mail: Wangbb@cmgos.com <mailto:Wangbb@cmgos.com>  | visit: www.cmgos.com <https://na01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.cmgos.com%2F&data=02%7C01%7Cjajian%40064d.mgd.microsoft.com%7C47873412a04a43e6c54c08d44c027028%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636217020779949214&sdata=Ju1TPGMqe%2BICuLbNsIXtqwUwRyMoKPgO2XmvqRc4Y1c%3D&reserved=0> 
+
+====第2封邮件====
+
+发件人：Wang Binbin
+发送时间：2023-06-14 17:02:26.680000+00:00
+邮件内容:
+刘先生，您好！
+感谢反馈。已收到您上传的日志。
+日志分析可能需要比较长的时间，有任何分析结果会第一时间与您同步，谢谢！
+------------
+
+====第3封邮件====
+
+发件人：Wang Binbin
+发送时间：2023-07-19 10:44:53.975000+00:00
+邮件内容:
+刘先生，您好：
+根据刚刚的电话沟通，此问题已解决，经您同意我将归档此案例。 工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结： 
+问题定义：
+VDI服务器显示虚机客户端每15分钟发起激活请求导致大量占用VDI授权。
+问题进展：。
+已重新下发65台虚机，均激活正常。

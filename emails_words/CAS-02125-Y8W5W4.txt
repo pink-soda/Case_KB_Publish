@@ -1,0 +1,402 @@
+邮件主题：回复:  案例号：CAS-02125-Y8W5W4 | P3 | Lenovo|锁屏界面出现其它解锁信息提示，且除“Ctrl+Alt+Del解锁”方式外其它解锁方式不可用 - 回复用户更新- 升级研发确认提醒 - CMIT:0001162
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-07 18:15:35.095000+00:00
+邮件内容:
+徐达您好, 
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义:      在联想进行产前测试过程中发现，部分预装CMGE V2020-L系统笔记本在解锁已锁定计算机时，解锁信息提示不准确（如下图所示）。
+而且按照提示的解锁方法，除了使用“Ctrl+Alt+Delete”之外都无法成功解锁。
+问题范围:      协助定位问题并解释解锁屏幕界面基本工作原理。
+由于问题涉及设备较多，且没有固定规律。请您协调从用户处收集以下系统日志以及相关信息以便问题分析解决：
+*	请用户在问题设备上以“管理员权限”运行msinfo32.exe并点击文件保存系统信息至NFO文件（如果有多个不同配置设备，请分别提供一个NFO文件。最好能对应问题截图收取）
+日志收集后上传至CDUC。登陆信息在邮件底部。
+*	请用户确认问题截图来源是属于同一设备不同时间，还是不同设备
+*	请用户确认，在仅安装纯净版CMGE V2020-L系统后不安装任何其它驱动或者应用前提下在问题设备上是否会重现问题。
+*	请用户提供具体问题复现步骤。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+日志上传服务器地址：https://cduc.cmgos.com/
+用户名：lenovocase
+密码：OzVXn6SdABjDAm3p5(OC
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第2封邮件====
+
+发件人：Xu Da
+发送时间：2020-04-08 20:37:22.656000+00:00
+邮件内容:
+Hi Chengxiao，
+多谢反馈，Lenovo之前提供过一个Excel，但是没有具体内容说明，请先参考一下看是否有用处，如下邮件中提到的信息我会同Lenovo再沟通。Thanks。
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第3封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-09 15:40:36.879000+00:00
+邮件内容:
+Hi Chengxiao
+联想同事给出了一个比较相信的场景对应关系，还请查看附件和测试记录：
+一开始的不良现象Unlock1.jpg Follow BIOS N2XET12W, F/R 100% (不分SKU 配置). 
+1.	Non-Touch Panel 机器BIOS update 到N2XET13W 后现象如附件Unlock3. （配置表中的pass）
+2.	With Touch Panel 机器BIOS update 到N2XET13W现象如附件Unlock2  F/R: 100%;  （配置表中的fail）
+>> 不管机器BIOS 是N2XET12W 还是N2XET13W, Clean OS 的现象均为Unlock2. 
+>> 在Device Manage 中禁用人体学输入设备 -> 符合HID 标准的触摸屏, 现象如Unlock3. 
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第4封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-09 15:59:44.513000+00:00
+邮件内容:
+可以看一下，下面是更多的比较结果，可以看到非触摸屏的carbon系列，第3列测试结果和第6列测试结果，由于bios的不同结果不一样，第6列结果中是最新的bios，但是显示正常。
+在 X1 yoga（触摸屏）/carbon（非触摸屏）项目上的测试结果。
+ECR552638
+Image: RT2 SIT1
+BIOS:N2WET13W
+Image: Pure V2020-L
+BIOS:N2WET13W
+Image: RT2 SIT2
+BIOS:N2WET14W
+Image: Pure V0-H
+BIOS:N2WET14W
+Image: Pure V2020-L
+BIOS:N2WET14W
+KB:  LGADQS13A4
+Ratchet(X1 yoga)
+Unlock1
+Unlock2
+Unlock2
+Unlock2
+Unlock2
+Knockout(X1 carbon)
+Unlock1
+Unlock2
+Unlock3
+NA
+Unlock3
+在最新版BIOS N2WET14W上测试的结果是：
+Carbon SKU1/3/4->unlock3     Rachet SKU2/5->unlock2 
+附件是机器对应的NFO, 下面是配置信息。
+Knockout2
+Knockout2
+Knockout2
+Ratchet2
+Ratchet2
+Ratchet2
+SKU1
+SKU3
+SKU4
+SKU2
+SKU2
+SKU5
+11600A001
+11604A001
+11606A001
+11595A002
+11595A001
+11597A001
+i5
+i7
+i7
+i5
+i5
+i7
+Samsung 256GB
+Sandisk 1TB
+Samsung 512GB
+Toshiba 256GB
+Toshiba 256GB
+Samsung 512GB
+Samsung 8G
+8G+8G
+8G+8G
+Hynix 8G+8G
+Hynix 8G+8G
+8G+8G
+FHD-LGD
+FHD-LGD
+FHD-BOE
+Touch FHD-LGD
+Touch FHD-LGD
+Touch UHD - MUTTO+BOE
+AZ RGB
+AZ RGB
+IR AZ
+AZ RGB
+AZ RGB
+IR AZ
+Intel AX201
+Intel AX201
+Intel AX201
+Intel AX201
+Intel AX201
+Intel AX201
+NA
+Fibocom L850-GL
+Fibocom L860-GL
+NA
+NA
+Fibocom L860-GL
+Synaptics
+Synaptics
+Synaptics
+Synaptics
+Synaptics
+Synaptics
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-09 17:22:42.566000+00:00
+邮件内容:
+徐达/刘建您好，
+非常感谢您的回复，而且附件表格对于问题分析非常有帮助。以下是针对附件表格以及问题现象的分析总结：
+-     Windows 10解锁方式在“CTRL+ALT+DEL”之外同时支持使用“电源键”与“减少音量键”组合解锁，这是Windows10系统设计的默认行为。
+              例如：在平板电脑上，并没有物理键盘可以使用“CTRL+ALT+DEL”按键来进行解锁。只能使用平板电脑设备集成的电源，音量按键。
+-     Windows 10按钮组合正确工作需要配合HID按钮驱动程序。
+对于物理通用I/O （GPIO）按钮，HID传输微型驱动程序是由微软提供的内置驱动程序。内置驱动程序无法为未连接到中断线路的按钮服务（本案例情况），此情况需要编写一个驱动程序将该按钮作为HID按钮公开，并报告对HID类驱动程序的状态更改。此驱动程序既可以是HID源驱动程序，也可以是HID传输程序。
+结合本案例现有信息和实际情况，怀疑问题为触摸屏与HID驱动程序导致。建议排查以下几点：
+-     在问题设备上安装通用Windows 10 是否存在同样问题。
+-     问题是否仅在配备触摸屏的设备上。
+-     触摸屏是否触发Windows平板模式。
+-     确定键盘和电源按钮是否为连接到中断线路的GPIO按钮，如果不是则需要安装厂商提供的HID驱动程序。
+==================================================
+参考文档链接：
+-     Windows10中的按钮行为：https://docs.microsoft.com/zh-cn/windows-hardware/drivers/gpiobtn/button-behavior#button-behavior-in-windows10
+-     HID 按钮驱动程序：https://docs.microsoft.com/zh-cn/windows-hardware/drivers/hid/buttons
+-     最低硬件要求：https://docs.microsoft.com/zh-cn/windows-hardware/design/minimum/minimum-hardware-requirements-overview#section-30---minimum-hardware-requirements-for-windows10-for-desktop-editions
+-     平板电脑模式：https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/continuum
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第6封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-10 17:35:16.381000+00:00
+邮件内容:
+Hi Chengxiao
+联想又测试了2个项目，结果如下：
+-------------T14s和X13机型影响---
+T14s/X13机型上的验证结果见附件“系统信息”和“ECR553700”。
+在最新的BIOS版本下， Touch配置出现unlock2和非touch配置出现unlock 3。
+-------------关于注册表键值影响---
+下面是昨天提到的touch开关会影响的reg值。
+Touch:
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Tablet PC]
+"IsTabletPC"=dword:00000ac1
+"DeviceKind"=dword:000000c1
+Non Touch：
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Tablet PC]
+"IsTabletPC"=dword:00000000
+"DeviceKind"=dword:00000000
+--------------graf项目测试结果-------
+下面是graf 项目上的结果，这个项目和前三个有不同，它是带可插拔键盘的机型，且是带有音量侧键的，同时出现unlock1时也能按电源加音量下键解锁。我认为在此机型上是正常的行为。
+1.    在fail设备上以“管理员权限”运行msinfo32.exe并点击文件保存系统信息至NFO文件（如果有多个不同配置设备，请分别提供一个NFO文件），并说明一下是哪一种锁屏界面(unlock1/unlock2)
+ 在GM1.0上面验证的，是锁屏界面unlock1，参考Graf EVO GM Unlock picture， NFO文件参考附件
+2. 在fail设备安装纯净版CMGE V2020-L系统（pure OS）后不安装任何其它驱动或者应用前提下在问题设备上是否会重现问题，现象是unlock1,2,3种的哪一种。
+ 安装CMGE V2020-L系统（pure OS），现象是unloack3， 请参考pure os unlock picture
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-11 09:36:13.657000+00:00
+邮件内容:
+﻿ 
+刘建您好，
+非常感谢您提供详细的联想测试信息，不过这些信息并不影响之前4月9日的初步判断和建议（反而证实之前结论）。此次特地再次解释客户问题并补充分析结果，希望您可以提供联想方的反馈看是否能够回答客户疑问或是需要进行下一步排查。
+初步判断结果：
+1.	联想报告的问题截图是Windows 10 系统设计的默认行为，并非系统BUG。至于为何问题解锁屏幕有所不同，是由于设备硬件，BIOS和HID驱动所影响。
+Windows 10解锁方式在“CTRL+ALT+DEL”之外同时支持使用“电源键”与“音量减少键”组合解锁，这是Windows10系统设计的默认行为（ “Windows安全中心”按键找不到官方文档记录，但部分网站描述部分品牌平板电脑上具备此物理按钮其功能是代替“CTRL+ALT+DEL“组合键）。
+例如：在平板电脑上，并没有物理键盘可以使用“CTRL+ALT+DEL”按键来进行解锁。只能使用平板电脑设备集成的电源，音量按键或Windows安全中心按钮。出现客户面对的解锁界面是因为操作系统检测到触摸屏并安装对应HID触摸屏驱动触发系统平板电脑模式。此模式可以由用户手动设置或硬件触发。您发的触摸屏与非触摸屏注册表键值也证实这一判断。而之前联想测试禁用触摸屏HID驱动，解锁屏幕只提示使用“CTRL+ALT+DEL”解锁计算机也证明了此点。此外附件的系统配置信息NFO文件中也记录问题设备为 “平板电脑模式“
+至于为何部分设备提示使用“电源键“和”音量减少键“，部分提示使用”Windows安全中心按钮“解锁是受装配硬件使用的BIOS 版本的影响。
+2.	Windows 10按钮组合正确工作需要配合HID按钮驱动程序，使用电源键与音量减少按键组合无法解锁是受HID按键驱动所决定。
+对于物理通用I/O （GPIO）按钮，HID传输微型驱动程序是由微软提供的内置驱动程序。内置驱动程序无法为未连接到中断线路的按钮服务（本案例情况），此情况需要编写一个驱动程序将该按钮作为HID按钮公开，并报告对HID类驱动程序的状态更改。此驱动程序既可以是HID源驱动程序，也可以是HID传输程序。
+建议排查：
+-     在问题设备上安装通用Windows 10 是否存在同样问题。
+-     问题是否仅在配备触摸屏的设备上。
+-     触摸屏是否触发Windows平板模式。
+-     确定键盘和电源按钮是否为连接到中断线路的GPIO按钮，如果不是则需要安装厂商提供的HID驱动程序。
+总结：
+       结合问题分析和联想提供的测试结果可以判断解锁屏幕是Windows 10 系统设计的默认行为。
+造成解锁屏幕提示使用按钮组合不同（3个不同解锁屏幕）原因是由于硬件使用的BIOS版本问题。所以请确保设备安装了正确的BIOS版本。
+确保问题设备具备连接到中断线路的物理通用I/O （GPIO）按钮，如果不是，确保按键正确安装驱动程序作为HID按钮公开并对HID类驱动程序的状态更改。
+==================================================
+参考文档链接：
+-     Windows10中的按钮行为：https://docs.microsoft.com/zh-cn/windows-hardware/drivers/gpiobtn/button-behavior#button-behavior-in-windows10
+-     HID 按钮驱动程序：https://docs.microsoft.com/zh-cn/windows-hardware/drivers/hid/buttons
+-     最低硬件要求：https://docs.microsoft.com/zh-cn/windows-hardware/design/minimum/minimum-hardware-requirements-overview#section-30---minimum-hardware-requirements-for-windows10-for-desktop-editions
+-     平板电脑模式：https://docs.microsoft.com/zh-cn/windows-hardware/design/device-experiences/continuum
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第8封邮件====
+
+发件人：Xu Da
+发送时间：2020-04-13 10:05:06.820000+00:00
+邮件内容:
+Hi Chengxiao，Liujian，
+我理解Case可以先Close，如果客户后续还有问题，可以继续重启讨论，谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第9封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-13 10:37:16.414000+00:00
+邮件内容:
+可以close，不过徐达放心，没有处理的时候也不会扣时间的
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第10封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-13 11:08:06.069000+00:00
+邮件内容:
+刘建，徐达 您好：
+收到您发来的邮件确认，现暂将此案例关闭归档。如果后期需要重启案例请及时通知。
+感谢您在案例处理过程中的积极配合和帮助，祝您生活愉快。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第11封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-21 11:19:13.089000+00:00
+邮件内容:
+Hi Chengxiao
+联想想要更detail的触发原理和机制，什么条件下会显示不同的解锁提示，这个可能需要从OS角度来说明一下，我已跟研发沟通过，可以让咱们研发再看一下，另外也帮忙在MS那边问问是否有相关信息。以下是联想的邮件内容：
+--------
+这个问题是否可以简单化处理，你就告诉我们CMIT的OS这块是如何设计的就可以啦。
+如果是normal windows 10的话，amy他们会跟MS开bug处理的。
+---------
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第12封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-21 15:44:34.575000+00:00
+邮件内容:
+刘健您好，
+收到您的邮件请求，我们将重启此案例并继续分析问题。
+首先回答您的问题。之前的结论结合目前联想提供的测试结果来看，影响解锁提示条件在下方列出。
+*	设备是否装配触摸屏
+*	触摸屏HID驱动是否正常启用安装
+*	主板类型与BIOS版本
+如果需要确认此问题是否与CMIT定制相关，可以将此案例升级至研发。请您协助完成附件中缺失信息（高亮标黄部分）。
+谢谢，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第13封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-24 14:08:33.705000+00:00
+邮件内容:
+刘健 您好，
+温馨提示：此案例是否需要重新开启并升级研发？如果是的话，请帮忙补全上次邮件中附件表格。
+谢谢，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第14封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-24 14:47:09.614000+00:00
+邮件内容:
+Hi Chengxiao
+已完成bug列表填写，请与研发咨询相关原理。
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第15封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-26 15:06:18.520000+00:00
+邮件内容:
+刘健 您好，
+研发团队已经给出结论，详情请见附件。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第16封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-26 16:18:23.538000+00:00
+邮件内容:
+收到，感谢支持
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第17封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-27 10:24:50.633000+00:00
+邮件内容:
+刘健 您好，
+请您确认此案例是否可以关闭。
+谢谢，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第18封邮件====
+
+发件人：Liu Jian
+发送时间：2020-04-27 10:30:28.995000+00:00
+邮件内容:
+微软那边是否有更多信息？
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第19封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-29 18:26:49.293000+00:00
+邮件内容:
+刘健 您好，
+经您确认现将此案例关闭归档。如有何疑问请及时联系。
+谢谢，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 

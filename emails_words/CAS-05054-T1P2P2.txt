@@ -1,0 +1,78 @@
+邮件主题：回复: [案例号: CAS-05054-T1P2P2 ] % 工行升级-CUA服务无法启动问题 % 初次响应 CMIT:0001928
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2021-11-10 11:31:36.597000+00:00
+邮件内容:
+张先生 您好：
+根据刚才的电话沟通，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+工行升级安装CUA客户端，有一台计算机出现CUA服务无法启动问题。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+需要麻烦您按照以下步骤收集相关日志：
+1、下载附件中的procmon.zip，解压后运行，使用procmon.exe抓取CUA服务启动时的信息。
+procmon使用方法：
+a）双击Procmon.exe运行，到达此页面，会有有大量条目出现，先后点击1，2暂停抓取并清除当前条目。当前已经是可抓取状态；
+b）点击下图的图标开始抓取。
+c）打开服务页面，启动CUA服务，等待CUA服务启动报错出现弹窗提示。
+d）此时回到Process Monitor窗口，单击Capture图标，停止抓取；
+e）点击File, 点击Save. 选择"All events" and "Native Process Monitor Format (PML)"点击OK。记录文件保存位置； 
+f）将PML文件重命名、打包压缩。
+2、下载附件中的CMGELogCollector.zip，解压后运行，勾选全部选项，点击“收集”，运行几分钟后会在桌面生成日志压缩包。
+将上述两步操作收取的日志通过CDUC上传，如无法上传，请麻烦 @win10sup@sdc.icbc.com.cn <mailto:win10sup@sdc.icbc.com.cn>  帮忙上传到sftp服务器。。
+日志上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。如果出现类似错误提示，点击后退即可。
+用户名：bgsupport
+密码：bgsupport
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+
+====第2封邮件====
+
+发件人：Wei Liang
+发送时间：2021-11-10 13:24:38.705000+00:00
+邮件内容:
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2021-11-11 15:51:25.617000+00:00
+邮件内容:
+张先生 您好：
+感谢电话接听。
+分析您上传的日志，查看CUA的日志，提示：
+OpenLocalMachineGPO failed! 
+查看Procmon日志，CmitUpdateAgent去访问组策略文件 C:\Windows\System32\GroupPolicy\Machine\Registry.pol
+查看日志中收集的GroupPolicy\Machine\Registry.pol文件，打开此文件内容显示为空，与正常的文件显示不同。
+在测试环境中测试用这个文件替换正常的Registry.pol文件，可以复现问题。
+针对工行当前环境，建议进行以下操作修复此问题：
+1）打开文件管理器，定位到以下目录：
+C:\Windows\SoftwareDistribution\CUACache\icbctool\Tool.Upgrade.2020.10.21\GroupPolicy\LGPO\{B6BEFE1E-79B7-4CD8-BF44-266D72735AC0}\DomainSysvol\GPO\Machine
+2）复制其中的Registry.pol文件，替换C:\Windows\System32\GroupPolicy\Machine\中的Registry.pol文件 （GroupPolicy是隐藏文件夹，替换此文件需要管理员权限，此文件包含工行定制项的组策略配置信息）。
+3）再次启动CUA服务，验证CUA服务是否能正常运行。
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2021-11-15 15:15:15.697000+00:00
+邮件内容:
+张先生 您好：
+根据刚才的电话沟通，确认您的问题已经解决，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+工行升级安装CUA客户端，有一台计算机出现CUA服务无法启动问题。
+问题总结：
+本地组策略文件Registry.pol损坏导致CUA服务无法启动，替换损坏的文件解决问题。
+问题分析：
+分析CUA客户端运行日志以及Procmon日志，确认Registry.pol文件损坏导致CUA服务无法启动。
+针对工行当前环境，建议进行以下操作修复此问题：
+1）打开文件管理器，定位到以下目录：
+C:\Windows\SoftwareDistribution\CUACache\icbctool\Tool.Upgrade.2020.10.21\GroupPolicy\LGPO\{B6BEFE1E-79B7-4CD8-BF44-266D72735AC0}\DomainSysvol\GPO\Machine
+2）复制其中的Registry.pol文件，替换C:\Windows\System32\GroupPolicy\Machine\中的Registry.pol文件 （GroupPolicy是隐藏文件夹，替换此文件需要管理员权限，此文件包含工行定制项的组策略配置信息）。
+3）再次启动CUA服务，验证CUA服务是否能正常运行。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。

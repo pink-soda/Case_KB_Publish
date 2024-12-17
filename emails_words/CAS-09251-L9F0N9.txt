@@ -1,0 +1,165 @@
+邮件主题：回复: [案例号: CAS-09251-L9F0N9 ] % | P3 | Lenovo|  V2022-L 测试中发现Vpro机型存在event 1000及1010问题 % 初次响应 CMIT:0001845
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2023-08-16 10:34:05.415000+00:00
+邮件内容:
+Hi Gao Meng,
+很高兴与你沟通，目前是当前案例的进展。
+案例进展：
+问题1：指向intel_cst_service_standalone.exe的1000报错是由于系统定制导致。计算机配置-管理模板 – 位置和传感器 – 关闭传感器策略改为未配置后，问题暂未复现。
+问题2:：指向msscntrs.dll的1010 1000报错由于复现概率很低，且需要手动抓取日志难度较大。反复操作但暂未能够抓取到所需的procmon日志，仍在处理。
+问题分析：
+1. 2次问题都是发生在查询Win32_PerfFormattedData_Tcpip_NetworkInterface的时候，在处理perfmon counter有关的查询时，需要去加载系统的所有的performance counter，2个crash都是发生在处理search相关的counter.
+0：007> x msscntrs！g_rgszLibraries
+msscntrs！g_rgszLibraries = wchar_t [8][16]
+（*（（msscntrs！wchar_t （*）[8][16]）0x7ff9819c1a70）） [类型： wchar_t [8][16]]
+    [0] ： “搜索” [类型： wchar_t [16]]
+    [1] ： “UGATHERER” [类型： wchar_t [16]]
+    [2] ： “UGTHRSVC” [类型： wchar_t [16]]
+    [3] ： “UINDEX” [类型： wchar_t [16]]
+2. 2个dump，都是在处理rgld[1] UGthrSvcObj的时候发现了corruption. 
+WmiPrvSE.exe.7064：
+0：007> dt msscntrs！性能库数据0xef33cfa690
++0x000 m_hShMem ： 0x00000000'000007BC 虚空
+m_pbShMem ： 0x00000273'0e840000 “???”
+ +0x010 m_dwObjects ： 1
+m_prgObjectNames ： 0x00000273'0e840004 [16] “UGthrSvcObj”
+m_rgObjectData ： [16] 性能对象数据
+[+0x000] m_hShMem ： 0x0 [类型： 无效 *]
+[+0x008] m_pbShMem ： 0x0 [类型： 无符号字符 *]
+ [+0x010] m_fObjectRequested ： 0 [类型： int]
+[+0x014] m_dwSpaceNeeded ： 0x0 [类型： 无符号长]
+m_pwstrName ：  0x2730e840004 ： “UGthrSvcObj” [类型： wchar_t *]
+[+0x020] m_pObjType ： 0x0 [类型： _PERF_OBJECT_TYPE *]
+m_prgCounterDef ：  0xef33cfa700 [类型： _PERF_COUNTER_DEFINITION *]
+m_pdwCounterData ：  0xef33cfafe0 ： 0x0 [类型： 无符号长 *]
+m_pdwMaxInstances ：  0x7ffacf01ef4e ： 0x1874c085 [类型： 无符号长 *]
+[+0x040] m_pCounterBlock ： 0x0 [类型： _PERF_COUNTER_BLOCK *]
+m_pInstData ：  0x7ffacefc5c46 [类型： INSTANCE_DATA *]
+好机器：
+（*（（msscntrs！PerfObjectData *）0x6c5470）） [类型： PerfObjectData]
+[+0x000] m_hShMem ： 0xb20 [类型： 无效 *]
+m_pbShMem ：  0x326a0000 ： 0xb8 [类型： 无符号字符 *]
+[+0x010] m_fObjectRequested ： 0 [类型： int]
+[+0x014] m_dwSpaceNeeded ： 0x0 [类型： 无符号长]
+m_pwstrName ：  0x32690004 ： “UGthrSvcObj” [类型： wchar_t *]
+m_pObjType ：  0x326a0000 [类型： _PERF_OBJECT_TYPE *]
+m_prgCounterDef ：  0x326a0040 [类型： _PERF_COUNTER_DEFINITION *]
+m_pdwCounterData ： 0x326a05b8 ：  无法读取地址 0x326a05b8 的内存 [类型： 无符号长 *]
+m_pdwMaxInstances ： 0x326a05bc ：  无法读取地址 0x326a05bc 的内存 [类型： 无符号长 *]
+m_pCounterBlock ：  0x326a05c0 [类型： _PERF_COUNTER_BLOCK *]
+[+0x048] m_pInstData ： 0x0 [类型： INSTANCE_DATA *]
+0：000> dx -r1 （（msscntrs！_PERF_OBJECT_TYPE *）0x326a0000）
+（（msscntrs！_PERF_OBJECT_TYPE *）0x326a0000） ：  0x326a0000 [类型： _PERF_OBJECT_TYPE *]
+[+0x000]总字节长度 ： 0x5b8 [类型： 无符号长]
+[+0x004]定义长度 ： 0x5b8 [类型： 无符号长]
+[+0x008]页眉长度 ： 0x40 [类型： 无符号长]
+[+0x00c]对象名称标题索引 ： 0x2418 [类型： 无符号长]
+[+0x010]对象名称标题 ： 0x0 [类型： 无符号长]
+[+0x014]对象帮助标题索引 ： 0x2419 [类型： 无符号长]
+[+0x018]对象帮助标题 ： 0x0 [类型： 无符号长]
+[+0x01c]详细级别 ： 0x64 [类型： 无符号长]
+[+0x020]计数器数 ： 0x23 [类型： 无符号长]
+[+0x024]默认计数器 ： 0 [类型： 长]
+[+0x028]实例数 ： -1 [类型： 长]
+[+0x02c]代码页 ： 0xffffffff [类型： 无符号长]
+性能时间 ：  {0} [类型： _LARGE_INTEGER]
+性能 ：  {0} [类型： _LARGE_INTEGER]
+WmiPrvSE.exe.7460.dmp
+（*（（msscntrs！PerfLibraryData *）0x26d937a7e0）） [类型： PerfLibraryData]
+[+0x000] m_hShMem ： 0x5e0 [类型： 无效 *]
+m_pbShMem ：  0x1827cce0000 ： 0x1 [类型： 无符号字符 *]
+[+0x010] m_dwObjects ： 0x1 [类型： 无符号长]
+m_prgObjectNames ：  0x1827cce0004 ： “UGathererObj” [类型： wchar_t （*）[16]]
+m_rgObjectData [类型： 性能对象数据 [16]]
+0：007> DQ 0X26D937A7E0
+00000026'd937a7e0 00000000'000005e0 00000182'7cce0000
+00000026'd937a7f0 00000026'00000001 00000182'7cce0004
+00000026'd937a800 000000000'00000000 000000000'000000000
+00000026'd937a810 00000000'00000001 00000182'7cce0004
+00007ff9'afe5ee74
+00000182'00000000 00000026'd937a870
+00000026'd937a840 00000026'd937a8a0 00000182'7bd20000
+00000026'd937a850 000000000'00000000 000000000'000000000
+好机器：
+0：000> dq 0x6c4eb0
+00000000'006c4eb0 00000000'00000b84 00000000'2cdd0000
+00000000'006c4ec0 00000000'00000001 00000000'2cdd0004
+00000000'006c4ed0 00000000'00000b28 00000000'2d670000
+00000000'006c4ee0 00000000'000000000 00000000'2cdd0004
+00000000'006c4ef0 00000000'2d670000 00000000'2d670040
+00000000'2d6706a8 00000000'2d6706ac
+00000000'006c4f10 00000000'00000000 00000000'2d6706b0
+00000000'006c4f20 00000000'00000000 00000000'000000000
+3. 目前看上去是UGATHERER的counter有corruption发生。 
+    [0] ： “搜索” [类型： wchar_t [16]]
+    [1] ： “UGATHERER” [类型： wchar_t [16]]
+    [2] ： “UGTHRSVC” [类型： wchar_t [16]]
+    [3] ： “UINDEX” [类型： wchar_t [16]]
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2023-10-10 11:04:22.359000+00:00
+邮件内容:
+Hi Gao Meng,
+目前使用抓取日志相关的脚本，始终没有复现问题。
+脚本的功能如下
+*   解压后将ProcessMonitor文件夹和2个bat文件、autorun文件拷贝桌面
+*   导入autorun.xml文件，此文件是“任务计划程序”配置文件，负责开机后自动运行stop.bat
+*   Run.bat负责启动procmon工具，以便抓取开机过程的日志
+*   Stop.bat负责显示是否复现了1010问题，如果复现则需要手动拷贝位于ProcessMonitor文件夹里的PML文件。
+--------------
+
+====第3封邮件====
+
+发件人：Gao Meng
+发送时间：2023-10-20 09:36:19.213000+00:00
+邮件内容:
+Hi Jia Wei,
+测试机寄回联想后，联想测试回复如下，测试机稍后会寄回可以继续查看。
+两台机器里，黑色这台已经复现问题，但桌面ProcessMonitor文件夹没有出现PML文件，autorun.xml文件和Run.bat文件也随之消失。所有的环境我都按您的要求保留下来了。
+银色这台我这次没复现到问题，新的环境已经搭好，CMIT可以再跑Longrun试一试能否复现。同之前一样，拔掉电源复现概率更高，AC模式下基本不复现。
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2023-12-19 10:17:05.032000+00:00
+邮件内容:
+Hi Gao Meng,
+目前经过长时间的测试，一直无法复现1010问题现象。
+我通过脚本文件和计划任务，可以实现自动配置Process Monitor 自动检测1010 Event ID，检测后终止cmd.exe Process的功能。
+附件是相关文件。
+使用方法
+1）将SS文件夹置于用户桌面
+2）导入Autorun.xml
+3）使用Lenovo脚本进入重启压力测试
+4）重启进入系统会自动出发计划任务，运行bat后触发ps1脚本，检测1010。
+5）如果检测到1010 则会Kill cmd.exe进程保留现场。如果未检测到1010则不会有任何操作。
+6）脚本会跳出对话框，如果未检测到1010，则不用操作。如果检测到1010，点击是，将boot.pml文件保存至本地磁盘。
+注意：每轮测试后如果没有复现1010，则需要关闭Process Monitor后手动删除C:\Windows\boot.pmb文件，因为会占用很大的空间。
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2024-04-12 11:22:17.066000+00:00
+邮件内容:
+高女士，您好
+很高兴与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+OEM：Lenovo
+系统版本：CMGE V2022-L
+问题描述：
+Lenovo 对V2022-L 导入机型进行测试，在使用Intel Vpro 设备中安装相关驱动后出现event ID  1000错误，此问题与之前 CAS-08271-G7D6B0 情况相同。
+GSKU上出现application eventlog error id 1000事件指向wmiprvse.exe和msscntrs.dll，出现该error id 1000之前还有error id 1010事件显示“MSSCNTRS”和“UGTHRSVC”服务可扩展计数器 DLL指向有异常。
+案例进展：
+指向intel_cst_service_standalone.exe的1000报错、指向msscntrs.dll的1010 1000报错 是由于神州网信政府版系统基于国家相关安全要求定制导致。
+计算机配置-管理模板 – 位置和传感器 – 关闭传感器策略改为未配置后，问题暂未复现。
+--------------

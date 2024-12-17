@@ -1,0 +1,55 @@
+邮件主题：回复: [案例号: CAS-11153-R3T9Y2 ] % 戴尔OEM用户-工商银行郑州分行用户反馈V2020-L无法离线激活系统问题 % 初次响应 CMIT:0001290
+
+====第1封邮件====
+
+发件人：Shi Guannan
+发送时间：2024-04-03 14:53:53.579000+00:00
+邮件内容:
+冯先生 您好：
+感谢您的电话接听。
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+工商银行郑州分行用户反馈在V2020-L版本系统使用激活客户端3.1版本无法离线激活问题，需要协助排查。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+日志收集：
+a)      日志收集工具
+请您从以下链接下载日志收集工具
+https://cduc.cmgos.com/download.php?id=1314&token=UxbyjB571yCbwJLdrKzfaM1q4IpjoJUb <https://cduc.cmgos.com/download.php?id=1314&token=UxbyjB571yCbwJLdrKzfaM1q4IpjoJUb> 
+解压后双击运行CMGELogCollectorV2.exe，勾选所有选项，点击收集获取对应的系统日志，将生成的日志压缩包通过CDUC上传。
+b)       OAGTool
+1）从以下链接下载OAGTool
+https://cduc.cmgos.com/download.php?id=1319&token=prNvZHfxbRnNpIMHb1bQ3emYL9TWHGYw
+2）复制并解压到未激活的设备上。
+3）以管理员权限执行getHardware.bat脚本。
+4）运行完成后会在当前目录生成hardware.txt文件，将此文件通过CDUC上传。
+日志上传方法：
+用户名：gsyhzhfh
+密码：gsyhzhfh
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 
+
+====第2封邮件====
+
+发件人：Shi Guannan
+发送时间：2024-04-10 14:43:48.459000+00:00
+邮件内容:
+冯先生 您好：
+感谢您的电话接听。
+很高兴了解到您的问题已解决，经过您的确认，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如有其他问题，您可以随时联系我们。
+案例总结：
+----
+问题定义：
+工商银行郑州分行用户反馈在V2020-L版本系统使用激活客户端3.1版本无法离线激活问题，需要协助排查。
+问题总结：
+建议收取日志进行进一步分析。用户反馈问题已自行修复，设备激活成功，案例关闭。
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 

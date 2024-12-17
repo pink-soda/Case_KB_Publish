@@ -1,0 +1,253 @@
+邮件主题：答复: 回复: 回复: 回复: [案例号: CAS-02283-Z3R5N8 ] % |P1|ICBC|工行用户反馈蓝屏问题 % 初次响应 CMIT:0001573
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-14 16:51:23.059000+00:00
+邮件内容:
+吴先生，您好：
+如刚才电话沟通，我谨在此阐述问题涉及的范围定义：
+问题范围：用户反馈操作系统安装4月的系统更新补丁，重启计算机后频繁蓝屏
+问题定义：协助用户分析此问题。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+请帮忙收集附件日志信息，运行之后桌面会生成log文件夹，请将log文件夹上传到文件上传系统。附件为系统使用说明，以下为：
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user7a071bfa
+发送时间：2020-05-14 18:07:15.363000+00:00
+邮件内容:
+Hi All,
+收到毓杰线下通知，Case降为P2级别处理。
+@win10sup@sdc.icbc.com.cn <mailto:win10sup@sdc.icbc.com.cn> ，如需再次提升为P1级别，请随时联系。谢谢
+Best Regards!
+王文磊
+________________________________
+www.cmgos.com <http://www.cmgos.com/> 
+Email: wangwl@cmgos.com <mailto:wangwl@cmgos.com> 
+Mobile: + 86 186 1036 8080
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-15 10:58:29.076000+00:00
+邮件内容:
+吴先生，您好：
+如刚才电话联系，在同一台电脑上收集的7个dump中，有3个是相同的bugcheck：PAGE_fault_in_nonpaged_area(50)，查看其call stack内容如下：
+可以看到，这几次蓝屏指向vwifimf.sys文件
+因此有如下几个操作需要您帮忙确认一下：
+1，\systemroot\system32\drivers\vwifimf.sys这个文件的属性页面截图发送给我
+2，这台电脑安装的行内软件列表
+3，尝试升级网卡驱动至最新
+4，尝试升级系统补丁至5月最新
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-15 12:33:44.480000+00:00
+邮件内容:
+吴先生，您好：
+今天上午您发送的另外一台机器的两个minidump也是PAGE_fault_in_nonpaged_area(50)的bugcheck，从call stack来看依然是vwifimf触发。请将上封邮件的操作也在这台机器上进行尝试
+如下几个操作：
+1，\systemroot\system32\drivers\vwifimf.sys这个文件的属性页面截图发送给我
+2，这台电脑安装的行内软件列表
+3，尝试升级网卡驱动至最新
+4，尝试升级系统补丁至5月最新
+
+====第5封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-15 16:12:34.990000+00:00
+邮件内容:
+李工，你好 
+        最新的进展，前2次发的日志是由于使用该wifi配置，连上这个wifi后系统蓝屏的。 
+
+====第6封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-15 16:51:21.446000+00:00
+邮件内容:
+原先的配置 
+
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-15 18:25:14.210000+00:00
+邮件内容:
+吴先生 & 宇智，您好：
+经刚才电话沟通，我谨在此重新阐述下问题定义范围，即：用户的两台V2020-L电脑在连接行内wifi（SSID:ICBCOTP,ICBCTCOTP,ASTR0A0122）后一段时间，会固定发生蓝屏现象,连接外网无线或有线未发生蓝屏现象。
+目前了解到的信息：
+1， 两台电脑机型分别为：联想T440和联想T460
+2， 已安装软件：TMS,趋势软件等
+3， 已收集两台电脑的memory.dmp
+4， 已收集vwifimf.sys的属性截图
+请将2,3两部分内容上传至以下sftp
+Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client
+   主机：sftp://ocean.cmgos.com
+   用户名为：ICBC
+   端口：22222
+   密码：2qfs52ninbFB
+注意上传前确认点击跳转到/upload
+以下为：
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-18 12:19:51.352000+00:00
+邮件内容:
+吴先生，您好：
+如之前所说，循例问一下，dump文件是否已成功上传。另有关vwifimf.sys的问题，我们之前有类似案例表明与TMS相关，需要TMS项目组分析。所以请帮忙联系TMS项目组人员，我们提供协助分析。谢谢
+
+====第9封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-19 09:10:31.538000+00:00
+邮件内容:
+李工，你好 
+        日志已经上传空间。另外已经通知TMS公司拿日志同步分析。 
+
+====第10封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-22 13:59:28.368000+00:00
+邮件内容:
+吴先生，您好：
+如刚才电话沟通，目前case进展如下：
+从上传的两个memorydump来看，memorydump（T460卓佳）损坏，另一个dump指向\SystemRoot\System32\drivers\Netwbw02.sys。
+参见具体dump内容：
+Netwbw02 call到ndis，然后到nwifi出现fault
+0: kd> !mex.t -c
+Process                 AttachedProcess           Thread           CID       UserTime KernelTime ContextSwitches Wait Reason  Time State
+Idle (fffff8033d40d9c0) System (ffffe68973076040) fffff8033d410400 0.0             0s    52s.422           81246 Executive   203ms Running on CPU 0
+# Call Site                                                                                                           Info
+0 nt!KeBugCheckEx+0x0 
+ 1 nt!_guard_icall_handler+0x1b 
+ 2 nt!RtlpExecuteHandlerForException+0x12
+3 nt!RtlDispatchException+0x430 
+ 4 nt!KiDispatchException+0x144 
+ 5 nt!KiExceptionDispatch+0xc2 
+ 6 nt!KiGeneralProtectionFault+0x30b                                                                                   TrapFrame @ fffff8033f677ec0
+7 0xfffff803432dc324 
+ 8 0xffff42018a546395 
+ 9 nwifi!Dot11SendCompletion+0x4a 
+ a nwifi!Pt6SendComplete+0x1d 
+ b ndis!ndisCallSendCompleteHandler+0x32
+c ndis!ndisIterativeDPInvokeHandlerOnTracker+0x44
+d ndis!ndisInvokeNextSendCompleteHandler+0xcb
+e ndis!ndisMSendNetBufferListsCompleteInternal+0x211
+f ndis!NdisMSendNetBufferListsComplete+0x26d
+10 Netwbw02!doApiSendNblComplete+0x1d
+11 Netwbw02!mpdlMpPacketSendMultipleTxComplete+0xae
+12 Netwbw02!htxHandleTxCompleteEvent+0x6db
+13 Netwbw02!cfPumpTheEventQueue+0x221
+14 Netwbw02!fpStartFlowWithEventOrig+0x10f
+15 Netwbw02!hmacAlPtSendComplete+0x2e
+16 Netwbw02!mmacAlMpSendComplete+0x29
+17 Netwbw02!mtxHandleIndicateSendCompleteEvent+0x2c
+18 Netwbw02!cfPumpTheEventQueue+0x221
+19 Netwbw02!fpStartFlowWithEventOrig+0x10f
+1a Netwbw02!mmacAlCbCompressedBaNotification+0x52
+1b Netwbw02!prvRfdQueueDispatch+0x188
+1c Netwbw02!rfdQueueProcessFragments+0x15e
+1d Netwbw02!isrHandlerRoutine+0x221 
+1e Netwbw02!alonExInterruptHandlerRoutine+0x1c
+1f Netwbw02!oscHandleMsiInterrupt+0x12
+20 ndis!ndisMiniportDpc+0xe5 
+21 ndis!ndisInterruptDpc+0x187 
+22 nt!KiExecuteAllDpcs+0x2ec 
+23 nt!KiRetireDpcList+0x1ae 
+24 nt!KiIdleLoop+0x5a 
+结合之前的几个minidump指向内容为vwifimf.sys，该驱动文件为TMS团队研发。因此请联系用户确认如下内容：
+1.	关于Netwbw02.sys，该驱动版本是2015年，请升级网卡Intel(R) Dual Band Wireless-N 7260驱动到最新，重启机器后生效
+2.	最近是否有新的蓝屏现象发生，是否有新的dump文件生成。如有，请上传至sftp，如没有，请直接执行第3步
+3.	收集specical pool内容，并将蓝屏后dump文件上传。具体方法如下：
+开special pool
+请按照如下方法开启special pool:
+a.  右键单击开始按钮-> 选择“运行”, 输入 verifier 点击确认. 
+b.  选择 "创建自定义设置" 再点击下一步. 
+c.  勾选 "特殊池" 再点击下一步. 
+d.  选择“从一个列表选择驱动程序名”
+e.  点击“全选”，再点击完成
+f.  重启计算机生效
+Important:  
+1. Enabling the Special Pool may impact the performance of the computer.
+2. If the computer is unable to start up, please use "Last Known Good" to undo the changes made above: 
+--  Keep press F8 key until the Windows Startup menu appears. 
+--  Choose the "Last Known Good Configuration", and press Enter.
+2. 关闭special pool
+a.      右键单击开始按钮-> 选择“运行”, 输入 verifier 点击确认. 
+b.     选择“删除现有设置”，点击完成，再重启生效
+
+====第11封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-25 18:06:07.583000+00:00
+邮件内容:
+吴先生，您好：
+循例问一下，此蓝屏问题用户是否有何反馈更新，盼复，谢谢
+
+====第12封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-27 14:16:16.075000+00:00
+邮件内容:
+李工，你好 
+        用户在更新网卡驱动后，这几天暂时未复现问题。可以关闭case，待后续复现在与您联系。 
+谢谢 
+
+====第13封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-27 16:00:12.747000+00:00
+邮件内容:
+吴先生，您好：
+感谢您的回复，经您的确认，鉴于目前蓝屏问题不再复现，此case将暂做归档处理，以下为案例总结，请您知悉：
+Case No： CAS-02283-Z3R5N8
+问题描述：
+=====================
+用户反馈操作系统安装4月的系统更新补丁，重启计算机后频繁蓝屏
+问题分析：
+=====================
+根据用户收集dump内容，蓝屏问题指向\SystemRoot\System32\drivers\Netwbw02.sys
+通过查询sys文件版本信息，可以看到网卡驱动版本过低，建议用户升级后观察
+0: kd> lmvm Netwbw02
+Browse full module list
+start             end                 module name
+fffff803`42290000 fffff803`42612000   Netwbw02   (private pdb symbols)  c:\symbols\netwbw02.pdb\957856C99F1A4C8887E04F7C2E5C24BE1\netwbw02.pdb
+    Loaded symbol image file: Netwbw02.sys
+    Image path: \SystemRoot\System32\drivers\Netwbw02.sys
+    Image name: Netwbw02.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Sun Feb 22 19:00:57 2015 (54E9B6E9)
+    CheckSum:         0035F5C6
+    ImageSize:        00382000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+问题总结：
+=====================
+经用户升级网卡驱动后观察，蓝屏问题不再复现。此case将暂做归档处理，如您有其他问题，可随时与我们联系处理，最后感谢您这段时间对我工作的大力支持。
+
+====第14封邮件====
+
+发件人：Li Qi
+发送时间：2020-05-27 16:05:05.218000+00:00
+邮件内容:
+Hi，Louis：
+经用户确认，升级网卡驱动后观察一段时间，并未复现蓝屏问题，此case先关闭吧。如后续用户再反馈有相同问题，我再与您联系，谢谢
+
+====第15封邮件====
+
+发件人：Louis Han
+发送时间：2020-05-27 16:06:32.328000+00:00
+邮件内容:
+Hi LiQi,
+好的，多谢。
+Louis Han | Support Escalation Engineer | Customer Service & Support, Asia Pacific & Greater China Region
+P +86 (510) 66657646
+
+====第16封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-06-01 08:53:33.118000+00:00
+邮件内容:
+李工，你好 
+        以下是行研一位领导的机器蓝屏，上周已经更新过网卡相关的驱动。请先看下是否需要再次开启case分析？ 

@@ -1,0 +1,29 @@
+邮件主题：回复: [案例号: CAS-02905-W7N4D4 ] % |P3|ICBC|领导使用神州网信政府版系统的电脑在远程办公时蓝屏 % 初次响应 CMIT:0001956
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2020-09-15 15:22:33.514000+00:00
+邮件内容:
+毓杰，您好：
+如刚才电话沟通，目前针对吴总的dump的分析已完成，已找到发生蓝屏问题的原因，经您同意，此case将暂做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-02905-W7N4D4
+问题描述：
+=====================
+CMGE在远程办公时蓝屏。
+问题分析：
+=====================
+此次蓝屏的原因是由于list entry损坏导致，具体由谁引起，需要深入分析后给出结论。该问题与当前正在分析中的vwifimf在重组网络数据包过程中传参错误导致蓝瓶的问题不同，因此经客户同意后，暂不做深入分析。以下为该dump的分析信息：
+KERNEL_SECURITY_CHECK_FAILURE (139)
+A kernel component has corrupted a critical data structure.  The corruption
+could potentially allow a malicious user to gain control of this machine.
+Arguments:
+Arg1: 0000000000000003, A LIST_ENTRY has been corrupted (i.e. double remove).
+Arg2: fffffc01541ff710, Address of the trap frame for the exception that caused the bugcheck
+Arg3: fffffc01541ff668, Address of the exception record for the exception that caused the bugcheck
+Arg4: 0000000000000000, Reserved
+问题总结：
+=====================
+结合工行现场之前蓝屏问题的分析结论，请优先协调TMS处理，明确出现list entry错误的问题场景，并给出相应的解决方案。具体可参见附件邮件内容。
+经与用户沟通，目前完成此dump的分析工作，同意关闭此case。
+以上，如您后续有任何问题，可随时与我们联系，谢谢

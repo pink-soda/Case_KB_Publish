@@ -1,0 +1,272 @@
+邮件主题：回复：MEMORY.DMP--[案例号: CAS-05663-N0K3K3 ] % |P3|ICBC|工商银行福建分行反馈蓝屏问题 % 初次响应 CMIT:0001385
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-11 10:45:30.727000+00:00
+邮件内容:
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-11 10:52:03.154000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，我谨以此邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈3台联想M730S电脑在系统配置后出现蓝屏问题，系统自动修复失败，并无法进入系统。 
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+由于当前问题电脑均已恢复出厂状态，且不再蓝屏，请您在接下来的配置操作中按附件内容进行dump配置，方便如再次发生蓝屏时可以收集dump文件进行分析，谢谢。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-11 15:05:26.403000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，请您使用winPE进入出现蓝屏的电脑，在问题电脑上确认c:\windows\MEMORY.DMP的文件是否存在。谢谢
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-11 17:37:52.264000+00:00
+邮件内容:
+陈先生，您好：
+       得知您收取到dump日志，大小为300M左右，请将该文件压缩后按如下方法上传至日志上传系统，谢谢。
+登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBC001
+--------------
+
+====第5封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-11 18:01:49.891000+00:00
+邮件内容:
+陈先生，您好：
+       已收到您上传的日志，感谢您的配合，待分析有进展后我会与您联系，祝周末愉快。
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-14 11:33:13.568000+00:00
+邮件内容:
+陈先生，您好：
+       查看您上传的dump日志，并非蓝屏发生时生成，应为在自动修复失败后产生，故该日志并无蓝屏发生时的故障记录信息，请按之前所示配置dump，等待蓝屏再次发生。
+       另根据您上传的日志，仍提取到一些怀疑内容，需要与您确认，首先看下述部分dump分析：
+1， 该dump生成时，系统仅启动28秒，因此判断应在系统修复后生成。
+可进一步检查，在系统日志中是否有bugcheck日志生成，方便的话可截图给我。
+方法如下：按win+R，在运行窗口输入eventvwr，打开事件查看器，在windows日志-系统中，筛选当前日志，选择“事件来源：bugcheck”，点击确定
+2， 该问题产生的直接原因为csrss在调用winsrv时未找到对应文件导致。该文件位于c:\windows\system32\winsrv.dll中，可进一步确认该文件是否存在。但由于问题发生在windows自修复阶段，此处可能与OEM自定义设置有关，与真实发生的蓝屏问题没有关联。
+3， 根据报错0xc0000135，怀疑与驱动有关，在该dump中，在调用PopGracefulShutdown后出现异常，这里涉及很多动作，包括：IO管理器的关闭，配置管理器的关闭，缓存管理器的关闭等。在这里修改的文件、注册表等信息将被写到磁盘等等。最终调用PopShutdownSystem，即电源管理中的操作.
+从第三点中，我们可以进行的操作检查为：
+*  硬件驱动是否更新至最新。
+*  检查电源选项，关闭睡眠，休眠等操作尝试。将下图的“睡眠”，全部改为“不采取任何操作”
+
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-14 16:34:50.026000+00:00
+邮件内容:
+陈先生 & 毓杰，您们好：
+       如刚才电话沟通，基于中午的邮件分析，目前有如下几个事项需要配合协查：
+1， 请毓杰帮忙协调福建鼓楼支行当地的联想工程师查询问题电脑的驱动是否为最新
+2， 请毓杰提供工行定制镜像用于重新安装
+3， 请陈先生在接下来的配置过程中添加full dump配置步骤
+4， 请陈先生找1-2台同型号电脑安装工行定制镜像后用于测试
+5， 请陈先生在出现蓝屏问题后记录当时连接的外设情况（包括外设型号，种类等信息）
+蓝屏问题原因判断较为复杂，从当前来看，问题电脑的随机蓝屏与之后的系统自动修复失败为两个不同的问题，解决思路也有所不同。
+*  为尽可能减少未来蓝屏的发生概率，优先从硬件及其他外设驱动入手。
+*  自动修复的失败不排除与过程中的镜像文件调用有关，优先从设备自带系统更换入手。
+感谢二位的大力支持，谢谢。
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-24 15:22:06.320000+00:00
+邮件内容:
+陈先生，您好：
+       由于电话未联系到您，循例问下近期是否有再次发生蓝屏情况，当前进度如何，请您方便时回复我一下，谢谢。
+
+====第9封邮件====
+
+发件人：Li Qi
+发送时间：2022-02-25 17:48:27.338000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，鉴于当前蓝屏问题不再复现，经您的同意，此case将暂做归档处理，以下为案例总结，请知悉：
+Case No：CAS-05663-N0K3K3
+问题描述：
+=====================
+用户反馈3台联想M730S电脑在系统配置后出现蓝屏问题，系统自动修复失败，并无法进入系统。
+问题分析：
+=====================
+问题电脑的随机蓝屏与之后的系统自动修复失败为两个不同的问题。当前尚未收取到蓝屏发生的dump日志供分析，故无法明确知悉蓝屏原因。现阶段做好full dump配置，等待蓝屏问题出现。
+问题总结：
+=====================
+近期暂未复现该问题，经用户同意，该问题将暂做归档处理。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。
+
+====第10封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-13 14:20:50.375000+00:00
+邮件内容:
+陈先生，您好：
+如刚才沟通，请参照下面方式上传dump文件。并将蓝屏电脑的C:\windows\System32\Winevt\Logs\System.evtx一并压缩后上传，谢谢
+为了更安全、快速地传输数据，您可以在Filezilla上使用以下账户信息登入神州网信网站。 
+l  Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client <https://filezilla-project.org/download.php?type=client>  
+l  登陆地址：sftp://ocean.cmgos.com 
+l  用户名为：ICBC（区分大小写）
+l  密码：2qfs52ninbFB
+l  端口：22222
+登陆之后，上传至/upload/ 文件夹 
+
+====第11封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-15 17:52:05.133000+00:00
+邮件内容:
+陈先生，您好：
+       看了您提供的截图。想询问下屏山支行的那台问题电脑，当前无法进入系统的过程是：出现lenovo logo之后，然后进入自动修复，然后提示修复失败，这样一个启动过程么？方便时可回复我，谢谢。
+没有蓝屏的错误进度条，最终就停留在如下界面？
+
+====第12封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-18 16:34:55.492000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，当前问题不同于正常系统蓝屏后可以经重启进入操作系统的问题，而是当系统发生crash后，系统无法启动的问题。经和您确认，当前问题定义转化为：以当前屏山支行的故障机为排查测试机，分析如何修复无法启动系统的问题。基于此问题定义，请参见如下故障描述：
+       开机加电后，系统出现lenovo logo图标，在该界面转圈运行过程中，发生蓝屏自动重启循环。
+下一步动作：
+1， 请使用镜像安装盘启动，进入“修复计算机”-“疑难解答”-“命令提示符”,
+2， 在命令提示符窗口中输入：
+*  BCDedit /set {default} advancedoptions on
+*  BCDedit /set {default} recoveryenabled no
+       3，重启计算机，查看问题是否依然是故障描述所述现象。
+
+====第13封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-20 10:36:32.560000+00:00
+邮件内容:
+陈先生，您好：
+       电话中得知运行命令时有报错（可将报错发送给我），请更新如下步骤再次进行尝试：
+1， 确认原系统中的系统分区，找到efi分区引导盘，并设置盘符，具体操作如下（各电脑分区不同，标注黄色部分请视具体情况选择）：
+在命令行窗口输入：
+Diskpart
+List disk
+Sel disk 0         （0应为本地硬盘）
+List vol
+Sel vol 1            （vol 1的label应为system，且容量大小为100M）
+Assign letter=“S”
+Exit
+2， 确认s盘是否包含efi文件夹，具体命令如下：
+在命令行窗口输入：
+S:       （跳转至s盘）
+Dir      （查看是否包含efi文件夹）
+如不包含efi文件夹，说明选取vol错误，需要重复步骤1重新sel vol X并设置盘符
+3， 1,2步骤完成之后输入如下命令进行尝试：
+bcdedit /store S:\EFI\Microsoft\Boot\BCD /set {default} advancedoptions on 
+bcdedit /store S:\EFI\Microsoft\Boot\BCD /set {default} recoveryenabled no
+修改完成后可以通过如下命令查询：
+bcdedit /store S:\EFI\Microsoft\Boot\BCD /enum active
+4， 重启电脑，看问题电脑是否仍然无法启动，停止在哪一步，与之前问题是否一致。
+上述步骤的目的如该过程中有任何问题，可随时与我联系，或邮件截图给我，谢谢
+
+====第14封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-20 17:39:38.553000+00:00
+邮件内容:
+陈先生，您好：
+1.	请解压附件，并将解压文件夹放入引导优盘
+2.	WinPE引导，进入命令行。
+3.	从命令行导航至U盘中解压文件夹的所在位置，运行如下命令：
+disk2vhd-tmp.exe
+4，取消Use Volume Shadow Copy勾选，选择C盘，然后生成VHDX文件。确定VHD文件保存路径，需要一个较大的U盘，或者除C盘之外的盘保存这个文件。
+
+====第15封邮件====
+
+发件人：Li Qi
+发送时间：2022-04-26 09:33:53.413000+00:00
+邮件内容:
+陈先生，您好：
+收到，正在下载，有更新我会第一时间和您联系。谢谢
+
+====第16封邮件====
+
+发件人：Li Qi
+发送时间：2022-05-09 13:26:56.058000+00:00
+邮件内容:
+陈先生，您好：
+       如刚才电话沟通，经过本地的问题复现及针对整个开机过程的逆推排查，您保留的这台问题电脑遇到的no boot问题原因如下，该问题是否与近期其他电脑出现的同类问题相同，请根据以下的排查思路进行优先排查，如所遇问题相同，请参照最终的解决方案，谢谢。
+       No boot问题原因：
+C:\windows\System32目录下丢失或损坏以下文件导致，不排除在输入用户名和密码之后又更多的文件丢失。这些文件如下：
+*  msvcp_win.dll
+*  msvcrt.dll
+*  msvcp110_win.dll
+*  srvcli.dll
+*  SspiCli.dll
+*  sxs.dll
+*  svchost.exe
+回顾整体no boot问题，总共涉及7个方面，包括csrss.exe、wininit.exe、Dcom launch、Logunui.exe的蓝屏、黑屏、报错等。
+1.	缺少msvcp_win.dll 导致CSRSS退出。
+((ntdll!_LDRP_LOAD_CONTEXT *)0x16d9a607c20)                 : 0x16d9a607c20 [Type: _LDRP_LOAD_CONTEXT *]
+[+0x000] ModuleName       : "msvcp_win.dll" [Type: _UNICODE_STRING]
+[+0x010] DllPath          : 0x291a18eb60 [Type: _LDRP_DLL_PATH *]
+[+0x018] SectionHandle    : 0x0 [Type: void *]
+[+0x020] LoadFlags        : 0x8020 [Type: unsigned long]
+[+0x024] LoadReason       : LoadReasonStaticDependency (0) [Type: _LDR_DLL_LOAD_REASON]
+[+0x028] LoadStatus       : 0x291a18e850 : 0 [Type: long *]
+2.	缺少msvcrt.dll 导致wininit.exe退出。
+kd> dx -id 0,0,ffff968ca5c240c0 -r1 ((ntdll!_LDRP_LOAD_CONTEXT *)0x177aeef37c0)
+((ntdll!_LDRP_LOAD_CONTEXT *)0x177aeef37c0)                 : 0x177aeef37c0 [Type: _LDRP_LOAD_CONTEXT *]
+[+0x000] ModuleName       : "msvcrt.dll" [Type: _UNICODE_STRING]
+[+0x010] DllPath          : 0x12d467f230 [Type: _LDRP_DLL_PATH *]
+[+0x018] SectionHandle    : 0x0 [Type: void *]
+[+0x020] LoadFlags        : 0x8020 [Type: unsigned long]
+[+0x024] LoadReason       : LoadReasonStaticDependency (0) [Type: _LDR_DLL_LOAD_REASON]  
+kd> !error 0n-1073741515
+Error code: (NTSTATUS) 0xc0000135 (3221225781) - The code execution cannot proceed because %hs was not found. Reinstalling the program may fix this problem.
+3.	缺少SspiCli.dll导致wininit.exe退出。
+[+0x000] ModuleName       : "SspiCli.dll" [Type: _UNICODE_STRING]
+[+0x010] DllPath          : 0xff03f5f550 [Type: _LDRP_DLL_PATH *]
+[+0x018] SectionHandle    : 0x0 [Type: void *]
+[+0x020] LoadFlags        : 0x8020 [Type: unsigned long]
+4.	缺少sxs.dll导致wininit.exe退出。
+Wininit State (g_usState): Phase 7 of 17: WININIT_STATE_SHUTDOWN_INIT Complete: Secure Boot phase complete
+Name        Address          Ses PID         Act Thrd Handle Mods User Name Create Time                Up Time Exit Status Z Thrd Parent                              
+=========== ================ === =========== ======== ====== ==== ========= ========================== ======= =========== ====== ===============================================
+wininit.exe ffffa587c2f4c140   0 2c4 (0n708)        5     87   20 \         05/05/2022 10:34:21.978 AM 3s.021           7e      0 Parent PID exists but is not valid: 270 (0n624)
+Command Line: wininit.exe
+kd> !error 7e 
+Error code: (Win32) 0x7e (126) - The specified module could not be found.
+GetFileDigest() ZwOpenFile(\??\C:\WINDOWS\SYSTEM32\SERVICES.EXE) success.
+pfm: CreateProcess: 1, pid: 844
+SXS: BaseSrvSxsGetActivationContextGenerationFunction: LdrLoadDll(C:\windows\system32\sxs.dll) failed 0xc0000135
+SXS: BaseSrvSxsGetActivationContextGenerationFunction() returned STATUS_DLL_NOT_FOUND, propagating.
+5.	缺少svchost.exe黑屏（dcomlaunch/lsm无法运行）
+6.	缺少msvcp110_win.dll导致 Logonui 异常退出。
+025c:0414 @ 00042984 - LdrpResolveDllName - RETURN: Status: 0xc0000135
+             025c:0414 @ 00042984 - LdrpSearchPath - RETURN: Status: 0xc0000135
+             025c:0414 @ 00042984 - LdrpProcessWork - ERROR: Unable to load DLL: "msvcp110_win.dll", Parent Module: "C:\windows\System32\dsreg.dll", Status: 0xc0000135
+             025c:0288 @ 00042984 - LdrpLoadDllInternal - RETURN: Status: 0xc0000135
+             025c:0288 @ 00042984 - LdrpRedirectDelayloadFailure - ERROR: Failed to find export dsreg.dll!DsrIsDeviceJoined (Ordinal:0) in "logoncontroller.dll"  0xc0000135
+    7，缺少srvcli.dll导致 Logonui 异常退出
+              0b4c:0864 @ 00073078 - LdrpResolveDllName - RETURN: Status: 0xc0000135
+              0b4c:0864 @ 00073078 - LdrpSearchPath - RETURN: Status: 0xc0000135
+              0b4c:0864 @ 00073078 - LdrpProcessWork - ERROR: Unable to load DLL: "srvcli.dll", Parent Module: "C:\windows\SYSTEM32\urlmon.dll", Status: 0xc0000135
+              0b4c:0864 @ 00073078 - LdrpLoadDllInternal - RETURN: Status: 0xc0000135
+              0b4c:0864 @ 00073093 - LdrpRedirectDelayloadFailure - ERROR: Failed to find export ext-ms-win-core-iuri-l1-1-0.dll!CreateUri (Ordinal:0) in "Windows.UI.Xaml.dll"  0xc0000135
+0b4c:0864 @ 00073093 - LdrGetDllHandleEx - ENTER: DLL name: ntdll.dll
+优先排查思路
+*  选取一台正常的神州网信版操作系统的电脑，对比c:\windows\system32下是否有文件丢失或损坏的问题。可重点排查上述7个可能文件。
+*  以管理员身份运行cmd，执行chkdsk，查看磁盘的文件系统结构是否有损坏。
+最终的解决方案：
+       如在排查过程中，确实有硬件问题，请先联系OEM厂商。
+以上，根据与您的讨论，当前问题电脑的no boot问题原因已清晰，是否存在共性问题，需要您在后续遇到类似no boot问题时排查，如有其它疑问，也可以与我们取得联系。经您的同意，此case将暂做归档处理，谢谢。

@@ -1,0 +1,439 @@
+邮件主题：回复: [案例号:CAS-11736-G5R3P6] %TAM-反馈广发银行部分机器补丁更新失败% 案例重新分配 CMIT:0001521
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-12 11:21:46.944000+00:00
+邮件内容:
+李先生，您好：
+根据您提交的问题，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈部分机器补丁更新失败，需要协助分析处理。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+请您按如下步骤收取日志：
+CMGELogCollector日志：
+下载附件中的CMGELogCollector.zip，解压后运行CMGELogCollector.exe，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：gfyhli01
+密码：gfyhli01
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-15 11:00:37.697000+00:00
+邮件内容:
+李先生，您好：
+根据您提交的问题，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈部分机器补丁更新失败，需要协助分析处理。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+请您按如下步骤收取日志：
+CMGELogCollector日志：
+下载附件中的CMGELogCollector.zip，解压后运行CMGELogCollector.exe，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：gfyhli01
+密码：gfyhli01
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-15 17:05:05.599000+00:00
+邮件内容:
+李先生，您好：
+如刚才电话沟通，根据您提供的日志，当前补丁安装失败的原因是因为权限不足导致的“访问拒绝”。
+补丁的安装过程实际是系统文件的替换，由于系统运行，部分系统文件占用的原因，因此某些系统文件的替换需要放到系统重启阶段进行，当前我们遇到的补丁安装失败就是这一过程中的access deny问题，但是系统日志记录并不完整，因此我们无法明确是什么原因导致的权限不足。从与您的沟通和事件日志的查看中，可以发现如下几个疑点：
+1.	trusted installer（也就是在系统重启阶段执行操作的账户）未能正常调用
+2.	trusted installer的停止失败发生在关机阶段，而在关机阶段相应的脚本也执行失败，经查询，未找到对应的脚本文件
+以上，为查明具体原因，请帮忙收集如下procmon日志：
+1.	登录CDUC下载Process Monitor
+2）双击“Procmon64.exe”，弹出提权窗口点击“是”运行ProcessMonitor工具。（首次运行会弹出License Agreement窗口，点击Agree）；
+3）进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击停止捕获，再点击     清除当前捕获的事件条目。至此准备工作完毕；
+4）点击“Option”->“Enable Boot Logging”，之后会跳出窗口，通常情况下不勾选，直接点击OK。之后再看“Enable Boot Logging”已被勾选，证明开启成功；
+5）此时安装补丁更新进行问题复现，不用点击开始捕获；
+6）登陆进入桌面后，运行Procmon64.exe，会弹出提示框询问是否保存捕获的启动过程。点击“是”；
+7）在“另存为”窗口选择日志保存路径，点击“保存”，之后会有事件数据转换窗口出现。转换完毕后可以在你所指定的路径下找到日志文件；（日志文件可能为多个，打开任意一个都可以浏览完整过程，务必全部收集）
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-18 09:34:13.945000+00:00
+邮件内容:
+李先生，您好：
+请查看以下操作界面
+
+====第5封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-23 10:31:57.588000+00:00
+邮件内容:
+李先生，您好：
+如刚才电话沟通，循例问下当前日志的收取情况，如您已收取完日志，请上传至CDUC后回复我一下，如有其他问题，也可随时联系我，谢谢。
+
+====第6封邮件====
+
+发件人：李新智
+发送时间：2024-07-23 11:03:27.389000+00:00
+邮件内容:
+--
+发自我的网易邮箱手机智能版
+在 2024-07-23 10:31:55，"Li Qi" <liqi@cmgos.com> 写道：
+	李先生，您好：
+	如刚才电话沟通，循例问下当前日志的收取情况，如您已收取完日志，请上传至CDUC后回复我一下，如有其他问题，也可随时联系我，谢谢。
+	
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-23 11:08:34.038000+00:00
+邮件内容:
+李先生，您好：
+感谢您的回复，已收到您上传的日志，有任何进展我再和您联系。
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-23 15:55:51.397000+00:00
+邮件内容:
+李先生，您好：
+根据您上传的日志来看，在系统重启之后，补丁安装会依据pending.xml内容进行剩余系统组件文件的安装，但在TiWorker的执行过程中（包括创建，查询，关闭等动作）文件触发了windows error，从目前参与的进程来看，与启动间的奇安信的管控行为有关。
+接下来，请先临时卸载奇安信之后重新进行补丁更新，尝试是否可以正常安装补丁，并将结果反馈给我，谢谢。
+
+====第9封邮件====
+
+发件人：李新智
+发送时间：2024-07-26 12:13:57.468000+00:00
+邮件内容:
+已上传新日志
+--
+发自我的网易邮箱手机智能版
+在 2024-07-23 15:55:48，"Li Qi" <liqi@cmgos.com> 写道：
+	李先生，您好：
+	根据您上传的日志来看，在系统重启之后，补丁安装会依据pending.xml内容进行剩余系统组件文件的安装，但在TiWorker的执行过程中（包括创建，查询，关闭等动作）文件触发了windows error，从目前参与的进程来看，与启动间的奇安信的管控行为有关。
+	接下来，请先临时卸载奇安信之后重新进行补丁更新，尝试是否可以正常安装补丁，并将结果反馈给我，谢谢。
+	
+====第10封邮件====
+
+发件人：Li Qi
+发送时间：2024-07-29 13:40:20.920000+00:00
+邮件内容:
+李先生，您好：
+如中午电话沟通，目前从您提交的日志来看，有一个怀疑出现access denied的地方在于usb驱动在重启时的更新失败。因此请确认如下一些信息，并回复给我。谢谢
+1.	请确认安装补丁时是否有任何USB设备连接，如有，请拔除所有USB设备
+2.	请确认是否存在此文件：C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf
+3.	如存在此文件，请以管理员权限运行CMD并输入如下命令:sfc /scannow，之后重新安装补丁看是否成功。
+4.	如不存在此文件，请尝试重新安装以下补丁KB5032196：https://support.cmgos.com/kb/5032196
+如仍然存在问题，请收集CMGELogCollector日志：
+运行CMGELogCollector.exe，额外勾选“升级日志”，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+
+====第11封邮件====
+
+发件人：Li Qi
+发送时间：2024-08-01 09:30:17.568000+00:00
+邮件内容:
+您好：
+如刚才电话沟通，我们这边再考虑一下日志的收集步骤，您这边核实下如何在用户现场收日志，接下来鉴于用户的问题现象，恐怕还是要继续收集日志来看，您确定下一次现场支持的时间后告知我下，谢谢。
+
+====第12封邮件====
+
+发件人：Li Qi
+发送时间：2024-08-02 10:14:52.188000+00:00
+邮件内容:
+王先生，您好：
+如刚才电话沟通，请帮忙确认如下文件的权限是否正常。
+C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf
+方法：
+右键点击文件属性-安全-高级，查看system的权限是否为完全控制，并且是否有任何deny权限，可截图发给我。
+
+====第13封邮件====
+
+发件人：wxaiys
+发送时间：2024-08-02 10:15:57.272000+00:00
+邮件内容:
+收到…！谢谢
+---- 回复的原邮件 ----
+
+====第14封邮件====
+
+发件人：wxaiys
+发送时间：2024-08-03 04:52:26.217000+00:00
+邮件内容:
+你好，我以到达现场
+---- 回复的原邮件 ----
+
+====第15封邮件====
+
+发件人：Li Qi
+发送时间：2024-08-05 10:53:04.264000+00:00
+邮件内容:
+您好，王先生：
+如刚才电话沟通，请您将system权限设置为如下Full control的权限。
+修改权限的具体方法如下：
+由于该文件夹属于系统文件夹，无法直接修改，请先将所有者更改为本地管理员用户(如administrator)，点击“更改”
+输入administrator，点击“检查名称”，如下图样式，点击“确定”：
+再点击“确定”，如下图：
+再确定：
+此时重复前面几步再选择system用户，可以点击“编辑”
+勾选“完全控制”，并点击确定，查看最终是否更改成功。
+
+====第16封邮件====
+
+发件人：Li Qi
+发送时间：2024-08-06 11:24:51.798000+00:00
+邮件内容:
+王先生，您好：
+如更改权限后仍然更新失败，请按如下方法收集日志：
+TSS日志：
+1.	从如下网址下载TSS 工具. 
+https://aka.ms/getTSS <https://aka.ms/getTSS>  
+2.	将TSS.zip解压. 
+3.	然后以管理员身份打开PowerShell, 然后执行如下指令收集日志. 如果有PowerShell policy相关报错, 可以执行Set-ExecutionPolicy Bypass 来允许PowerShell脚本执行. 
+.\TSS.ps1 -CollectLog DND_SetupReport
+4.	脚本执行完成后, 日志会生成在c:\MS_DATA 文件夹下. 
+CMGELogCollector日志：
+下载链接：https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg <https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg> 
+运行CMGELogCollector.exe，额外勾选“升级日志”，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：gfyhli01
+密码：gfyhli01
+
+====第17封邮件====
+
+发件人：Li Qi
+发送时间：2024-08-19 10:20:16.424000+00:00
+邮件内容:
+李先生，您好：
+如刚才电话沟通，由于当前内部环境USB限制，因此无法正常收取日志，待可以收集供下一步分析后您可以再联系我们重新开启此案例。经您的同意，此case将暂做归档处理，以下为案例总结：
+Case No：CAS-11736-G5R3P6
+问题描述：
+=================
+用户反馈部分机器补丁更新失败，需要协助分析处理。
+问题分析：
+=================
+从之前的日志分析来看，更新失败的原因为系统组件在替换更新时权限不足导致，但更改权限后仍然存在问题，因此需要进一步收集日志来看，目前无法进一步收集
+案例总结：
+=================
+经用户同意，由于暂时无法进一步收取日志分析，此case暂做归档处理，待可以收集并处理后再次联系。如后续有其他问题需求，可随时与我联系，谢谢
+
+====第18封邮件====
+
+发件人：李新智
+发送时间：2024-10-12 09:50:17.326000+00:00
+邮件内容:
+--
+发自我的网易邮箱手机智能版
+在 2024-08-19 10:20:14，"Li Qi" <liqi@cmgos.com> 写道：
+	李先生，您好：
+	如刚才电话沟通，由于当前内部环境USB限制，因此无法正常收取日志，待可以收集供下一步分析后您可以再联系我们重新开启此案例。经您的同意，此case将暂做归档处理，以下为案例总结：
+	Case No：CAS-11736-G5R3P6
+	问题描述：
+	=================
+	用户反馈部分机器补丁更新失败，需要协助分析处理。
+	问题分析：
+	=================
+	从之前的日志分析来看，更新失败的原因为系统组件在替换更新时权限不足导致，但更改权限后仍然存在问题，因此需要进一步收集日志来看，目前无法进一步收集
+	案例总结：
+	=================
+	经用户同意，由于暂时无法进一步收取日志分析，此case暂做归档处理，待可以收集并处理后再次联系。如后续有其他问题需求，可随时与我联系，谢谢
+	
+====第19封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-14 11:03:35.914000+00:00
+邮件内容:
+李先生，您好
+刚刚电话未能联系到您，你可以回复方便电话沟通的时间。
+此外，需要按照如下日志收集步骤收集日志并反馈
+日志收集：
+一、TSS日志：
+1.	从如下网址下载TSS 工具. 
+https://aka.ms/getTSS <https://aka.ms/getTSS>  
+2.	将TSS.zip解压. 
+3.	然后以管理员身份打开PowerShell, 然后执行如下指令收集日志. 如果有PowerShell policy相关报错, 可以执行Set-ExecutionPolicy Bypass 来允许PowerShell脚本执行. 
+.\TSS.ps1 -CollectLog DND_SetupReport
+4.	脚本执行完成后, 日志会生成在c:\MS_DATA 文件夹下. 
+二、CMGELogCollector日志：
+下载链接：https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg <https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg> 
+运行CMGELogCollector.exe，额外勾选“升级日志”，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：gfyhli01
+密码：gfyhli01
+--------------
+
+====第20封邮件====
+
+发件人：Li Qi
+发送时间：2024-10-15 09:38:47.031000+00:00
+邮件内容:
+李先生，您好
+日志收集：
+一、TSS日志：
+1.	从如下网址下载TSS 工具. 
+https://aka.ms/getTSS <https://aka.ms/getTSS>  
+2.	将TSS.zip解压. 
+3.	然后以管理员身份打开PowerShell, 然后执行如下指令收集日志. 如果有PowerShell policy相关报错, 可以执行Set-ExecutionPolicy Bypass 来允许PowerShell脚本执行. 
+.\TSS.ps1 -CollectLog DND_SetupReport
+4.	脚本执行完成后, 日志会生成在c:\MS_DATA 文件夹下. 
+二、CMGELogCollector日志：
+下载链接：https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg <https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg> 
+运行CMGELogCollector.exe，额外勾选“升级日志”，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：gfyhli01
+密码：gfyhli01
+--------------
+
+====第21封邮件====
+
+发件人：CRM Case Email
+发送时间：2024-10-17 15:56:41.973000+00:00
+邮件内容:
+李先生，您好
+我将继续为您处理当前案例，感谢您的耐心等待
+日志分析:
+1、CBS里记录的是在Uninstall Driver时出现Access Deny导致补丁回滚：
+2024-10-16 08:43:18, Info                  CBS    Perf: Doqe: Uninstall started.
+2024-10-16 08:43:18, Info                  CBS    Doqe: [Forward] Uninstalling driver updates, Count 22
+2024-10-16 08:43:18, Info                  CBS    DriverUpdateUninstallUpdates failed [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-16 08:43:18, Info                  CBS    Doqe: Failed uninstalling driver updates [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-16 08:43:18, Info                  CBS    Perf: Doqe: Uninstall ended.
+2024-10-16 08:43:18, Info                  CBS    Failed uninstalling driver updates [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-16 08:43:18, Error                 CBS    Startup: Failed while processing non-critical driver operations queue. [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-16 08:43:18, Info                  CBS    Startup: Rolling back KTM, because drivers failed.
+2024-10-16 08:43:18, Info                  CBS    Setting ExecuteState key to: CbsExecuteStateStageDrivers | CbsExecuteStateFlagRollback | CbsExecuteStateFlagDriversFailed
+2024-10-16 08:43:18, Info                  CBS    SetProgressMessage: progressMessageStage: -1, ExecuteState: CbsExecuteStateStageDrivers | CbsExecuteStateFlagRollback | CbsExecuteStateFlagDriversFailed, SubStage: 0
+2024-10-16 08:43:18, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 1 out of 1. Rollback.
+2024-10-16 08:43:18, Info                  CBS    Setting original failure status: 0x80070005, last forward execute state: CbsExecuteStatePrimitives
+2、setupapi.dev中可以看到对应指向驱动usbstor.inf
+>>>  [Uninstall Driver Updates]
+>>>  Section start 2024/10/16 08:43:18.236
+      cmd: C:\Windows\winsxs\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.17763.6174_none_5708b51199042bd1\TiWorker.exe -Embedding
+     sto: Image State        = Specialized
+     sto: Image Architecture = amd64
+     sto: Transaction        = CbsDriversAndPrimitives
+     sto: Driver Updates     = 22
+!    inf: Unable to load INF: 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf'(00000005)
+!    inf: Error 5: Access is denied.
+!!!  inf: Invalid INF 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf', parsing error on line 0. Code = 1002
+!!!  sto: Failed to find driver update 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf' in Driver Store. Error = 0x00000005
+<<<  Section end 2024/10/16 08:43:18.252
+<<<  [Exit status: FAILURE(0x00000005)]
+对比之前案例中指出的组件，确认是同一个问题组件。之前的procmon的中可以看到是在创建文件时访问被拒绝：
+建议操作：
+一、如果您已经对'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf'组件的权限进行了修改，但是问题仍然存在。请提供此文件的高级安全全设置截图，请确保任何主体对于此组件的权限不存在deny限制。
+截图示例：
+二、从基础日志中暂时无法进一步判断此次权限失败是否是和之前一样在create file时失败，因此烦请再次收集bootlog日志以及steupreport日志，谢谢！
+1、配置bootlog：
+a. 创建目录"C:\mstrace"
+b. 下载Process Monitor ，链接https://cduc.cmgos.com/download.php?id=1148&token=SOpiUWzWQV2jjRu0jOeKp8ZP7QJTMJBw，并且解压缩到"C:\mstrace"
+c. 运行procmon.exe; 选中Options->"Enable Boot Logging".
+d. 配置boot logging 选项，请不选中 "Generate Profiling events", 点击OK.
+e. 待重启问题复现后，系统会自动收集日志。
+f. 启动完毕后，等问题复现后，再次运行procmon.exe. 出现窗口弹出提示boot log日志已经收集，请点击Yes保存，并将文件存储到C:\mstrace\boot_log.pml. 而后压缩C:\mstrace，上传日志。
+2、收集setupreport日志：
+a.	下载如下链接中的Windows日志收集脚本，下载后将setupreport.txt重命名为setupreport.cmd
+https://cduc.cmgos.com/download.php?id=1616&token=5oeKsxIoem1cDv3LaCiplpkE3RNmBVav
+b. 以管理员身份运行setupreport.cmd脚本（（该脚本将运行10-20分钟，运行完后会有相关提示请耐心等待。如果出现报错请不用担心，是正常现象）。
+c. 在C盘下会创建一个Setup_Report_xxx文件夹，打包并上传这个文件夹。
+--------------
+
+====第22封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-18 10:48:11.727000+00:00
+邮件内容:
+李先生，您好
+很高兴与您电话沟通。
+*   根据目前的现象，我在计算机的组策略信息中发现关于2个文件的权限设置，其中包括C:\WINDOWS\INF\USBSTOR.INF
+*   建议联系域管理员，移除对于这两个文件的权限控制，再尝试安装更新
+--------------
+
+====第23封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-28 16:40:22.934000+00:00
+邮件内容:
+李先生，您好
+根据最新的日志，仍然是文件拒绝访问问题，指向组件C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf
+怀疑是组件的访问权限受到了修改。建议首先排查无法修改该文件的所有者问题，之后手动修改该组件的控制权限。
+CBS：
+2024-10-24 08:23:42, Info                  CBS    Perf: Doqe: Uninstall started.
+2024-10-24 08:23:42, Info                  CBS    Doqe: [Forward] Uninstalling driver updates, Count 22
+2024-10-24 08:23:42, Info                  CBS    DriverUpdateUninstallUpdates failed [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-24 08:23:42, Info                  CBS    Doqe: Failed uninstalling driver updates [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-24 08:23:42, Info                  CBS    Perf: Doqe: Uninstall ended.
+2024-10-24 08:23:42, Info                  CBS    Failed uninstalling driver updates [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-24 08:23:42, Error                 CBS    Startup: Failed while processing non-critical driver operations queue. [HRESULT = 0x80070005 - E_ACCESSDENIED]
+2024-10-24 08:23:42, Info                  CBS    Startup: Rolling back KTM, because drivers failed.
+2024-10-24 08:23:42, Info                  CBS    Setting ExecuteState key to: CbsExecuteStateStageDrivers | CbsExecuteStateFlagRollback | CbsExecuteStateFlagDriversFailed
+2024-10-24 08:23:42, Info                  CBS    SetProgressMessage: progressMessageStage: -1, ExecuteState: CbsExecuteStateStageDrivers | CbsExecuteStateFlagRollback | CbsExecuteStateFlagDriversFailed, SubStage: 0
+2024-10-24 08:23:42, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 1 out of 1. Rollback.
+2024-10-24 08:23:42, Info                  CBS    Setting original failure status: 0x80070005, last forward execute state: CbsExecuteStatePrimitives
+2024-10-24 08:23:42, Info                  CBS    SetProgressMessage: progressMessageStage: -1, ExecuteState: CbsExecuteStateStageDrivers | CbsExecuteStateFlagRollback | CbsExecuteStateFlagDriversFailed, SubStage: 1
+2024-10-24 08:23:42, Info                  CBS    Progress: UI message updated. Operation type: Update. Stage: 1 out of 1. Rollback.
+Setupapi.dev：
+>>>  [Uninstall Driver Updates]
+>>>  Section start 2024/10/24 08:23:42.207
+      cmd: C:\Windows\winsxs\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.17763.6174_none_5708b51199042bd1\TiWorker.exe -Embedding
+     sto: Image State        = Specialized
+     sto: Image Architecture = amd64
+     sto: Transaction        = CbsDriversAndPrimitives
+     sto: Driver Updates     = 22
+!    inf: Unable to load INF: 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf'(00000005)
+!    inf: Error 5: Access is denied.
+!!!  inf: Invalid INF 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf', parsing error on line 0. Code = 1002
+!!!  sto: Failed to find driver update 'C:\Windows\WinSxS\amd64_dual_usbstor.inf_31bf3856ad364e35_10.0.17763.2237_none_8e64ef457e7839af\usbstor.inf' in Driver Store. Error = 0x00000005
+<<<  Section end 2024/10/24 08:23:42.223
+<<<  [Exit status: FAILURE(0x00000005)]
+--------------
+
+====第24封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-06 14:20:56.503000+00:00
+邮件内容:
+李先生，您好
+很高兴与您电话沟通，根据目前的进展，已经可以手动修改文件的所有者和权限。
+您可以参考如下步骤修改脚本，尝试使用脚本自动修改文件权限。
+如何测试可以，您可以回复此邮件，我将会归档案例。
+建议操作：
+1） 下载附件“ACLrun.txt”，将下图的路径替换为实际需要修改文件的所在路径
+2） 将此文件的拓展名改为bat，即文件名：ACLrun.bat
+3） 邮件单击此bat文件，选择“以管理员身份运行”
+4） 运行完毕后如下图所示，按任意键退出即可
+--------------
+
+====第25封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-08 10:21:21.809000+00:00
+邮件内容:
+李先生，您好
+来信是跟踪当前案例进展，如果问题有进展或仍有疑问，您可以回复此邮件。
+--------------
+
+====第26封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-11 13:55:40.712000+00:00
+邮件内容:
+李先生，您好
+很高兴与您沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+用户反馈广发银行部分机器补丁更新失败
+案例进展：
+经分析Uninstall Driver时出现Access Deny导致补丁回滚，0x80070005 - E_ACCESSDENIED。
+建议修改问题文件的权限，并提供脚本，和用户沟通问题解决，归档案例
+--------------

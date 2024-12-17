@@ -1,0 +1,85 @@
+邮件主题：回复: [案例号:CAS-07938-T4F1J7] %|P2|ICBC|反馈青海分行更新报错问题% 案例重新分配 CMIT:0001890
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-01-05 15:00:24.503000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈Windows 更新补丁失败，请协助分析问题原因。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+下一步动作：
+从报错截图来看，该问题是系统组件有损坏以及解压缩过程失败导致，需要通过日志判断具体损坏组件内容。
+请使用附件CMGELogCollectorV2.zip，收集用户问题电脑的系统日志，方法如下：
+*  下载附件中的日志收集工具CMGELogCollectorV2.zip至本地。
+*	解压后运行CMGELogCollector.exe，勾选全部选项，点击“收集”，运行几分钟后会在桌面生成日志压缩包。
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-01-09 10:01:32.516000+00:00
+邮件内容:
+许先生，您好：
+       已查看您上传的用户日志，该更新问题包含两个报错：
+1.        安装.net framework更新-KB5020685时，发生0x80073712的报错
+2.        解压11月累积更新-KB5019966过程中，发生0x8007025d的报错
+报错1，请用户尝试替换或删除c:\windows\winsxs\manifests\amd64_e7efbb5769027affbc1fbfd7101971df_b77a5c561934e089_4.0.15713.866_none_41638f151bd7fec8.manifest，再次尝试安装更新
+报错2，请用户尝试删除C:\windows\SoftwareDistribution\Download文件夹内容后，手动离线安装KB5019966，更新下载地址：https://support.cmgos.com/kb/5019966
+以下为日志的部分内容：
+报错1：
+2023-01-05 17:16:16, Info                  CSI    00003e97 Looking for manifest in Backup Dir...
+2023-01-05 17:16:16, Error                 CSI    00003e98 (F) Unable to load manifest for component [l:91 ml:140]'amd64_e7efbb5769027affbc1fbfd7101971df_b77a5c561934e089_4.0.15713.866_none_41638f151bd7fec8'[gle=0x80004005]
+2023-01-05 17:16:16, Error                 CSI    00003e99@2023/1/5:09:16:16.157 <mailto:00003e99@2023/1/5:09:16:16.157>  (F) Attempting to mark store corrupt with category [l:15 ml:16]'CorruptManifest'[gle=0x80004005]
+2023-01-05 17:16:16, Error                 CSI    00003e9a@2023/1/5:09:16:16.158 <mailto:00003e9a@2023/1/5:09:16:16.158>  (F) onecore\base\wcp\componentstore\storelayout.cpp(3182): Store corruption detected in function ComponentStore::CRawStoreLayout::FetchManifestContent expression: 0
+  FileHashMismatch on resource '\winsxs\manifests\amd64_e7efbb5769027affbc1fbfd7101971df_b77a5c561934e089_4.0.15713.866_none_41638f151bd7fec8.manifest'[gle=0x80004005]
+2023-01-05 17:16:16, Error                 CSI    00003e9b (F) HRESULT_FROM_WIN32(14098) #5546992# from Windows::ServicingAPI::CCSITransaction::ICSITransaction_UninstallDeployment(Flags = 0, a = e7efbb5769027affbc1fbfd7101971df, version 4.0.15713.866, arch amd64, nonSxS, pkt {l:8 b:b77a5c561934e089}, cb = (null), s = (null), rid = 'Package_8_for_KB5017270~31bf3856ad364e35~amd64~~10.0.3991.1.5017270-219_neutral', disp = 0)[gle=0x80073712]
+2023-01-05 17:16:16, Info                  CBS    Failed to begin deployment uninstallation for Update: 5017270-219_neutral [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    Failed to execute item[0] in Package: Package_8_for_KB5017270~31bf3856ad364e35~amd64~~10.0.3991.1, Update: 5017270-219_neutral [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    Failed to execute execution update. [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    Failed to execute execution package: Package_8_for_KB5017270~31bf3856ad364e35~amd64~~10.0.3991.1 [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    Failed to prepare execution [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    Perf: InstallUninstallChain complete.
+2023-01-05 17:16:16, Info                  CSI    00003e9c@2023/1/5:09:16:16.164 <mailto:00003e9c@2023/1/5:09:16:16.164>  CSI Transaction @0x1c96f93ca70 destroyed
+2023-01-05 17:16:16, Info                  CBS    Failed to execute execution chain. [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Error                 CBS    Failed to process single phase execution. [HRESULT = 0x80073712 - ERROR_SXS_COMPONENT_STORE_CORRUPT]
+2023-01-05 17:16:16, Info                  CBS    WER: Generating failure report for package: Package_for_DotNetRollup~31bf3856ad364e35~amd64~~10.0.4005.2, status: 0x80073712, failure source: Execute, start state: Staged, target state: Installed, client id: WindowsUpdateAgent
+2023-01-05 17:16:16, Info                  CBS    Not able to query DisableWerReporting flag.  Assuming not set... [HRESULT = 0x80070002 - ERROR_FILE_NOT_FOUND]
+2023-01-05 17:16:16, Info                  CBS    Added C:\WINDOWS\Logs\CBS\CBS.log to WER report.
+报错2：
+2023-01-05 16:20:07, Info                  CBS    Failed to read from file: \\?\C:\WINDOWS\Servicing\Packages\Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum <file://%3f/C:/WINDOWS/Servicing/Packages/Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum>  [HRESULT = 0x8007025d - ERROR_BAD_COMPRESSION_BUFFER]
+2023-01-05 16:20:07, Info                  CBS    Failed to read in xml content [HRESULT = 0x8007025d - ERROR_BAD_COMPRESSION_BUFFER]
+2023-01-05 16:20:07, Error                 CBS    Failed to parse package manifest: \\?\C:\WINDOWS\Servicing\Packages\Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum <file://%3f/C:/WINDOWS/Servicing/Packages/Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum>  [HRESULT = 0x8007025d - ERROR_BAD_COMPRESSION_BUFFER]
+2023-01-05 16:20:07, Info                  CBS    Failed to initialize package: Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5, from path: \\?\C:\WINDOWS\Servicing\Packages\Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum <file://%3f/C:/WINDOWS/Servicing/Packages/Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5.mum> , existing package: 1 [HRESULT = 0x8007025d - ERROR_BAD_COMPRESSION_BUFFER]
+2023-01-05 16:20:07, Info                  CBS    Maint: Deepclean: Unable to open package Package_1861_for_KB5017315~31bf3856ad364e35~amd64~~10.0.1.5 [HRESULT = 0x8007025d - ERROR_BAD_COMPRESSION_BUFFER]
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-01-18 10:24:28.730000+00:00
+邮件内容:
+许工，您好：
+如刚才沟通，可参见以下内容了解之前问题进展，有任何问题可随时与我联系，谢谢。
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2023-02-06 10:28:31.394000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，经您的确认，当前问题电脑已重装处理，未再发现此问题，此case将暂做归档处理，以下为案例总结，请您知悉：
+Case No：CAS-07938-T4F1J7
+问题描述：
+=================
+用户反馈Windows 更新补丁失败，请协助分析问题原因。
+问题分析：
+=================
+从日志来看，是补丁安装过程中的系统组件库文件校验失败导致无法完成安装，可尝试删除后重新安装尝试。
+问题总结：
+=================
+经用户确认，用户已重装系统解决，未再发现此问题，可归档该案例。 
+以上为此问题的案例总结，如有任何问题，可随时与我们联系，谢谢

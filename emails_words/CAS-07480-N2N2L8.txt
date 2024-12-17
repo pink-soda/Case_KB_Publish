@@ -1,0 +1,147 @@
+邮件主题：回复: [案例号: CAS-07480-N2N2L8 ] % | P3 | Lenovo| V2022-L 测试中发现重启存在蓝屏 % 初次响应 CMIT:0001859
+
+====第1封邮件====
+
+发件人：Gao Meng
+发送时间：2022-11-07 10:01:56.708000+00:00
+邮件内容:
+Hi Jiawei，
+联想测试机已提供，longrun运行步骤如下：
+机器内Longrun 环境已经设置好, restart tool的用法如下：
+1.打开桌面文件夹：LongRunATS_AOAC_v4.09
+2.打开文件夹：ATS_Sys_Files
+3.以管理员身份运行Set Execution Policy_Bypass.bat
+4.以Powershell方式运行LongRunATS_AOAC.ps1
+5.出现弹框点击确定
+6.为加快复现情况，请设置Loop count：300；R Elapse time in：120
+7.点击OK
+8.再次出现弹窗，点击否
+9.工具开始运行，等待问题复现
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第2封邮件====
+
+发件人：Gao Meng
+发送时间：2022-11-11 08:46:34.139000+00:00
+邮件内容:
+Hi Jiawei，
+以下为联想提供的Business Impact：
+Business Impact
+The Business Impact will be used and read by many people that are not familiar with the technology in question. It will be presented in one or more shiprooms and discussed in terms of impact generically and contrasted with other bugs. We need to understand the impact of this issue in a non-technical manner. This lets us evaluate issues apples to apples and assures that we are applying resources to the right problems.
+Be sure that your problem description and impact below contains details on the following.
+How many users/machines are impacted? (And out of how many?)
+BSOD happen on Lenovo Thinkpad brand .
+2500 impacted machines have been shipped, and, 2 projects, thousands of machines block because of this issue.
+Is this a “Mission Critical” system? (Y/N)
+Y
+How Long has this issue been affecting the customer?
+5 months
+Describe the Customer Scenario in detail:
+For users,they will meet such BSOD after shutdown at unexpected time points. CMGE users are all government users. The appearance of this issues will affect users' work and even affect users' trust in our products.
+How often is the customer impacted by this issue? (We want to know the frequency the customer is impacted. If the problem is 100% reproducible then how often is the scenario performed?)
+NA
+Describe the day to day impact of this issue non-technically (Try to explain it in terms or dollars, hours or capabilities): 
+The BSOD issue will not often occur on the user's machine, but once it occurs, it will make bad user impact
+What changed to trigger this issue?
+After install Lenovo Intelligent sensing，BSOD appear
+What will the customer do if this bug is not fixed?
+Complain to OEM
+Please describe the customer’s business timeline associated with this fix
+Need to fix it before 22/12/01
+If Windows is being used to deliver a product or a service to a 3rd party, please describe it. Also, please be sure to mention if the product/service is not yet available:
+NA
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第3封邮件====
+
+发件人：Gao Meng
+发送时间：2022-11-23 10:23:06.661000+00:00
+邮件内容:
+Hi Jiawei,
+目前Bug是否有新的进展，客户Lenovo希望能尽快得到更新。
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第4封邮件====
+
+发件人：Gao Meng
+发送时间：2022-11-23 10:39:41.973000+00:00
+邮件内容:
+Update BI
+Business Impact
+The Business Impact will be used and read by many people that are not familiar with the technology in question. It will be presented in one or more shiprooms and discussed in terms of impact generically and contrasted with other bugs. We need to understand the impact of this issue in a non-technical manner. This lets us evaluate issues apples to apples and assures that we are applying resources to the right problems.
+Be sure that your problem description and impact below contains details on the following.
+How many users/machines are impacted? (And out of how many?)
+BSOD happen on Lenovo Thinkpad brand .
+2500 impacted machines have been shipped, and, 2 projects, more than 50 thousands of machines block because of this issue.
+Is this a “Mission Critical” system? (Y/N)
+Y
+How Long has this issue been affecting the customer?
+5 months
+Describe the Customer Scenario in detail:
+For users,they will meet such BSOD after shutdown at unexpected time points. CMGE users are all government users. The appearance of this issues will affect users' work and even affect users' trust in our products.
+How often is the customer impacted by this issue? (We want to know the frequency the customer is impacted. If the problem is 100% reproducible then how often is the scenario performed?)
+NA
+Describe the day to day impact of this issue non-technically (Try to explain it in terms or dollars, hours or capabilities): 
+The BSOD issue will not often occur on the user's machine, but once it occurs, it will make bad user impact
+What changed to trigger this issue?
+After install Lenovo Intelligent sensing，BSOD appear
+What will the customer do if this bug is not fixed?
+Complain to OEM
+Please describe the customer’s business timeline associated with this fix
+Need to fix it before 22/12/01
+If Windows is being used to deliver a product or a service to a 3rd party, please describe it. Also, please be sure to mention if the product/service is not yet available:
+NA
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第5封邮件====
+
+发件人：Gao Meng
+发送时间：2022-12-07 14:33:55.511000+00:00
+邮件内容:
+Hi Jiawei，
+是否有进一步的更新？
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第6封邮件====
+
+发件人：Gao Meng
+发送时间：2023-01-31 16:54:38.719000+00:00
+邮件内容:
+Hi Jiawei,
+我们希望能够有关此问题的积极更新。
+此问题会影响接下来OEM联想在V2022-L的持续出货，根据影响的机型平台等情况分析有可能导致超过150k无法出货且将影响部分大客户（如：工行、招行等）的投标，还请尽快提供进一步的分析情况及解决方案。
+Best Regards，
+Monica Gao Meng（高曚）
+
+====第7封邮件====
+
+发件人：Shi Guannan
+发送时间：2023-02-20 15:22:25.691000+00:00
+邮件内容:
+Hi Gaomeng，
+Sophie在与PG team沟通后，PG team 仍然拒绝了修复此问题，拒绝原因如下：
+*  问题复现概低  - only 15% repro rate; only occurs after reboot
+*  当前有可行的workaround - disable Lenovo Intelligent sensing
+*  Business Justification不够 – 此问题并不仅在CMGE发生，建议联想尝试通过OEM channel 直接升级到微软，以提高Business Justification
+另外Sophie对此问题仍存在些疑问：
+It seems that this is also not a regression and has existed in the code for some time. Did Lenovo not originally test the Intelligent Sense feature on Win10 21H2 and similar platforms with the same codebase (Win10 20H1 and beyond)?
+If this issue is truly critical to Lenovo, why wouldn’t they be willing to directly engage with Microsoft? 
+如果需要Sophie继续跟进此问题还需提供Sophie需要的信息。谢谢！
+Customer Support Operation Advisor 
+手机 Mobile: +86 15901008883
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 
+
+====第8封邮件====
+
+发件人：Gao Meng
+发送时间：2023-02-20 16:12:43.850000+00:00
+邮件内容:
+Hi Guannan，
+情况已了解，我们会向Lenovo反馈。
+Best Regards，
+Monica Gao Meng（高曚）

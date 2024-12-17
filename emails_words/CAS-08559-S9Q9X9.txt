@@ -1,0 +1,129 @@
+邮件主题：回复: [案例号: CAS-08559-S9Q9X9 ] % |P2|ICBC|KB5014692安装失败问题 % 初次响应 CMIT:0001154
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-03-24 18:00:34.750000+00:00
+邮件内容:
+许先生，您好：
+如电话沟通，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈KB5014692安装失败问题，需协助分析。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+       根据您上传的日志来看，问题点在component Microsoft-Windows-comdlg32.Resources, version 10.0.17763.1971, arch Host= amd64 Guest= x86这个组件上。在CSI阶段由于hash未匹配导致的错误。
+该组件有关多版本语言包内容，此次更新失败的语言包为sl-SI和de-DE两个，版本为10.0.17763.1971，该版本的语言包组件被包含在21年5月的累积更新KB5003217中
+我已将有关组件上传至CDUC，路径如下：https://cduc.cmgos.com/process.php?do=download&id=861
+请下载后将其解压至c:\windows\winsxs目录下，之后再次尝试补丁安装看看。谢谢
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-04-03 15:20:25.160000+00:00
+邮件内容:
+许先生，您好：
+有关当前您提交的几个补丁更新失败的问题，现汇总如下，请参照下面的case进展，如有更新可随时与我联系：
+CAS-08520-Q7Z9R6
+Case情况：
+=============================================
+客户名称：ICBC 
+系统版本：V2020-L
+问题描述：用户反馈安装1月累计更新补丁KB5022286失败，需要协助分析。
+人员和角色：最终用户是胡平。 
+当前的进展：已提供解决方案测试，客户未反馈。
+下一步计划：跟进系统组件替换情况。
+CAS-08544-S1X1S7
+Case情况：
+=============================================
+客户名称：ICBC 
+系统版本：V2020-L
+问题描述：用户反馈安装更新补丁KB5021085失败，需要协助分析。
+人员和角色：最终用户是仇梦迪。 
+当前的进展：该补丁为.net framework相关补丁，从补丁描述来看，其安转的先决条件为需要在环境中存在.net 3.5或4.7.2，请先按照下述方法检查：
+Powershell运行以下命令查看当前安装的.net framework版本：Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name Version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, Version
+如确实存在上述之一的版本，那么从日志来看需要替换的组件是winsxs\manifests中的一个与.net相关的manifest文件，让用户在已安装该补丁的其他设备上查找这个文件替换。
+下一步计划：跟进系统组件替换情况。
+CAS-08550-S8G3Y3
+Case情况：
+=============================================
+客户名称：ICBC 
+系统版本：V2020-L
+问题描述：用户反馈安装更新补丁KB5004244失败，需要协助分析。
+人员和角色：最终用户是师俊杰。 
+当前的进展：从日志看到缺少SSU的依赖错误信息，因此请先修复SSU问题。
+下一步计划：请安装2021年的8月SSU，重启后再尝试安装KB5004244
+CAS-08559-S9Q9X9
+Case情况：
+=============================================
+客户名称：ICBC 
+系统版本：V2020-L
+问题描述：用户反馈KB5014692安装失败问题，需协助分析。
+人员和角色：最终用户是宋施文，李梦歌。 
+当前的进展：已提供解决方案测试，客户未反馈。
+下一步计划：跟进系统组件替换情况。
+上述案例所有需要的替换文件及替换脚本已上传至该路径：https://cduc.cmgos.com/process.php?do=download&id=881
+请下载后以管理员运行“组件替换.bat”即可
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-04-27 09:44:12.073000+00:00
+邮件内容:
+许先生，您好：
+       分析您本次上传有关李梦歌的补丁更新失败日志，查看后本次更新失败与之前问题不一致。本次尚未执行补丁安装的CBS阶段，而是在补丁下载过程中的初始化即中止，请用户先清除本地缓存再尝试在线或离线的补丁安装。
+本地路径为：C:\WINDOWS\SoftwareDistribution\Download文件夹内容
+部分windowsupdate.log日志内容如下：
+2023/04/24 10:29:01.3304090 14372 19088 Shared          InitializeSus
+2023/04/24 10:29:01.3308289 14372 19088 IdleTimer       Non-AoAc machine.  Aoac operations will be ignored.
+2023/04/24 10:29:01.3311894 14372 19088 Agent           WU client version 10.0.17763.1852
+2023/04/24 10:29:01.3313696 14372 19088 Agent           SleepStudyTracker: Machine is non-AOAC. Sleep study tracker disabled.
+2023/04/24 10:29:01.3315211 14372 19088 Agent           Base directory: C:\WINDOWS\SoftwareDistribution
+2023/04/24 10:29:01.3320888 14372 19088 Agent           Datastore directory: C:\WINDOWS\SoftwareDistribution\DataStore\DataStore.edb
+2023/04/24 10:29:01.3451316 14372 19088 DataStore       JetEnableMultiInstance succeeded - applicable param count: 5, applied param count: 5
+2023/04/24 10:29:01.4358313 14372 19088 Shared          UpdateNetworkState Ipv6, cNetworkInterfaces = 0.
+2023/04/24 10:29:01.4359794 14372 19088 Shared          UpdateNetworkState Ipv4, cNetworkInterfaces = 1.
+2023/04/24 10:29:01.4425230 14372 19088 Shared          Network state: Connected
+2023/04/24 10:29:01.5559794 14372 19088 Agent           *FAILED* [D0000225] failed to load the update approval list
+2023/04/24 10:29:01.5559818 14372 19088 Agent           IsApprovalListBasedServicingEnabled: No
+2023/04/24 10:29:01.5713599 14372 19088 Misc            *FAILED* [8024000C] LoadHistoryEventFromRegistry completed
+2023/04/24 10:29:01.5731234 14372 19088 Shared          UpdateNetworkState Ipv6, cNetworkInterfaces = 0.
+2023/04/24 10:29:01.5731282 14372 19088 Shared          UpdateNetworkState Ipv4, cNetworkInterfaces = 1.
+2023/04/24 10:29:01.5731349 14372 19088 Shared          Power status changed
+2023/04/24 10:29:01.5792818 14372 16296 Agent           *FAILED* [80240013] m_services.Add()
+2023/04/24 10:29:01.5792847 14372 16296 Agent           *FAILED* [80240013] Method failed [CAgentServiceManager::CreateServiceObjectAndAddIntoMap:2034]
+2023/04/24 10:29:01.5792862 14372 16296 Agent           *FAILED* [80240013] Method failed [CAgentServiceManager::DelayedInit:2678]
+2023/04/24 10:29:01.6106530 14372 16296 Agent               Timer: 29A863E7-8609-4D1E-B7CD-5668F857F1DB, Expires 2023-04-25 00:40:12, not idle-only, not network-only
+2023/04/24 10:29:01.6107661 14372 19088 Agent           WU client refresh cache for DisableWUAccess policy: 1
+2023/04/24 10:29:01.6107675 14372 19088 Agent           Initializing global settings cache
+2023/04/24 10:29:01.6107683 14372 19088 Agent           WSUS server: http://80.29.14.78:8530
+2023/04/24 10:29:01.6107689 14372 19088 Agent           WSUS status server: http://80.29.14.78:8530
+2023/04/24 10:29:01.6107696 14372 19088 Agent           Alternate Download Server: (null)
+2023/04/24 10:29:01.6107702 14372 19088 Agent           Fill Empty Content Urls: No
+2023/04/24 10:29:01.6107709 14372 19088 Agent           Target group: (Unassigned Computers)
+2023/04/24 10:29:01.6107715 14372 19088 Agent           Windows Update access disabled: Yes
+2023/04/24 10:29:01.6107723 14372 19088 Agent           Do not connect to Windows Update Internet locations: Yes
+2023/04/24 10:29:01.6290121 14372 16296 Agent           Initializing Windows Update Agent
+2023/04/24 10:29:01.6290733 14372 16296 DownloadManager Download manager restoring 0 downloads
+2023/04/24 10:29:01.6291067 14372 16296 Agent           CPersistentTimeoutScheduler | GetTimer, returned hr = 0x00000000
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-17 15:32:17.434000+00:00
+邮件内容:
+许先生，您好：
+       如刚才电话沟通，由于用户近期未反馈问题进度，经您的确认，此case将暂做归档处理，以下为案例总结，请您知悉：
+Case No：CAS-08559-S9Q9X9
+问题描述：
+=================
+用户反馈KB5014692安装失败问题
+问题分析：
+=================
+经日志分析，用户在删除相关问题组件后，更新失败问题发生变化，建议用户删除本地缓存内容后，可尝试使用离线方式安装该补丁。
+问题总结：
+=================
+经用户确认，由于用户方暂时未反馈相关问题进度，该案例做归档处理。
+以上为此问题的案例总结，如有任何问题，可随时与我们联系，谢谢

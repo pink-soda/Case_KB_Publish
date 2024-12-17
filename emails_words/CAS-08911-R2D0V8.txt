@@ -1,0 +1,140 @@
+邮件主题：回复: [案例号: CAS-08911-R2D0V8 ] % | P3 | UNIS|  V2022-L 测试安装在2TB SSD中出现蓝屏 % 初次响应 CMIT:0001178
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-17 14:20:43.432000+00:00
+邮件内容:
+Hi, GaoMeng:
+   如刚才沟通，根据目前的问题情况，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+   紫光反馈对V2022-L 导入机型进行测试，验证在2T SSD 配置机器上 idle 12 hours 验证总是出现高概率蓝屏，FR 3/7,蓝屏代码 不稳定（0X153/0XBE/0X139/0X1E/0X0A/0X3B）
+问题复现步骤：
+1． 进入系统后，设置不锁屏，不进入modern standby ，不休眠，不关闭显示屏
+2． 静止超过12h后出现蓝屏，蓝屏代码不固定，其中0x1E较多
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+下一步动作：
+       根据您上传的日志，我对部分蓝屏问题进行了分析，如下：
+SKU3_A0021_0x1e_F02B_神州网信pure蓝屏
+蓝屏时间：2023/5/6 21:08:45
+Bugcheck：0x1e
+Process name：system
+{EXCEPTION} Privileged instruction：表示程序试图执行一条特权指令，但是没有足够的权限来执行该指令。通常发生在操作系统或驱动程序中，可能是由于硬件或软件问题引起的。
+SKU3_A0022_0X109_F02B_第一次蓝屏__神州网信pure
+蓝屏时间：2023/5/7 10:31:00
+Bugcheck： 109
+Process name：csrss.exe
+当操作系统内核检测到关键的内核代码或数据已被损坏时，就会出现这个错误。通常有以下三个原因导致内核代码或数据的损坏：
+1.        驱动程序无意或故意修改了关键的内核代码或数据。
+2.        开发人员试图在系统启动时使用未连接的内核调试器设置正常的内核断点。正常的断点只能在调试器在系统启动时连接的情况下设置。硬件断点可以在任何时候设置。
+3.        硬件故障引起的内存损坏，如坏掉的RAM存储内核代码或数据。
+Arg1: a39fcee6caf8d51d, Reserved
+Arg2: b3b6db6d1d771dd5, Reserved
+Arg3: fffff8070af18174, Failure type dependent information
+Arg4: 0000000000000001, Type of corrupted region
+其中参数4代表“1: Modification of a function or .pdata” 通常在程序运行过程中发生。它表示程序试图修改已经存在的函数或程序数据（.pdata），这种情况通常会导致程序崩溃或出现其他异常行为。
+在Windows操作系统中，.pdata是一种存储过程信息的数据结构，它包含了程序中每个函数的地址、大小和异常处理程序。当程序试图修改已经存在的函数或.pdata时，这可能会导致程序运行出现异常。
+这种错误通常是由于程序代码中存在错误或漏洞引起的。
+结合!blackboxpnp的信息，应与PNP设备有关，当前加载的PNP设备信息如下：
+    PnpActivityId      : {00000000-0000-0000-0000-000000000000}
+    PnpActivityTime    : 133278517235881978
+    PnpEventInformation: 3
+    PnpEventInProgress : 0
+    PnpProblemCode     : 24
+    PnpVetoType        : 0
+DeviceId           : SW\{96E080C7-143C-11D1-B40F-00A0C9223196}\{3C0D501A-140B-11D1-B40F-00A0C9223196}
+这是一个Windows注册表键路径，用于标识一个设备的硬件ID。具体而言，这个键路径表示一个PCI设备，其硬件ID为PCI\VEN_10EC&DEV_8168&SUBSYS_01231025&REV_0C。
+其中，PCI\VEN_10EC表示设备的供应商ID，这里是Realtek Semiconductor Corp.；DEV_8168表示设备的设备ID，这里是RTL8168/8111 PCI-E Gigabit Ethernet NIC；SUBSYS_01231025表示设备的子系统ID；REV_0C表示设备的版本号。
+总之，这个键路径可以用于标识系统中的一个PCI设备，它的具体型号是RTL8168/8111 PCI-E Gigabit Ethernet NIC。
+SKU3_A0026_0X3B_F02B_第一次蓝屏_神州网信
+蓝屏时间：2023/5/7 16:33:14
+Bugcheck： 0x3b
+Process name：svchost.exe
+Arg1: 00000000c0000005, Exception code that caused the BugCheck
+Arg2: fffff80181c0ee6b, Address of the instruction which caused the BugCheck
+Arg3: ffffb30bbeb56ec0, Address of the context record for the exception that caused the BugCheck
+Arg4: 0000000000000000, zero.
+其中参数1表示出现内存访问冲突。
+所有系统服务例程都存储在称为系统服务分派表 (SSDT) 的指针数组中。每个系统服务例程都由称为syscall或sysenter的特殊处理器指令调用。进一步查看出现问题的内存地址的上下文信息，其中rdi寄存器的值应以ffff开头，正常情况下kernel层的寻址范围均在ffff开头的地址范围内。而现在却是“dfff”开头，不排除因硬件原因导致的跳变问题。
+从以上3个dump来看，蓝屏问题的发生均是在系统进程在申请或调用资源时发生，而蓝屏的发生是由于在对资源做相关操作时，发现所调用的资源出现问题导致。这种对于资源的访问问题排查，无法通过蓝屏发生当下的dump文件获悉。因此需要收集TTT之类的日志对所分配资源进行跟踪，这种方法对于系统的负担很大，而当前的问题场景需要12小时才能有几率复现，是否适用该方法仍需讨论，但如需要我们继续向下分析，则请帮忙协调测试机用于本地的问题复现和日志抓取，这样更有利后一步的问题分析，谢谢。
+
+====第2封邮件====
+
+发件人：Gao Meng
+发送时间：2023-05-18 14:07:39.836000+00:00
+邮件内容:
+Hi Li Qi，
+紫光正在协调测试机，如果有收集日志的方法等也可以提供给紫光同步收集。
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-19 10:05:39.648000+00:00
+邮件内容:
+Hi，GaoMeng：
+收到，目前没有什么特定日志需要收集，如之前所说，当前的dump分析来看均是在发生资源调用时出现的系统问题，由于问题发生时系统的运行逻辑和最终结果均不同，因此我们目前只能确认其硬件兼容性存在问题，这种问题可能是硬件本身导致，也有可能是驱动导致。目前我们可以先定位具体出现问题的硬件，结合用户反馈的情况来看，是否由于2TB硬盘导致，这是当前的解决思路，考虑到后续可能需要额外的日志（尚不确定），因此有可能的情况下还是提供下物理机供复现用。谢谢
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-23 11:16:04.768000+00:00
+邮件内容:
+Hi, Gao Meng:
+       如刚才沟通，当前问题已判定为硬件原因导致，需要OEM厂商做进一步硬件方面的排查解决，经您的同意，此case将暂做归档处理，以下为案例总结，请您知悉：
+Case No：CAS-08911-R2D0V8
+问题描述：
+=================
+用户反馈 UNIS  V2022-L 测试安装在2TB SSD中出现蓝屏。
+问题分析：
+=================
+当前6个dump均指向BitFlips问题，以其中“SKU3_A0022_0X109_F02B_第一次蓝屏__神州网信pure”为例：
+13: kd> !chkimg -d nt
+    fffff8070af18200 - nt!KiTpWriteUmMemory+8c
+             [ 45:4d ]
+    fffff8070af1820e - nt!KiTpWriteUmMemory+9a (+0x0e)
+             [ 8b:0b ]
+    fffff8070af18212 - nt!KiTpWriteUmMemory+9e (+0x04)
+             [ 8b:8a ]
+3 errors : nt (fffff8070af18200-fffff8070af18212)
+13: kd> !pte fffff8070af18200
+                                           VA fffff8070af18200
+PXE at FFFFE2F178BC5F80    PPE at FFFFE2F178BF00E0    PDE at FFFFE2F17E01C2B8    PTE at FFFFE2FC038578C0
+contains 0000000004709063  contains 000000000470A063  contains 0A00000002C001A1  contains 0000000000000000
+pfn 4709      ---DA--KWEV  pfn 470a      ---DA--KWEV  pfn 2c00      -GL-A--KREV  LARGE PAGE pfn 2d18        
+13: kd> u fffff8070af18200
+nt!KiTpWriteUmMemory+0x8c [minkernel\ntos\ke\tracepnt.c @ 256]:
+fffff807`0af18200 4d58            pop     r8
+fffff807`0af18202 488bd7          mov     rdx,rdi
+fffff807`0af18205 4889442428      mov     qword ptr [rsp+28h],rax
+fffff807`0af1820a 4c8d4548        lea     r8,[rbp+48h]
+fffff807`0af1820e 0b4558          or      eax,dword ptr [rbp+58h]
+fffff807`0af18211 488ace          mov     cl,sil
+fffff807`0af18214 89442420        mov     dword ptr [rsp+20h],eax
+fffff807`0af18218 e893fc0d00      call    nt!MmProtectVirtualMemory (fffff807`0aff7eb0)
+13: kd> !chkimg nt -f
+Warning: Any detected errors will be fixed to what we expect!
+3 errors (fixed): nt (fffff8070af18200-fffff8070af18212)
+13: kd> u fffff8070af18200
+nt!KiTpWriteUmMemory+0x8c [minkernel\ntos\ke\tracepnt.c @ 256]:
+fffff807`0af18200 4558            pop     r8
+fffff807`0af18202 488bd7          mov     rdx,rdi
+fffff807`0af18205 4889442428      mov     qword ptr [rsp+28h],rax
+fffff807`0af1820a 4c8d4548        lea     r8,[rbp+48h]
+fffff807`0af1820e 8b4558          mov     eax,dword ptr [rbp+58h]
+fffff807`0af18211 488bce          mov     rcx,rsi
+fffff807`0af18214 89442420        mov     dword ptr [rsp+20h],eax
+fffff807`0af18218 e893fc0d00      call    nt!MmProtectVirtualMemory (fffff807`0aff7eb0)
+这种电平跳变问题，通常由硬件导致，结合当前案例就是：导致nt的代码或内核地址被改变, 被改的字段都是0和1突变。我们试图查询是什么硬件导致这种跳变行为，但dump中并无相关记录。作为系统厂商也无法进一步跟踪。结合以往案例经验，有以下两个方向您可以尝试操作：
+1， 更新或降级固件或驱动版本，查看问题是否复现。
+2， 替换硬盘或内存，以排除硬件兼容性问题，查看问题是否复现。
+问题总结：
+=================
+以上，由于当前定位为硬件问题导致，系统厂商无法进一步排查。经您的同意，此case将暂做归档处理，如有任何其他问题，可随时与我联系，谢谢。

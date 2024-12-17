@@ -1,0 +1,98 @@
+邮件主题：回复: [案例号: CAS-03532-Q6G6J8 ] % |普通事件| Dell | 开启夜间模式后，亮度无法调节，只能调节屏幕色温 %  CMIT:0001758
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-22 14:24:07.332000+00:00
+邮件内容:
+Hi Lianbin：
+根据之前的电话沟通，我谨在此阐述所述问题涉及的范围定义：
+问题定义：用户计算机在开启夜间模式后，亮度无法调节，只能调节屏幕色温。
+问题范围：协助用户分析此问题。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+建议进行以下排查工作：
+1）验证一台新开箱、未加域、未安装第三方应用的计算机开启夜间模式，能否进行亮度调节？排除加域或者第三方应用的影响。
+2）出现问题的计算机上，开启夜间模式后，在“设置-系统-显示”页，查看亮度调节栏情况？
+3）通过devmgmt.msc打开设备管理器，在“监视器”项中，查看列出的设备，以及“通用即插即用监视器”的驱动程序详情。
+4）尝试禁用再重新启用显卡设备，并从硬件厂商获取、安装最新的显卡驱动。
+5）使用procmon收集“从设置页面开启夜间模式，并操作调整屏幕亮度”的操作过程的procmon日志。具体操作方法如下：
+1、访问链接https://download.sysinternals.com/files/ProcessMonitor.zip 下载procmon工具。
+2、下载后，解压processmonitor.zip ,双击“Procmon64.exe”，弹出提权窗口点击“是”运行ProcessMonitor工具。（首次运行会弹出License Agreement窗口，点击Agree）；
+3、进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击 停止捕获，再点击清除当前捕获的事件条目。至此准备工作完毕；
+4、点击开始捕获 
+5、重复“从设置页面开启夜间模式，并操作调整屏幕亮度，此时屏幕亮度不变化”的操作过程后，点击停止捕获；
+6、点击，选择“All Events”并在Path选择保存路径，点击OK；
+7、去到日志保存目录，将保存的Logfile.PML日志压缩后，通过CDUC上传给我们。
+文件上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。如果出现类似错误提示，点击后退即可
+用户名：dell001
+密码：dell001
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+服务电话：400-818-0055
+
+====第2封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-12-22 14:33:08.440000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Liang
+信息收到，感谢support。
+根据下面信息确定好信息后再Update给你.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-24 15:09:40.883000+00:00
+邮件内容:
+Hi Lianbin：
+案例跟踪邮件。
+最终用户有什么情况反馈？如果有进展可以回复此邮件，谢谢！
+服务电话：400-818-0055
+
+====第4封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-12-24 15:12:22.493000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Liang
+客户还在测试，我这边再确定下，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第5封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-12-25 09:10:26.084000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Liang
+此案子问题解决了，可以Closed case，感谢support.
+目前获取的信息是：更新显卡驱动解决的.
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第6封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-25 09:44:03.112000+00:00
+邮件内容:
+Hi Lianbin:
+感谢您的反馈，当前问题已经解决，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+用户计算机在开启夜间模式后，亮度无法调节，只能调节屏幕色温。
+问题总结：
+更新显卡驱动，解决用户问题。
+服务电话：400-818-0055

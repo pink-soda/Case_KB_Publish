@@ -90,6 +90,32 @@
             color: #a94442;
             border: 1px solid #ebccd1;
         }
+        
+        .progress-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .progress {
+            height: 20px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +146,13 @@
                 <button class="action-button update-button" onclick="updateLibrary()">更新案例库</button>
             {% endif %}
         </div>
+        
+        <div class="progress-container" style="display: none;">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="progress-text text-center mt-2"></div>
+        </div>
     </div>
 
     <script>
@@ -134,7 +167,27 @@
         }
 
         async function buildLibrary() {
+            const button = document.querySelector('.build-button');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = progressContainer.querySelector('.progress-bar');
+            const progressText = progressContainer.querySelector('.progress-text');
+
             try {
+                // 禁用按钮并显示加载状态
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>构建中...';
+                progressContainer.style.display = 'block';
+
+                // 启动进度更新
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.setAttribute('aria-valuenow', progress);
+                    progressText.textContent = `正在构建案例库... ${progress}%`;
+                }, 500);
+
                 const response = await fetch('/case_manager/build_library', {
                     method: 'POST',
                     headers: {
@@ -142,17 +195,51 @@
                     }
                 });
                 const data = await response.json();
+
+                // 完成进度
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+                progressText.textContent = data.success ? '构建完成' : '构建失败';
+
                 showMessage(data.message, !data.success);
                 if (data.success) {
                     setTimeout(() => location.reload(), 2000);
                 }
             } catch (error) {
                 showMessage('操作失败: ' + error, true);
+            } finally {
+                // 恢复按钮状态
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.innerHTML = '构建案例库';
+                    progressContainer.style.display = 'none';
+                }, 2000);
             }
         }
 
         async function updateLibrary() {
+            const button = document.querySelector('.update-button');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = progressContainer.querySelector('.progress-bar');
+            const progressText = progressContainer.querySelector('.progress-text');
+
             try {
+                // 禁用按钮并显示加载状态
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>更新中...';
+                progressContainer.style.display = 'block';
+
+                // 启动进度更新
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.setAttribute('aria-valuenow', progress);
+                    progressText.textContent = `正在更新案例库... ${progress}%`;
+                }, 500);
+
                 const response = await fetch('/case_manager/update_library', {
                     method: 'POST',
                     headers: {
@@ -160,12 +247,26 @@
                     }
                 });
                 const data = await response.json();
+
+                // 完成进度
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+                progressText.textContent = data.success ? '更新完成' : '更新失败';
+
                 showMessage(data.message, !data.success);
                 if (data.success) {
                     setTimeout(() => location.reload(), 2000);
                 }
             } catch (error) {
                 showMessage('操作失败: ' + error, true);
+            } finally {
+                // 恢复按钮状态
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.innerHTML = '更新案例库';
+                    progressContainer.style.display = 'none';
+                }, 2000);
             }
         }
     </script>

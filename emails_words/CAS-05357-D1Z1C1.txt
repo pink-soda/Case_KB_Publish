@@ -1,0 +1,106 @@
+邮件主题：回复: [案例号: CAS-05357-D1Z1C1 ] % |P2|ICBC|工行新疆分行部分机器蓝屏问题 % 初次响应 CMIT:0001689
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-15 15:13:12.176000+00:00
+邮件内容:
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-16 09:22:18.542000+00:00
+邮件内容:
+吴先生，您好
+很高兴与您电话沟通，根据“克拉玛依M930t\12-14-1\BlueScreen”和“D:\Logs\克拉玛依M930t\12-14-2\BlueScreen”下的MEMORY.DMP文件，分析结果如下：
+案例分析：
+1）Bugcheck为d1，对应解释为：驱动在进程IRQL过高时尝试访问可分页内存。针对此问题为读操作。
+2）蓝屏时的进程名称：scclient.exe，Call Stack中gscfmgr.sys的行为造成蓝屏问题。具体位置：C:\Windows\System32\Drivers\gscfmgr.sys
+建议操作：
+一、彻底卸载或不安装TMS，确认蓝屏问题是否复现。
+二、如果不方便卸载，可尝试如下方法将gscfmgr.sys文件重命名。确认问题是否复现。
+注意：由于不了解此三方软件具体功能，此操作可能导致系统不可用或其他未知问题，所以建议在测试机上进行操作。
+1）从Windows 10神州网信政府版系统光盘或U盘启动，进入安装提示界面后，同时按下Shift+F10，调出命令行窗口。
+2）运行如下命令，重命名gscfmgr.sys文件
+Ren C:\Windows\System32\Drivers\gscfmgr.sys gscfmgr.sys.old
+3）重启进入操作系统。
+Dump日志信息：
+DRIVER_IRQL_NOT_LESS_OR_EQUAL (d1)
+An attempt was made to access a pageable (or completely invalid) address at an interrupt request level (IRQL) that is too high.  This is usually caused by drivers using improper addresses.
+If kernel debugger is available get stack backtrace.
+Arguments:
+Arg1: 000000001dbacd08, memory referenced
+Arg2: 0000000000000002, IRQL
+Arg3: 0000000000000000, value 0 = read operation, 1 = write operation
+Arg4: fffff8057f78c955, address which referenced memory
+PROCESS_NAME:  scclient.exe
+STACK_TEXT:  
+ffff8a8d`c84ff208 fffff805`675d1de9     : 00000000`0000000a 00000000`1dbacd08 00000000`00000002 00000000`00000000 : nt!KeBugCheckEx
+ffff8a8d`c84ff210 fffff805`675ce1d4     : 00000000`1db94f20 fffff805`7f785730 ffff9308`00000000 00000000`00000fff : nt!KiBugCheckDispatch+0x69
+ffff8a8d`c84ff350 fffff805`7f78c955     : fffff805`7f7810c4 00000000`1db94f28 ffff9308`d73d10b0 00000000`00017de4 : nt!KiPageFault+0x454
+ffff8a8d`c84ff4e8 fffff805`7f7810c4     : 00000000`1db94f28 ffff9308`d73d10b0 00000000`00017de4 fffff805`7f781025 : gscfmgr+0xc955
+ffff8a8d`c84ff4f0 fffff805`7f7857a7     : ffff9308`dbb92460 00000000`00000000 ffff9308`d73d10b0 00000000`00000000 : gscfmgr+0x10c4
+ffff8a8d`c84ff520 fffff805`7dc4ab73     : 00000000`00000000 00000000`0c5becb8 fffff805`67842700 ffff09ca`d9838d9e : gscfmgr+0x57a7
+ffff8a8d`c84ff560 fffff805`7dc7bd1c     : ffff8a8d`c84ff670 00000000`00000001 ffff9308`d95f4960 00000000`00000000 : FLTMGR!FltpFilterMessage+0xdb
+ffff8a8d`c84ff5c0 fffff805`7dc7bdd9     : ffff9308`d95f4a30 00000000`1db94f20 00000000`00000000 ffffa300`03b45910 : FLTMGR!FltpMsgDeviceControl+0x128
+ffff8a8d`c84ff620 fffff805`7dc44a6f     : ffff9308`cf52bc20 ffff9308`dbb92460 00000000`00000000 ffffa300`03b45910 : FLTMGR!FltpMsgDispatch+0xa1
+ffff8a8d`c84ff690 fffff805`67482f39     : ffff9308`d95f4960 fffff805`67a20094 00000001`3c1db880 fffff805`674ad549 : FLTMGR!FltpDispatch+0xef
+ffff8a8d`c84ff6f0 fffff805`67a22811     : ffff9308`d95f4960 00000000`00000000 00000000`00000000 ffff9308`dbb92460 : nt!IofCallDriver+0x59
+ffff8a8d`c84ff730 fffff805`67a2257c     : 00000000`00000000 ffff9308`dbb92460 ffff8a8d`c84ffa80 ffff8a8d`c84ffa80 : nt!IopSynchronousServiceTail+0x1b1
+ffff8a8d`c84ff7e0 fffff805`67a22646     : 00000000`0c5becb8 00000000`00000000 00000000`00000001 00000000`00000000 : nt!IopXxxControlFile+0xe0c
+ffff8a8d`c84ff920 fffff805`675d1805     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`0c5be368 : nt!NtDeviceIoControlFile+0x56
+ffff8a8d`c84ff990 00000000`77321cbc     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25
+00000000`0c5becb8 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x77321cbc
+1: kd> lmvm gscfmgr
+Browse full module list
+start             end                 module name
+fffff805`7f780000 fffff805`7f795000   gscfmgr    (no symbols)           
+    Loaded symbol image file: gscfmgr.sys
+    Image path: \SystemRoot\System32\Drivers\gscfmgr.sys
+    Image name: gscfmgr.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Thu Oct 28 10:07:24 2021 (617A05DC)
+    CheckSum:         0001BCA1
+    ImageSize:        00015000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-20 10:45:07.586000+00:00
+邮件内容:
+吴先生，您好
+刚刚电话未能联系到您，此案例用户是否已按照建议操作完成？
+如果有进展您可以回复此邮件，谢谢。
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-22 16:37:50.903000+00:00
+邮件内容:
+吴先生，您好
+来信是询问目前的案例进展，如果有任何问题或反馈，请回复此邮件。
+谢谢。
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-24 15:15:51.752000+00:00
+邮件内容:
+吴先生, 您好!
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+工行新疆分行部分机器蓝屏，希望确认原因。
+案例进展：
+用户确认此问题可以挂起，暂时归档案例。
+案例分析：
+1）Bugcheck为d1，对应解释为：驱动在进程IRQL过高时尝试访问可分页内存。针对此问题为读操作。
+2）蓝屏时的进程名称：scclient.exe，Call Stack中gscfmgr.sys的行为造成蓝屏问题。具体位置：C:\Windows\System32\Drivers\gscfmgr.sys
+--------------

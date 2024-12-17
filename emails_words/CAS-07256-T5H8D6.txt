@@ -1,0 +1,124 @@
+邮件主题：回复: [案例号: CAS-07256-T5H8D6 ] % |普通事件| Dell | 神州网信无法激活FK9XC73 % 初次响应 CMIT:0001292
+
+====第1封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-09-29 10:56:40.161000+00:00
+邮件内容:
+Hi Yuchun，
+我谨在此阐述问题涉及的范围定义： 
+问题定义：
+设备无法激活。
+设备编号:FK9XC73
+激活SN：T302220000290
+问题范围：
+协助用户分析上述问题。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+建议操作：
+查询到您设备的激活记录，考虑您遇到的问题为使用替换标签激活时未清除设备出厂激活状态有关。
+建议您在问题设备按照如下步骤操作尝试修复问题。
+*  以管理员权限打开CMD命令行窗口
+*  输入命令 slmgr /rearm
+*  根据提示重启系统
+*  查询激活状态，如仍未激活再次输入sn/pk进行一次激活操作
+如果问题仍未解决或有新的报错出现，可能需要您协助收取日志上传，我们会对问题进一步分析。
+-----------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 
+
+====第2封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-10-08 14:52:56.445000+00:00
+邮件内容:
+Hi Yuchun，
+循例跟进下，目前案件进展如何？若有更新或疑问，欢迎随时与我们联系，谢谢！
+Guannan
+
+====第3封邮件====
+
+发件人：Luo, Yuchun
+发送时间：2022-10-08 15:05:11.861000+00:00
+邮件内容:
+Hi，Guannan
+你提供的建议方案操作，已经发给客户了，等待客户操作后再给你反馈是否有效，谢谢
+Best Regards
+Yuchun_Luo
+Technical Support L2 Engineer
+Dell Technologies | Great China Client Technical Support
+yuchun_luo@dell.com <mailto:yuchun_luo@dell.com> 
+My manager is hivee_yi@dell.com <mailto:Vic_Wei@dell.com>   Thanks!
+Internal Use - Confidential
+
+====第4封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-10-08 15:08:48.305000+00:00
+邮件内容:
+Hi Yunchun,,
+好的，用户操作过程中有任何问题可随时联系我。
+Guannan
+
+====第5封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-10-11 11:51:04.471000+00:00
+邮件内容:
+Hi Yunchun，
+循例跟进案例进展。用户是否尝试过建议操作，是否能解决目前的问题？
+如问题仍然存在或有新的问题产生也可以随时与我联系。
+Guannan
+
+====第6封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-10-18 17:06:13.560000+00:00
+邮件内容:
+Hi Yuchun，
+循例跟进案例进展。用户是否尝试过建议操作，如问题仍然存在或有新的问题产生也可以随时与我联系。
+如用户近期不方便操作可以暂时归档案例，如有问题可随时重新开启案例处理。
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 
+
+====第7封邮件====
+
+发件人：Luo, Yuchun
+发送时间：2022-10-18 17:09:29.629000+00:00
+邮件内容:
+Hi, Guannan
+你先结案吧，客户是通过微信平台报修的，后面提供了方案给客户，长时间未收到反馈，估计是解决问题了，你先结案，后续有需要我再重新联系你们，谢谢
+Best Regards
+Yuchun_Luo
+Technical Support L2 Engineer
+Dell Technologies | Great China Client Technical Support
+yuchun_luo@dell.com <mailto:yuchun_luo@dell.com> 
+My manager is hivee_yi@dell.com <mailto:Vic_Wei@dell.com>   Thanks!
+Internal Use - Confidential
+
+====第8封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-10-18 17:29:49.030000+00:00
+邮件内容:
+Hi Yuchun，
+感谢反馈！经过您的同意，我将暂时归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以发送邮件到 support@cmgos.com <mailto:support@cmgos.com> 。
+案例总结：
+问题定义：
+设备无法激活。
+设备编号:FK9XC73
+激活SN：T302220000290
+建议操作：
+查询到您设备的激活记录，考虑您遇到的问题为使用替换标签激活时未清除设备出厂激活状态有关。
+建议您在问题设备按照如下步骤操作尝试修复问题。
+*  以管理员权限打开CMD命令行窗口
+*  输入命令 slmgr /rearm
+*  根据提示重启系统
+*  查询激活状态，如仍未激活再次输入sn/pk进行一次激活操作
+------------
+Customer Support Operation Advisor 
+手机 Mobile: 400-818-0055
+电子邮箱 Email: shign@cmgos.com <mailto:shgn@cmgos.com> 

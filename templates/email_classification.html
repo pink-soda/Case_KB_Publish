@@ -63,15 +63,15 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">邮件文件列表</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
                     {% if email_files %}
                         <div class="list-group">
-                        {% for file in email_files %}
-                            <div class="list-group-item">
+                        {% for file in email_files|sort(attribute='processed') %}
+                            <div class="list-group-item {% if file.processed %}processed{% endif %}">
                                 <div class="d-flex flex-column">
                                     <div class="d-flex align-items-center mb-2">
                                         <span class="me-3">{{ file.name.replace('.pdf', '') }}</span>
-                                        <span class="badge {% if file.processed %}bg-success{% else %}bg-secondary{% endif %}">
+                                        <span class="badge {% if file.processed %}bg-success{% else %}bg-warning{% endif %}">
                                             {{ "已处理" if file.processed else "未处理" }}
                                         </span>
                                     </div>
@@ -185,7 +185,7 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">分类结果</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
                     {% if hierarchy %}
                         <pre class="bg-light p-3 rounded"><code id="hierarchyCode"></code></pre>
                         <script>
@@ -507,7 +507,7 @@
             });
         });
 
-        // 初始化所���工具提示
+        // 初始化所有工具提示
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -641,6 +641,48 @@ pre code {
 .confidence-badge.confidence-none {
     background-color: #343a40 !important;
     color: white !important;
+}
+
+/* 滚动条样式 */
+.card-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 未处理案例高亮 */
+.list-group-item:not(.processed) {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffc107;
+}
+
+/* 已处理案例样式 */
+.list-group-item.processed {
+    border-left: 4px solid #28a745;
+}
+
+/* 分类结果滚动条样式 */
+.card-body pre {
+    margin-bottom: 0;  /* 移除底部边距 */
+}
+
+.card-body pre code {
+    font-family: 'Microsoft YaHei', Consolas, monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    display: block;
 }
 </style>
 {% endblock %} 

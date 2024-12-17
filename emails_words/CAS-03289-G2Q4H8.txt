@@ -1,0 +1,65 @@
+邮件主题：回复：[案例号: CAS-03289-G2Q4H8 ] % 贵州智慧诚达科技有限公司帮云上贵州反馈戴尔5493笔记本电脑蓝屏问题 % 初次响应 CMIT:0001888
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-11 10:29:46.577000+00:00
+邮件内容:
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: DELL 5493 在全新安装 CMGE V2020-L 操作系统后有蓝屏现象。受影响设备10几台。
+问题范围: 分析蓝屏转储文件定位蓝屏原因。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+日志收集步骤：
+1.     下载解压缩附件日志收集工具以管理员权限运行。点击收集开始日志收集。并将收集的日志上传至上传系统。（在所有蓝屏设备上运行此工具进行日志收集并将日志以计算机名命名以便区分）
+2.     将%SystemRoot%\MEMORY.DMP上传至日志上传系统。(暂时收集一台设备，请将文件MEMORY.DMP重命名为计算机名.dmp以便区分)
+日志上传服务器：
+SFTP登录方式：sftp://ocean.cmgos.com  端口：22222    访问方式建议使用像 FileZilla 这样的专用客户端软件
+连接地址：sftp://ocean.cmgos.com  端口：22222
+用户名： dellservicecase
+密码： cge2FXD9j#
+如果您在日志收集过程中遇到任何问题请随时与我联系。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-12 10:10:30.657000+00:00
+邮件内容:
+喻先生 您好：
+今早检查文件服务器并未发现日志上传，请您方便时将日志上传以便问题排查。
+如果您在日志上传中遇到任何问题请随时与我们联系。届时我们将及时为您提供帮助。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-17 14:51:17.089000+00:00
+邮件内容:
+喻先生 您好：
+如之前电话中沟通，以下是针对蓝屏问题的分析结果供您参考：
+问题分析总结：在蓝屏日志中可以看到多次蓝屏均与设备驱动和硬件相关。主要触发蓝屏原因指向iaStorAVC驱动，经查看是Intel(R) Rapid Storage Technology driver (inbox) - x64。还有几次蓝屏触发原因为存储硬件问题。
+查看系统日志发现多条硬件驱动相关警告和错误：其中涉及PCI Express根设备，BIOS，和disk。建议您确认BIOS, 芯片组驱动是否正确安装并执行磁盘扫描检查磁盘错误。
+相关日志：
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第4封邮件====
+
+发件人：18185131379
+发送时间：2020-11-19 17:49:42.699000+00:00
+邮件内容:
+您好，这边客户一直在开会，明天下午来进行更新，麻烦您了
+<https://maas.mail.163.com/dashi-web-extend/html/proSignature.html?ftlId=1&name=18185131379&uid=18185131379%40163.com&iconUrl=https%3A%2F%2Fmail-online.nosdn.127.net%2Fqiyelogo%2FdefaultAvatar.png&items=%5B%22%E9%82%AE%E7%AE%B1%EF%BC%9A18185131379%40163.com%22%5D> 
+ <https://mail-online.nosdn.127.net/qiyelogo/defaultAvatar.png> 	18185131379
+邮箱：18185131379@163.com
+签名由 网易邮箱大师 <https://mail.163.com/dashi/dlpro.html?from=mail88>  定制
+		在2020年11月17日 14:51，Bai Chengxiao <mailto:baicx@cmgos.com>  写道：
+		喻先生 您好：
+		如之前电话中沟通，以下是针对蓝屏问题的分析结果供您参考：
+		问题分析总结：在蓝屏日志中可以看到多次蓝屏均与设备驱动和硬件相关。主要触发蓝屏原因指向iaStorAVC驱动，经查看是Intel(R) Rapid Storage Technology driver (inbox) - x64。还有几次蓝屏触发原因为存储硬件问题。
+		查看系统日志发现多条硬件驱动相关警告和错误：其中涉及PCI Express根设备，BIOS，和disk。建议您确认BIOS, 芯片组驱动是否正确安装并执行磁盘扫描检查磁盘错误。
+		相关日志：
+		===========================
+		

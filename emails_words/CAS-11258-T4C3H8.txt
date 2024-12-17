@@ -1,0 +1,65 @@
+邮件主题：回复: [案例号: CAS-11258-T4C3H8 ] % |P3|Lenovo|V2022-L 安装2024-4B补丁后运行longrun测试出现app crash报错 % 初次响应 CMIT:0001507
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2024-04-23 17:06:56.182000+00:00
+邮件内容:
+Hi Gao Meng:
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+Lenovo在V2022-L系统上运行longrun工具测试，有LogonUI.exe应用出现app crash错误，需要协助排查。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+从现有的日志来看，是LogonUI.exe出现错误，错误模块为NetworkIcon.dll，异常代码为 0xc0000005，这表示内存访问冲突错误。
+当前的日志并没有更详细的信息，建议设置应用dump配置，当出现app crash后，提供dump文件以及相关的系统日志，进一步分析。
+也请确认测试设备上是否有安装其他三方应用程序。
+应用dump配置收集：
+1）下载DumpSettings.txt文件至问题机器，将后缀名命名为.bat。
+https://cduc.cmgos.com/download.php?id=1294&token=hvaKFaHcJkIysXvMvQNIVJI8xbeEL3Hp
+2）右键单击“DumpSettings.bat”文件，选择“以管理员身份运行”，弹框点击“是”。
+3）出现如下内容表示设置成功。
+4）复现app crash问题。
+5）同时按下Windows+R，运行%LOCALAPPDATA%\CrashDumps，确认是否有最新时间点生成的.dmp文件。将所有文件压缩后反馈。
+系统日志收集：
+1）下载CMGELogCollectorV2日志收集工具
+https://cduc.cmgos.com/download.php?id=1358&token=4Nt2YR8GaM8baY4TAQPBXU4fZz28boRs
+2）解压后双击运行CMGELogCollectorV2.exe，勾选所有选项，点击收集获取对应的系统日志，将生成的日志压缩包反馈。
+
+====第2封邮件====
+
+发件人：Wei Liang
+发送时间：2024-04-24 16:28:25.990000+00:00
+邮件内容:
+________________________________
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2024-05-17 15:29:43.795000+00:00
+邮件内容:
+Hi Gao Meng：
+联想最新上传的日志是minidump和fulldump日志，bugchek 代码为0xe2，这表示用户手动从内核调试器或键盘启动内存转储。
+查看dump日志文件信息与system系统日志中显示生成dump日志的时间一致。
+查询app crash报错的记录，LogonUI.exe应用最近的出错时间为2024/5/15 8:18:44。
+建议提供LogonUI.exe的应用dump，用于排查event id 1000的错误。
+查询wer localdumps的配置，其创建wer dump存储目录为C:\Windows\temp\CrashDumps
+建议查看C:\Windows\temp\CrashDumps目录是否有生成最新的LogonUI应用dump，提供给我们进一步排查app crash问题。
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2024-09-10 15:11:59.586000+00:00
+邮件内容:
+Hi Gao Meng：
+经过您的确认，我将暂时归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如有其他问题，您可以随时联系我们。
+案例总结：
+----
+问题定义：
+Lenovo在V2022-L系统上运行longrun工具测试，有LogonUI.exe应用出现app crash错误，需要协助排查。
+问题总结：
+已建议用户配置wer，用于获取应用异常退出的dump文件进一步分析。后续用户未再反馈这个问题，案例暂时归档。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。

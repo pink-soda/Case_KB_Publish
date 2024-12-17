@@ -1,0 +1,90 @@
+邮件主题：回复: 回复：回复: [案例号: CAS-06175-J6T3J0 ] % |工行升级|工行安徽分行升级失败问题 % 初次响应 CMIT:0001446
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2022-05-05 16:36:15.338000+00:00
+邮件内容:
+何先生 您好：
+感谢您的电话接听。
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+工行安徽分行升级报错，需要分析报错原因。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+针对您这个问题，请您按照以下方法在出现升级故障的设备上帮忙收集相关系统日志进行分析。
+1）请您下载附件的CMGELogCollector.zip，解压后在升级失败的设备上运行CMGELogCollector.exe，勾选全部选项，点击“收集”，运行几分钟后会在桌面生成日志压缩包。
+ 压缩的日志您可以通过CDUC上传给我们。
+日志上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。
+用户名：anhui
+密码：anhui
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+
+====第2封邮件====
+
+发件人：Wei Liang
+发送时间：2022-05-09 13:21:04.337000+00:00
+邮件内容:
+何先生 您好：
+查看您上传的日志有三台设备的升级失败信息，查看对应的UpgradeLog\C_Win_BT_Panther\setupact.log日志，关键的错误日志提示如下：
+编号
+计算机名
+关键错误日志
+1
+AHFHPANY1
+2022-05-07 14:57:32, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {057720f4-2dea-4fbf-9fef-cd191e96eba4} Flags: 0x4 Status: c0000024[gle=0x00000002]
+2
+AHFHWBZHANGSQ1
+2022-05-07 15:01:48, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {bf95c1d1-1402-430d-8f40-bf8a2cf0a125} Flags: 0x4 Status: c0000024[gle=0x00000002]
+3
+AHFHWBWEID1
+2022-05-07 15:22:32, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {3420f85a-eec5-4023-9713-7839eb438444} Flags: 0x4 Status: c0000024[gle=0x00000002]
+这对应的设备上的BCD启动项配置错误，导致升级出现问题。
+以计算机AHFHPANY1为例：
+1）以管理员权限打开cmd命令行，执行以下命令查询BCD具体配置，可以查询到标识符 {057720f4-2dea-4fbf-9fef-cd191e96eba4}的配置为空。
+bcdedit /enum all -v
+2）在管理员权限下，执行以下命令删除出错的配置：
+bcdedit /delete {057720f4-2dea-4fbf-9fef-cd191e96eba4}
+3）再次验证升级情况。
+每一台出问题的标识符都不一样，其他出问题的设备也按照相同的步骤查询标识符并删除出错的BCD配置。
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2022-05-09 17:16:16.507000+00:00
+邮件内容:
+何先生 您好：
+感谢您的回复，确认您的问题已经解决，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+工行安徽分行升级报错，需要分析报错原因。
+问题总结：
+删除出错的BCD配置信息后，升级系统成功。
+具体分析：
+上传的日志有三台设备的升级失败信息，查看对应的UpgradeLog\C_Win_BT_Panther\setupact.log日志，关键的错误日志提示如下：
+编号
+计算机名
+关键错误日志
+1
+AHFHPANY1
+2022-05-07 14:57:32, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {057720f4-2dea-4fbf-9fef-cd191e96eba4} Flags: 0x4 Status: c0000024[gle=0x00000002]
+2
+AHFHWBZHANGSQ1
+2022-05-07 15:01:48, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {bf95c1d1-1402-430d-8f40-bf8a2cf0a125} Flags: 0x4 Status: c0000024[gle=0x00000002]
+3
+AHFHWBWEID1
+2022-05-07 15:22:32, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {3420f85a-eec5-4023-9713-7839eb438444} Flags: 0x4 Status: c0000024[gle=0x00000002]
+ 这说明对应的设备上的BCD启动项配置错误，导致升级出现问题。
+以计算机AHFHPANY1为例：
+1）以管理员权限打开cmd命令行，执行以下命令查询BCD具体配置，可以查询到标识符 {057720f4-2dea-4fbf-9fef-cd191e96eba4}的配置为空。
+bcdedit /enum all -v
+2）在管理员权限下，执行以下命令删除出错的配置：
+bcdedit /delete {057720f4-2dea-4fbf-9fef-cd191e96eba4}
+3）再次验证升级情况。
+每一台出问题的标识符都不一样，其他出问题的设备也按照相同的步骤查询标识符并删除出错的BCD配置。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。

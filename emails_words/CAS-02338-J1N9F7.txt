@@ -1,0 +1,95 @@
+邮件主题：回复: [案例号: CAS-02338-J1N9F7 ] % |普通事件| Dell | 蓝牙无法搜索到其他设备进行连接 % 初次响应 CMIT:0001733
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2020-05-27 17:37:46.137000+00:00
+邮件内容:
+Lianbin.Que 先生 您好： 
+如刚才电话沟通，我谨在此阐述您所述问题涉及的范围定义：
+定义范围：DEll LATITUDE 7300 安装CMGE系统，蓝牙无法搜索到其他设备进行连接
+问题定义：协助确认此CMGE系统版本无法搜索到其他蓝牙设备的原因。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+建议您先更新蓝牙驱动后，再测试蓝牙连接情况。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第2封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-27 17:39:53.654000+00:00
+邮件内容:
+Hi Lei
+感谢support，驱动方面会让客户尝试确定.
+因目前我们还在家办公，无法进一步测试，那是否有条件帮忙测试下蓝牙连接方面信息？
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2020-05-27 17:46:52.610000+00:00
+邮件内容:
+Lianbin_Que 您好：
+针对硬件相关的问题，这边暂时没有合适的测试环境去复现，
+您这边能给出出现此情况的具体的蓝牙硬件型号吗？
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2020-05-29 16:00:31.005000+00:00
+邮件内容:
+Lianbin_Que 您好：
+循例向您这边确认一下，用户那边有更新蓝牙驱动吗？更新驱动后，测试连接蓝牙设备情况如何？
+期待您的回复。
+服务电话：400-818-0055
+
+====第5封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-29 16:18:15.419000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi liang
+客户还在测试，有情况Update 给你，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第6封邮件====
+
+发件人：Lianbin.Que@dell.com
+发送时间：2020-06-01 08:39:09.924000+00:00
+邮件内容:
+Hi Lei
+此case 可以结案了.
+通过查看，此客户是定制部门有对蓝牙的定制设定。
+通过下面打开即可.
+1.用命令打开本地服务设置（services.msc）
+2.在服务列表中到到Network Connection Broker
+3.把启动类型从“禁用”改成“手动”或“自动”
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第7封邮件====
+
+发件人：Wei Liang
+发送时间：2020-06-01 10:35:03.182000+00:00
+邮件内容:
+Lianbin_Que 您好：
+感谢您的回复。我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055，感谢您对我工作的大力支持。
+案例总结：
+----
+问题定义：DEll LATITUDE 7300 安装CMGE系统，蓝牙无法搜索到其他设备进行连接
+问题解决：用户查看其订制部门有对蓝牙的定制设定。开启Network Connection Broker服务后可正常使用。
+服务电话：400-818-0055

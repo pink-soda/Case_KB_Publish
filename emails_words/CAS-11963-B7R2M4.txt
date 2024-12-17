@@ -1,0 +1,79 @@
+邮件主题：回复: 回复：[案例号: CAS-11963-B7R2M4 ] % TAM-反馈中石油华北油田V2022-L补丁更新一直提示重启问题 % 初次响应 CMIT:0001947
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-08-13 11:18:21.143000+00:00
+邮件内容:
+秦先生， 您好
+很高兴与您电话沟通，您可以参考日志收集步骤收集日志并反馈。
+问题定义: 
+反馈中石油华北油田有3台机器无法更新6月补丁，系统版本V2022-L，一直提示重启
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+很高兴与您电话沟通，还需您进行如下日志收集。
+日志收集：
+一、工具收集
+1）在出现问题的计算机上，下载附件《CMGELogCollector.zip》文件并解压到本地磁盘。双击运行exe文件，同意后，按照下图勾选系统日志，组策略信息、网络信息、软件信息，系统进程、更新日志，点击收集。 
+工具下载链接 CMGELogCollector : https://cduc.cmgos.com/download.php?id=1479&token=m1qgs2Xwo3hXokAIJvWUpJHeffUlC0Gg
+2）收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并定为压缩文件。 
+3）将压缩文件上传。
+用户名：ZSYHBYTYH
+密码：ZSYHBYTYH
+--------------
+
+====第2封邮件====
+
+发件人：‪‪‪‪15532702329@163.com‬‬‬‬
+发送时间：2024-08-13 15:08:34.911000+00:00
+邮件内容:
+5台计算机日志已全部上传完成。
+-------- 原始邮件 --------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2024-08-14 10:09:37.253000+00:00
+邮件内容:
+秦先生，您好
+日志分析：
+根据您提供的5台计算机的日志，目前看到都存在Pended sessions残留的问题，可能会导致补丁更新一直提示重启的问题现象。
+2024-08-10 16:35:21, Info                  CBS    Exec: Some sessions are pended with exclusive flag set, forcing execution to be postponed on session:31124224_911910964
+2024-08-10 16:35:22, Info                  CBS    Deleting directory: \\?\C:\Windows\Servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9 <file://%3f/C:/Windows/Servicing/LCU/Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9> 
+2024-08-10 16:35:22, Info                  CBS    Deletion of: \\?\C:\Windows\Servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9 <file://%3f/C:/Windows/Servicing/LCU/Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9>  successful
+2024-08-10 16:35:22, Info                  CBS    Removed staged LCU: \\?\C:\Windows\Servicing\LCU\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9 <file://%3f/C:/Windows/Servicing/LCU/Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4529.1.9> 
+2024-08-10 16:35:23, Info                  CBS    Moving LCU directory out of hard reserve: \\?\C:\Windows\SoftwareDistribution\Download\94a88d889a1191c68915158987cd019d\inst\_Windows10.0-KB5039211-x64.cab_\ <file://%3f/C:/Windows/SoftwareDistribution/Download/94a88d889a1191c68915158987cd019d/inst/_Windows10.0-KB5039211-x64.cab_/> 
+2024-08-10 16:35:23, Info                  CBS    Moved LCU directory out of hard reserve: \\?\C:\Windows\SoftwareDistribution\Download\94a88d889a1191c68915158987cd019d\inst\_Windows10.0-KB5039211-x64.cab_\ <file://%3f/C:/Windows/SoftwareDistribution/Download/94a88d889a1191c68915158987cd019d/inst/_Windows10.0-KB5039211-x64.cab_/> 
+2024-08-10 16:35:23, Info                  CBS    Exec: Package successfully staged for FOD Reservicing
+2024-08-10 16:35:23, Info                  CBS    Reboot mark cleared
+建议操作：
+可以考虑先对pending sessions做一下清理，再进行补丁更新。请参考如下步骤：
+1、 同时按下Windows+X键，再按A键，以管理员身份运行Powershell；
+2、 运行Set-ExecutionPolicy Bypass，输入Y；
+3、将附件脚本文件拷贝到问题客户端。并将.txt后缀修改为.ps1后缀，在刚刚打开的powershell中执行此文件。（需要输入文件的完整路径），例如：
+4、执行完脚本后，请重启操作系统，然后再尝试更新补丁，重启看是否能够完成补丁的配置。
+--------------
+
+====第4封邮件====
+
+发件人：‪‪‪‪15532702329@163.com‬‬‬‬
+发送时间：2024-08-16 09:27:04.262000+00:00
+邮件内容:
+5台计算机安装补丁已全部正常，谢谢！
+-------- 原始邮件 --------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2024-08-16 09:49:35.107000+00:00
+邮件内容:
+秦先生，您好
+很高兴收到您的回复，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+反馈中石油华北油田有3台机器无法更新6月补丁，系统版本V2022-L，一直提示重启 
+案例进展：
+    提供清理Pended sessions的脚本和操作方法，客户操作后问题解决，归档案例
+--------------

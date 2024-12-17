@@ -1,0 +1,161 @@
+邮件主题：回复：[案例号: CAS-02564-J6C0B1 ] % |P2|ICBC|深圳分行升级V2020-L失败 % 初次响应 CMIT:0001220
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-08 11:08:33.713000+00:00
+邮件内容:
+李小川 先生, 您好!
+我正在整理所需数据的收集和上传操作步骤，稍后回复此邮件。
+--------------
+服务电话： 400-818-0055
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-08 11:33:47.859000+00:00
+邮件内容:
+李小川 先生, 您好!
+问题定义: 升级第一阶段32%发生直接退出问题，且无报错生成。目前只有2台机器，1台正常，1台出现此问题，表示已经排除杀毒软件问题。
+问题范围: 协助您分析并处理上述问题。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+刚刚电话未能联系到您，为了进一步定位问题原因，还需您进行如下数据反馈
+数据收集： 
+一、新建SetupDiag文件夹
+二、手动数据收集
+      1）右键点击屏幕左下角的开始菜单，选择“文件资源管理器”；
+      2）选择“查看”页面，勾选“隐藏的项目”；
+      3） 将下列路径的文件或者文件夹拷贝到第一步创建的：SetupDiag文件夹内（如果没有则跳过）
+1.   C:\Windows\setupact.log
+2.   C:\Windows\setuperr.log
+3.   C:\Windows\Logs\Mosetup\BlueBox.log
+4.   C:\$Windows.~BT\Sources\Panther
+5.   C:\$Windows.~BT\Sources\Rollback
+三、收集SetupDiag信息
+      1）下载附件的SetupDiag.zip并解压至第一步创建的SetupDiag文件夹内，双击SetupDiag.exe进行数据收集。
+      2） 黑色弹框消失后会在SetupDiag文件夹内出现如下文件
+四、压缩第一步创建的、包含所有数据的SetupDiag文件夹并回传。 
+数据上传：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：ICBCSZFH
+密码：ICBCSZFH
+注意，如果遇到如下所示页面，点击后退即可看到页面
+--------------
+服务电话： 400-818-0055
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-08 14:06:35.022000+00:00
+邮件内容:
+李小川 先生, 您好!
+刚刚电话未能联系到您。
+我查看数据上传系统，没看到您上传的文件。
+请确认上传的是压缩文件，且拖拽文件后，点击上传文件->保存。
+--------------
+服务电话： 400-818-0055
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-08 17:06:17.919000+00:00
+邮件内容:
+李先生, 您好!
+案例分析：
+1）目前升级失败所处的阶段是第一阶段:Downlevel阶段。此阶段问题排查方向是权限、操作系统稳定性和驱动器稳定性。
+由于无任何error code报错，无法根据error code进行排查。
+2）根据setupact.log文件，可以看到在15:25分Windows安装父进程由于意外原因退出，导致闪退现象。但进程退出原因尚未查到。
+===================================================================
+2020-07-08 15:25:28, Info                  DIAGER CWfpER::SetHeader:Setting header=Microsoft Windows Installation encountered a problem and needs to close. We are sorry for the inconvenience
+2020-07-08 15:25:28, Info                         CDiagnosticsHelper::GetWatsonFilesToAttach: Attaching file C:\$WINDOWS.~BT\Sources\Panther\SetupAct.log
+2020-07-08 15:25:28, Info                         CDiagnosticsHelper::GetWatsonFilesToAttach: Attaching file C:\$WINDOWS.~BT\Sources\Panther\diagerr.xml
+…
+2020-07-08 15:25:28, Info                  DIAGER Consent Value = HKCU\Software\Microsoft\Windows\Windows Error Reporting\Consent!WinSetupDiag02 has been cleaned out
+2020-07-08 15:25:28, Info                  DIAGER IDiagER::~IDiagER:Entry
+2020-07-08 15:25:29, Warning    [0x08094f] MIG    MigHost: CMigPluginSurrogate::WaitForHostTermination: Parent process unexpectedly exited. Terminating host.
+2020-07-08 15:25:29, Info                  MIG    MigHost: CMigPluginSurrogate::COMGenericThreadingHostThreadProc: Exiting ThreadID=[0x196c].
+2020-07-08 15:25:29, Info                  MIG    MigHost: CMigPluginSurrogate::COMGenericThreadingHostThreadProc: Exiting ThreadID=[0x11b4].
+2020-07-08 15:25:29, Info                  MIG    MigHost: CMigPluginSurrogate::COMGenericThreadingHostThreadProc: Exiting ThreadID=[0x1df4].
+===================================================================
+3）根据setuperr.log分析，目前2次失败分别有dll文件和应用WIM文件Access Denied报错出现
+===================================================================
+2020-07-08 15:16:43, Error                 CONX   0xd0000034 Failed to add user mode driver [%SystemRoot%\system32\DRIVERS\UMDF\uicciso.dll]
+2020-07-08 10:24:58, Error                 SP     SPWIMCallback: Error in apply of C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll. GLE [5]
+2020-07-08 10:25:01, Error                 SP     CApplyWIM: Failure while applying image 1 for C:\$WINDOWS.~BT\Sources\Install.wim. Error 0x80070005[gle=0x00000005]
+2020-07-08 10:25:01, Error                 SP     Operation failed: Apply WIM file PathForNewOSFile (compact), index 1 to C:\$WINDOWS.~BT\NewOS. Error: 0x80070005[gle=0x000000b7]
+===================================================================
+建议操作
+一、权限相关：
+1）关闭杀毒软件（RegisteredAV = 亚信安全防毒墙网络版防病毒）
+2）安照附件操作确认此用户为本地管理员权限用户
+3）将光盘内的所有文件，拷贝到本地磁盘的一个文件夹内
+4）运行本地磁盘的setup.exe升级，查看问题是否复现
+二、检查并修复系统完整性
+1）同时按下Windows+X键，再按A，以管理员身份运行Powershell
+2）先后运行命令
+DISM /Online /Cleanup-image /Scanhealth
+DISM /Online /Cleanup-image /Restorehealth
+3）注册所有system32下的dll文件，以管理员身份运行CMD，输入如下命令
+for %1 in (%windir%\system32\*.dll) do regsvr32.exe /s %1
+4）升级安装，问题是否复现
+三、CleanBoot后尝试升级
+1）按照附件操作，启用Clean Boot
+2）尝试升级，问题是否复现。
+--------------
+服务电话： 400-818-0055
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-09 09:59:32.024000+00:00
+邮件内容:
+您好，
+关于这条报错，怀疑与升级问题有相关性
+DISM /Online /Cleanup-image /Scanhealth
+大约20%多失败，好像是报权限5？
+您可以先输入上述命令，复现问题后回传下：
+C:\WINDOWS\Logs\DISM\dism.log
+C:\Windows\Logs\CBS\CBS.log
+--------------
+服务电话： 400-818-0055
+
+====第6封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-09 12:10:08.284000+00:00
+邮件内容:
+李先生，您好
+刚刚看了运行命令失败的log，发现和之前升级失败的log有一个共同点，访问如下文件的时候出现“Error STATUS_ACCESS_DENIED”提示
+C:\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17134.1_none_8bff87e726d33fca\WpdMtp.dll
+您可以按照如下页面截图发给我，如果方便可以发送这个WpdMtp.dll文件给我，谢谢
+1）右键点击dll文件，属性 -> 安全->高级
+--------------
+服务电话： 400-818-0055
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2020-07-09 15:21:42.450000+00:00
+邮件内容:
+李先生,您好!
+案例总结：
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例进展：选择只保留个人信息不保留应用的方式升级成功。
+案例分析：
+看了运行DISM /Online /Cleanup-image /Scanhealth命令失败的log，发现和之前升级失败的log有一个共同点，访问如下文件的时候出现“Error STATUS_ACCESS_DENIED”提示
+C:\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17134.1_none_8bff87e726d33fca\WpdMtp.dll
+C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll
+setuperr.log
+===================================================================
+2020-07-08 15:16:43, Error                 CONX   0xd0000034 Failed to add user mode driver [%SystemRoot%\system32\DRIVERS\UMDF\uicciso.dll]
+2020-07-08 10:24:58, Error                 SP     SPWIMCallback: Error in apply of C:\$WINDOWS.~BT\NewOS\Windows\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17763.1_none_9744e57515d245dc\WpdMtp.dll. GLE [5]
+2020-07-08 10:25:01, Error                 SP     CApplyWIM: Failure while applying image 1 for C:\$WINDOWS.~BT\Sources\Install.wim. Error 0x80070005[gle=0x00000005]
+2020-07-08 10:25:01, Error                 SP     Operation failed: Apply WIM file PathForNewOSFile (compact), index 1 to C:\$WINDOWS.~BT\NewOS. Error: 0x80070005[gle=0x000000b7]
+===================================================================
+CBS.log
+===================================================================
+2020-07-09 11:36:35, Error                 CSI    0000000a (F) STATUS_ACCESS_DENIED #1037475# from Windows::Rtl::SystemImplementation::DirectFileSystemProvider::SysCreateFile(flags = (AllowFileNotFound|AllowSharingViolation|AllowTransactionalConflict), handle = {provider=NULL, handle=0, name= ("null")}, da = (FILE_GENERIC_READ), oa = @0x51b4fafd8->OBJECT_ATTRIBUTES {s:48; rd:NULL; on:[103]'\SystemRoot\WinSxS\amd64_dual_wpdmtp.inf_31bf3856ad364e35_10.0.17134.1_none_8bff87e726d33fca\WpdMtp.dll'; a:(OBJ_CASE_INSENSITIVE)}, iosb = @0x51b4fb038, as = (null), fa = 0, sa = (FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE), cd = FILE_OPEN, co = (FILE_NON_DIRECTORY_FILE|FILE_SYNCHRONOUS_IO_NONALERT|0x00004000), eab = NULL, eal = 0, disp = Invalid)
+[gle=0xd0000022]
+--------------
+服务电话： 400-818-0055

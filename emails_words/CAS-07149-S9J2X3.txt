@@ -1,0 +1,115 @@
+邮件主题：回复: [案例号: CAS-07149-S9J2X3 ] % 联想OEM用户-农业银行用户反馈系统更新离线安装问题 % 初次响应 CMIT:0001066
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-19 17:36:36.637000+00:00
+邮件内容:
+谢先生，您好：   
+       根据您的需求，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+用户反馈360天擎软件部署KB5013941补丁安装不上。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+下一步动作：
+      请收取CMGELogCollector日志，步骤如下：
+系统日志：
+下载附件中的CMGELogCollector.zip，解压后运行CMGELogCollector.exe，勾选全部选项，点击“收集”，运行几分钟后会在桌面生成日志压缩包，将日志上传到CDUC。
+收集完毕后将在当前用户桌面生成CMGE_Log。点击确定，将直接打开文件夹并指定为压缩文件
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息 
+用户名：abcxie01
+密码：abcxie01
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-23 12:02:19.805000+00:00
+邮件内容:
+谢先生，您好：
+       您上传的日志已收到，由于未拨通您提供的另一手机号码， 特发送此邮件，烦请您转发相关人员进行尝试解决。
+分析过程：
+从日志来看，您当前在安装KB5013941时，遇到的问题为：0x800F0984
+查看补丁安装日志，补丁在CSI解压时出现相应错误，意为：PSFX_E_MATCHING_BINARY_MISSING
+通常该问题发生在已自动清理以删除过时资源记录的PC 上，会导致无法安装之后的LCU累积更新补丁。
+解决方案：
+       请将附件fix_updateerror.txt保存至本地，重命名为fix_updateerror.bat，并以管理员身份运行后尝试重新安装补丁，看是否可以解决该问题。
+如有任何更新可随时与我联系，谢谢。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-26 14:48:32.979000+00:00
+邮件内容:
+谢先生，您好：
+       由于电话未联系到您，循例问下，当前问题是否解决，案例进度如何？如有需要协助处理的，可随时与我联系，谢谢。
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-26 15:29:47.407000+00:00
+邮件内容:
+谢先生，您好：
+       如刚才电话沟通，请执行powershell命令“Get-FileHash "KB5013941文件路径" -Algorithm sha256”，获取KB5013941的msu安装文件的哈希值。
+正确的哈希值为：E109BF528DA78E99E3346047305C75DBB75BC4F345B16C64736F67A248B845CD
+如与上述值一致，请帮忙收集当前补丁安装失败的错误日志并上传，谢谢
+
+====第5封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-26 16:00:27.235000+00:00
+邮件内容:
+谢先生，您好：
+       从您上传的截图来看，请下载正确的神州网信V2020-L所需安装的KB5013941，请至以下页面下载后执行安装。谢谢
+https://support.cmgos.com/kb/5013941
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2022-09-27 10:52:14.733000+00:00
+邮件内容:
+谢先生，您好：
+       如刚才电话沟通，从日志中查看有如下文件夹在执行删除操作时出现类似权限不足的问题，请确认是否存在该文件夹，并手动备份后删除，之后请清空C:\Windows\SoftwareDistribution\Download中的所有内容后，再次执行离线安装KB5013941，如有任何问题请随时与我联系，谢谢。
+问题文件夹为：c:\windows\ WinSxS\Temp\InFlight\3024b0428bd1d801104b0000a0298427\09f9c7428bd1d801044c0000a0298427_csvlk-pack-vol..ore-rtm.xrm-ms
+日志如下：
+2022-09-26 17:35:13, Error                 CSI    00000018 (F) STATUS_DELETE_PENDING #5179061# from Windows::Rtl::SystemImplementation::DirectFileSystemProvider::SysCreateFile(flags = (AllowSharingViolation), handle = {provider=NULL, handle=0, name= ("null")}, da = (DELETE|SYNCHRONIZE|FILE_READ_ATTRIBUTES|FILE_WRITE_ATTRIBUTES), oa = @0xa8920fe9e8->OBJECT_ATTRIBUTES {s:48; rd:NULL; on:[129]'\SystemRoot\WinSxS\Temp\InFlight\3024b0428bd1d801104b0000a0298427\09f9c7428bd1d801044c0000a0298427_csvlk-pack-vol..ore-rtm.xrm-ms'; a:(OBJ_CASE_INSENSITIVE)}, iosb = @[gle=0xd0000056]
+2022-09-26 17:35:13, Error                 CSI    0xa8920fea50, as = (null), fa = (FILE_ATTRIBUTE_NORMAL), sa = (FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE), cd = FILE_OPEN, co = (FILE_NON_DIRECTORY_FILE|FILE_SYNCHRONOUS_IO_NONALERT|0x00004000), eab = NULL, eal = 0, disp = Invalid)
+[gle=0xd0000056]
+2022-09-26 17:35:13, Error                 CSI    00000019@2022/9/26:09:35:13.394 <mailto:00000019@2022/9/26:09:35:13.394>  (F) onecore\base\wcp\sil\ntsystem.cpp(2987): Error STATUS_DELETE_PENDING originated in function Windows::Rtl::SystemImplementation::DirectFileSystemProvider::SysCreateFile expression: (null)
+[gle=0x80004005]
+2022-09-26 17:35:13, Error                 CSI    0000001a (F) STATUS_DELETE_PENDING #5179057# from Windows::Rtl::SystemImplementation::CDirectory::DeleteRecursively(...)[gle=0xd0000056]
+2022-09-26 17:35:13, Error                 CSI    0000001b (F) 800f0983 [Error,Facility=(000f),Code=2435 (0x0983)] #5061857# from Windows::COM::CComponentStore::InternalTransact(...)[gle=0x800f0983]
+2022-09-26 17:35:13, Error                 CSI    0000001c (F) 800f0983 [Error,Facility=(000f),Code=2435 (0x0983)] #5039776# from Windows::ServicingAPI::CCSITransaction::ICSITransaction2_AddFiles(Flags = 1, a = @0x22136bea030, fn = @0x22136bea830, fp = @0x22136beb030, disp = 0, op = 0)[gle=0x800f0983]
+2022-09-26 17:35:13, Info                  CBS    Failed to add to transaction package: Package_8300_for_KB5013941~31bf3856ad364e35~amd64~~10.0.1.6 [HRESULT = 0x800f0983 - PSFX_E_MATCHING_COMPONENT_DIRECTORY_MISSING]
+2022-09-26 17:35:13, Error                 CBS    Failed to stage execution package: Package_8300_for_KB5013941~31bf3856ad364e35~amd64~~10.0.1.6 [HRESULT = 0x800f0983 - PSFX_E_MATCHING_COMPONENT_DIRECTORY_MISSING]
+2022-09-26 17:35:13, Info                  CBS    CommitPackagesState: Started persisting state of packages
+2022-09-26 17:35:13, Info                  CBS    CommitPackagesState: Completed persisting state of packages
+2022-09-26 17:35:13, Info                  CSI    0000001d@2022/9/26:09:35:13.815 <mailto:0000001d@2022/9/26:09:35:13.815>  CSI Transaction @0x22146333330 destroyed
+
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2022-10-09 15:02:01.475000+00:00
+邮件内容:
+谢先生，您好：
+       来信循例问下此案例是否有任何进展，如有任何需要我提供帮助的您可以随时与我联系，谢谢。
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2022-10-10 15:16:03.231000+00:00
+邮件内容:
+谢先生，您好：
+       如刚才电话沟通，由于近期不再复现此问题，用户暂无后续需求，经用户同意，此case将暂做归档处理，以下为案例总结，请您知悉：
+Case No：CAS-07149-S9J2X3
+问题描述：
+=================
+用户反馈360天擎软件部署KB5013941补丁安装不上。
+问题分析：
+=================
+根据日志分析，可尝试备份并删除问题文件夹后并清除缓存再次尝试补丁更新操作。
+问题总结：
+=================
+经用户确认，近期未再复现此问题，用户暂无后续需求，此case做归档处理。 
+以上为此问题的案例总结，如有任何问题，可随时与我们联系，谢谢

@@ -1,0 +1,107 @@
+邮件主题：回复: [案例号: CAS-12336-G8T4Y6 ] % |P2|ICBC|工行用户反馈V2022-L版本系统Edge浏览器无法升级无法卸载问题 % 初次响应 CMIT:0001734
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-18 11:20:45.549000+00:00
+邮件内容:
+许先生，您好
+问题定义: 
+V2022-L版本系统Edge浏览器109版本无法升级版本、无法卸载。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+日志收集：
+1） 将c:\windows\temp\msedge_installer.log文件压缩并反馈；
+2） 使用CMGE日志收集工具收集日志并反馈。
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-18 14:17:59.973000+00:00
+邮件内容:
+许先生，您好
+很高兴与您电话沟通，目前可以先后尝试如下操作。如果尝试修复后问题依旧，还按照上封邮件内容收集日志并反馈
+1.       Get-AppxPackage *edge* | Remove-AppxPackage
+2.       重启电脑查看是否卸载成功
+3.       导航至C:\Program Files (x86)\Microsoft\Edge\Application\{Version}\Install文件夹。{Version}为Edge版本，例如111.0.1661.41
+4.       下载zip文件，将setup.exe替换
+https://cduc.cmgos.com/download.php?id=862&token=qHxK4DcxaQ7hs8ZTQ834xtj4f5SKNvSm
+5.       以管理员身份运行命令提示符，并运行如下命令，举例：
+cd C:Program Files (x86)\Microsoft\Edge\Application\111.0.1661.41\Installer
+setup.exe --uninstall --system-level --verbose-logging --force-uninstall
+6.       如果失败，可以在卸载或更改程序中修复Microsoft Edge，在尝试5的操作
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2024-10-28 15:22:38.254000+00:00
+邮件内容:
+许先生，您好
+*   很高兴与您电话沟通，根据目前的现象，在“控制面板\程序\程序和功能 – 卸载或更改程序”界面，仍出现以前109版本的Edge.
+*   我在本地测试环境安装109版本Edge并确认了一些可能会残留的注册表位置。
+*   您可以参考如下操作，移除残留注册表键值。
+注意：移除前需要右键单击注册表项，选择“导出”备份至本地磁盘，便于后续回滚操作。
+示例：
+建议操作：
+备份后移除如下位置的注册表项。
+位置1：
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+在上述位置点击{GUID}，逐一查看确认DisplayName和DisplayVersion是需要移除的Edge版本
+位置2：
+HKEY_CURRENT_USER\Software\Microsoft\Edge
+位置3：
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-07 11:17:55.267000+00:00
+邮件内容:
+许先生，您好
+查看客户日志，没有找到明显导致安装失败的Entry。但可以看到目前系统仍有残留注册表，请清理如下位置注册表项：
+HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\ClientState\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-07 17:20:04.321000+00:00
+邮件内容:
+许先生，您好
+刚刚已经跟王先生电话沟通，王先生后续会再收集一份Procmon日志反馈。
+同时建议使用日志收集工具收集日志并反馈。
+后续可以尝试：
+如果卸载老版本Edge后安装新版本仍失败，可尝试运行如下ps1脚本清理残留信息：
+https://cduc.cmgos.com/download.php?id=1672&token=751NVxvB4PsB6fswfhXiritMw9PBt7CX
+下载并使用如下的Edge安装程序安装：
+https://cduc.cmgos.com/download.php?id=1673&token=hJyYRceWyTgNWAoEmBeYzLpEOAz7HWE7
+--------------
+
+====第6封邮件====
+
+发件人：Jia Wei
+发送时间：2024-11-11 14:22:52.758000+00:00
+邮件内容:
+许先生，您好
+来信是跟踪当前案例进展，如果问题有进展或仍有疑问，您可以回复此邮件。
+--------------
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2024-12-02 14:31:40.257000+00:00
+邮件内容:
+许先生，您好
+很高兴与您沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+V2022-L版本系统Edge浏览器109版本无法升级版本、无法卸载。
+案例进展：
+经分析如下置注册表项残留导致卸载、安装失败，后续卸载成功，并通过拷贝Edge文件的方式成功安装：
+HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\ClientState\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}
+--------------

@@ -1,0 +1,53 @@
+邮件主题：回复: 回复:回复: [案例号: CAS-05115-N7C8W8 ] % 内蒙古卓悦信息技术有限公司反馈一些扫描仪驱动只能从微软商店获取问题 % 初次响应 CMIT:0001070
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2021-11-17 17:54:16.258000+00:00
+邮件内容:
+张先生，您好
+问题定义: 
+用户需要使用HP smart UWP应用，但Windows 10神州网信政府版移除了Microsoft Store无法安装，需要协助解决。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+由于移除Microsoft Store是Windows 10神州网信政府版的产品特性，所以我尽可能帮您找到HP Smart的安装离线安装程序及其安装方法。
+建议操作：
+1）右键点击开始-windows powershell(管理员)。
+2）通过如下链接将HP Smart.zip文件下载至本地C:\根目录并解压（解压后C:\HP文件夹内有4个文件，此链接11月30日过期）。
+https://cduc.cmgos.com/download.php?id=335&token=mWdrOkeFQdpMsNCtq4gjzFb0GknJD4De
+再按照顺序先后运行如下命令：
+Add-AppxPackage "C:\HP Smart\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx"
+Add-AppxPackage "C:\HP Smart\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx"
+Add-AppxPackage "C:\HP Smart\Microsoft.VCLibs.140.00_14.0.30035.0_x64__8wekyb3d8bbwe.Appx"
+DISM /Online /Add-ProvisionedAppxPackage /PackagePath:"C:\HP Smart\AD2F1837.HPPrinterControl_132.3.262.0_neutral___v10z8vjag6ke6.AppxBundle" /skipLicense /region=all
+3）同时按下Windows+R键，运行services.msc
+4）找到Microsoft Account Sign-in Assistant服务，将其启动类型更改为：手动，并应用。
+5）打开HP Smart成功。
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2021-11-18 17:10:37.773000+00:00
+邮件内容:
+张先生, 您好!
+很高兴收到您的邮件回复，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+用户需要使用HP smart UWP应用，但Windows 10神州网信政府版移除了Microsoft Store无法安装，需要协助解决。
+建议操作：
+1）右键点击开始-windows powershell(管理员)。
+2）通过如下链接将HP Smart.zip文件下载至本地C:\根目录并解压（解压后C:\HP文件夹内有4个文件，此链接11月30日过期）。
+https://cduc.cmgos.com/download.php?id=335&token=mWdrOkeFQdpMsNCtq4gjzFb0GknJD4De
+再按照顺序先后运行如下命令：
+Add-AppxPackage "C:\HP Smart\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx"
+Add-AppxPackage "C:\HP Smart\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx"
+Add-AppxPackage "C:\HP Smart\Microsoft.VCLibs.140.00_14.0.30035.0_x64__8wekyb3d8bbwe.Appx"
+DISM /Online /Add-ProvisionedAppxPackage /PackagePath:"C:\HP Smart\AD2F1837.HPPrinterControl_132.3.262.0_neutral___v10z8vjag6ke6.AppxBundle" /skipLicense /region=all
+3）同时按下Windows+R键，运行services.msc
+4）找到Microsoft Account Sign-in Assistant服务，将其启动类型更改为：手动，并应用。
+5）打开HP Smart成功。
+--------------

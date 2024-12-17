@@ -1,0 +1,110 @@
+邮件主题：回复: [案例号: CAS-12342-J8J1Q0 ] % |P2|ICBC|工行杭州用户反馈V2020-L版本系统网络连接认证多次弹框问题 % 初次响应 CMIT:0001750
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2024-10-24 15:03:43.054000+00:00
+邮件内容:
+许先生，您好：
+入刚才电话沟通，我已经联系了黄先生那边，和他解释了无线认证弹框的当前结论，我们将从旁协助排查究竟是否当前杭州出现的无线问题与总行一致，与硬件有关，并且告知黄先生需要收集日志的注意事项。以下为上一份日志的内容分析：
+查看了网络包，网络包看到最晚抓到了12：21：29这个时间点，而在这个时间段内，最后一次无线验证是在12：21：04完成，看到是正常的内容，如下图12：20：47触发eap-start
+12：21：04回复response，提交用户信息，最后success，这里并没有在21分看到触发提交两次验证的情况
+
+====第2封邮件====
+
+发件人：303642690@qq.com
+发送时间：2024-11-19 11:19:51.608000+00:00
+邮件内容:
+李工，请尽快分析问题原因。
+---原始邮件---
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2024-11-19 14:18:59.755000+00:00
+邮件内容:
+许先生，您好：
+关于您提到的第二个问题，“Windows的无线输入密码重连的事情,有人说把无线禁止重新启用就可以,是不是无线连接里面有密码缓存。”，请参照如下内容：
+我在珠海现场遇到的无线问题是通过员工码+动态口令连接的，从之前在珠海现场抓的日志来看，AP端可以正常接收到员工码，但具体接收的动态口令是加密的，我们看不到。因此我们可以反向来推导一下，即使存在缓存密码，从windows自身的网络连接过程来看，并没有使用缓存的身份认证信息，因为在PEAP认证阶段也没有收到密码错误的response，密码缓存与否与该问题无关。而出现多次的情况是网卡返回error的问题，至于网卡为什么返回error，需要网卡硬件厂商来回答。
+另外，当前在杭研遇到的无线问题目前日志收集仍然不够完整，无法对问题进行定位。从问题现象来看仍然是无线连接过程中出现多次弹框的问题，目前杭研同事的意见是需要先判断是否与珠海遇到的无线问题是同一问题，因此我们无法将其合并至之前珠海无线弹框问题的案例中，而是仍然停留在第一步收集日志定位问题的阶段，这点请您知悉并了解。
+综上，截至目前，珠海并没有继续上报无线问题的新案例，我们仍然维持之前的结论，从之前日志分析，需要网卡硬件厂商对于认证弹框的error响应原因进行回答。而目前珠海的现状是在对AP侧做出网络优化后，该问题得以缓解。
+杭研需要继续收集完整日志来定位具体问题。
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2024-11-22 18:04:15.169000+00:00
+邮件内容:
+许先生 您好：
+杭研方面经过多次测试，在测试设备上确认并收集了完整的复现问题的日志。确认是在发送802.1x认证包时，miniport层（即硬件网卡）发送error导致的IHV PORT DOWN，进而触发802.1x的认证终止，在第二次开启802.1x认证后触发第二次弹框。与珠海出现的弹框问题报错一致，建议可以找wifi硬件驱动排查确认原因。
+具体日志分析如下：
+如下图所示：16:39:20触发eap-start，在16:40:13输入员工号和动态口令后发送了response identity，但是未收到反馈，在16:40:14重新发送了eap-start，重新出现弹框。
+系统端解析的认证过程报错信息如下，主要查看发送response identity时间的日志记录（标黄的为miniport层发送error导致的IHV PORT DOWN）：
+出现minport error，port down。
+1565630 [2]0CC4.07A4::11/19/24-16:40:13.9505960 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Send Security Packet Length = 26 and Completion Handle = 0x21218725790  {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, Intel(R) Dual Band Wireless-AC 8260
+1565632 [2]0CC4.07A4::11/19/24-16:40:13.9506154 [Microsoft-Windows-NWiFi/Diagnostic ] Send 1X packet: 0xB808CFDA70C3 ==> 0x1E1651B0FA0B 0xFFFF9483DE90A010, {c6dbad3a-4231-4332-8fb1-9d0d217782fa}
+1565774 [2]0CC4.1C18::11/19/24-16:40:13.9507642 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Tx pkt completion, pkt 410146704  0, 2010
+1565809 [1]0004.0D64::11/19/24-16:40:13.9515831 [Microsoft-Windows-NDIS/Diagnostic ] Error Log Entry : Miniport {c6dbad3a-4231-4332-8fb1-9d0d217782fa} (Intel(R) Dual Band Wireless-AC 8260) Error 0x800017D9 {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, 16, 0x47008001000000, Intel(R) Dual Band Wireless-AC 8260
+1566018 [2]0004.365C::11/19/24-16:40:13.9526654 [Microsoft-Windows-NDIS/Diagnostic ] Protocol AUTHCOMM is closing Miniport {c6dbad3a-4231-4332-8fb1-9d0d217782fa} {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, 16
+1566219 [3]0004.00F4::11/19/24-16:40:13.9532168 [Microsoft-Windows-NWiFi/Diagnostic ] DisAssoc: 0x1E1651B0FA0B Reason: 0x10000 0xFFFF9483DE90A010, {c6dbad3a-4231-4332-8fb1-9d0d217782fa}
+1566222 [3]0004.00F4::11/19/24-16:40:13.9532288 [Microsoft-Windows-NWiFi/Diagnostic ] Diagnostic Statistics Difference Adapter Guid {c6dbad3a-4231-4332-8fb1-9d0d217782fa} TxUnicastCount: 0 RxUnicastCount: 0 TxBroadcastCount: 0 RxBroadcastCount: 0 TxMulticastCount: 0 RxMulticastCount: 0 TimeDiffMs: 53782 
+1576367 [1]0CC4.07A4::11/19/24-16:40:13.9594793 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Received Security Packet: PORT_DOWN1  {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, Intel(R) Dual Band Wireless-AC 8260
+1576410 [1]0CC4.07A4::11/19/24-16:40:13.9595056 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] FSM Current state Authenticating4, event Upcall_Port_Down6  {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, Intel(R) Dual Band Wireless-AC 8260
+1576411 [1]0CC4.07A4::11/19/24-16:40:13.9595083 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Received IHV PORT DOWN, peer 0x1E1651B0FA0B  {c6dbad3a-4231-4332-8fb1-9d0d217782fa}, Intel(R) Dual Band Wireless-AC 8260
+1576446 [1]0CC4.07A4::11/19/24-16:40:13.9595348 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Adapter({c6dbad3a-4231-4332-8fb1-9d0d217782fa}) Port down for peer 0x1E1651B0FA0B  1
+1576461 [2]0CC4.07A4::11/19/24-16:40:13.9595556 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Adapter({c6dbad3a-4231-4332-8fb1-9d0d217782fa}) IntfSecState Transition PREASSOCIATE_DONE3 --_ 6  1
+
+====第5封邮件====
+
+发件人：Wei Liang
+发送时间：2024-12-12 15:57:55.408000+00:00
+邮件内容:
+你好：
+正常不勾选自动连接的配置，当每次手动连接都会跳出弹框这是正常行为。
+这一次收集的日志，是在漫游切换ap的环境下收集的，触发的无线认证也是由漫游开始。
+====日志分析====
+1.查看网络包在17：16：15触发了验证，随后递交了用户信息，但是最后服务器返回了验证失败。
+2.根据事件日志提示0x40420110报错(EAP_I_USER_ACCOUNT_OTHER_ERROR)，用户账户问题
+3.查看net_wlan trace里的具体信息。
+238543 [6]0FC4.3184::12/02/24-17:16:15.6178281 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] FSM Current state Roaming5, event Upcall_Port_Up4  {a5b3f48b-a7e4-4a8e-903c-7e472fdb9a75}, Intel(R) Wireless-AC 9560 160MHz #3
+238570 [6]0FC4.3184::12/02/24-17:16:15.6178502 [System8 ] Wireless security started.
+看到触发验证之前Can_t do fast roaming when PMK Cache is not valid，由于PKM缓存没有开启，又要进行快速漫游，所以使用了本地保留的凭据。
+238989 [6]0FC4.3184::12/02/24-17:16:15.6179958 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] Can_t do fast roaming when PMK Cache is not valid  
+238994 [6]0FC4.3184::12/02/24-17:16:15.6179975 [Microsoft_Windows_WLAN_AutoConfig/Operational16 ] FAST ROAMING is 1  1, {a5b3f48b-a7e4-4a8e-903c-7e472fdb9a75}, 15, 9, 0x14F6D8716691, 0x1E0D9E19E42C
+随后触发1x认证
+242302 [0]0FC4.06C8::12/02/24-17:16:15.6413725 [Microsoft_Windows_OneX/Diagnostic16 ] Port(9): Starting a new 802.1X authentication (MSMinitiated2)  
+242813 [0]0FC4.06C8::12/02/24-17:16:15.6414332 [Microsoft_Windows_OneX/Diagnostic16 ] Port(9): Authentication Starting  
+243582 [1]1BF8.2724::12/02/24-17:16:15.6474261 [Microsoft_Windows_EapHost/Analytic17 ] RasEapGetIdentity Entry:
+243586 [4]1BF8.2724::12/02/24-17:16:15.6530054 [Microsoft_Windows_EapHost/Analytic17 ] RasEapGetIdentity Exit:
+243587  returning identity(001321901)  
+243588 [4]1BF8.2724::12/02/24-17:16:15.6530071 [Application9 ] User Uses Saved Credentials.  
+243589 [4]1BF8.2724::12/02/24-17:16:15.6530084 [Microsoft_Windows_EapHost/Analytic17 ] GetIdentity returning 001321901  
+最后提交的信息有问题导致失败
+7106 [1]1BF8.2724::12/02/24-17:16:16.9974102 [Microsoft_Windows_EapHost/Operational16 ] Session(19): Received EAP-Failure after Identity exchange:  There is likely a problem with the authenticating user_s account.  
+7117 [1]1BF8.2724::12/02/24-17:16:16.9975010 [Microsoft-Windows-EapHost/Debug ] Client EAP Authentication status: Authentication Failed 
+7122 [1]1BF8.2724::12/02/24-17:16:16.9975078 [Application9 ] EapHostPeerGetResult returned a failure.
+7123 Eap Method Friendly Name: Microsoft: 受保护的 EAP (PEAP)
+7124 Reason code: 1078067472
+7125 Root Cause String: 由于用户帐户问题，网络身份验证失败
+7126 
+7127 Repair String: 请与网络管理员联系\n需要解决你的用户帐户问题。
+目前看手动连接和漫游场景下行为不一样，手动连接遵循无线profile，正常跳弹框，漫游应该是为达到无感知所以调用了保存的凭据。
+但由于密码是一次性的，并根据测试结果，测试设备在动态密码过期之后快速漫游还能连上，这涉及漫游和认证过程，建议还是从ap，ac上看一下漫游的相关配置项和逻辑行为，以及认证服务器对保存的凭据的处理。
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2024-12-12 16:43:52.429000+00:00
+邮件内容:
+许先生，您好：
+如刚才电话沟通，经您的确认，目前该问题仍然需要硬件厂商进一步排查来确认问题原因。后续暂不需系统厂商跟进，此case将暂做归档处理，以下为案例总结：
+Case No：CAS-12113-Z7H0W7
+问题描述：
+=================
+工行杭州用户反馈V2020-L版本系统网络连接认证多次弹框问题，需要协助分析处理。
+问题分析：
+=================
+从此前的分析来看，该问题与珠海遇到的无线多次弹框问题一致，需要硬件厂商对在eap认证阶段发出的IHV PORT DOWN的错误做进一步的解读及后续改进
+案例总结：
+=================
+经用户确认，此问题已反馈至硬件厂商处，暂不需系统厂商跟进，此case做归档处理。如后续有其他问题需求，可随时与我联系，谢谢

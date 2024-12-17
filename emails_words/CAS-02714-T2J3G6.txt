@@ -1,0 +1,149 @@
+邮件主题：回复: [External]  回复: [案例号: CAS-02714-T2J3G6 ] % |普通事件|联想|神州网信系统自动加密Bitlocker问题 %  CMIT:0001511
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2020-08-03 17:51:43.076000+00:00
+邮件内容:
+齐先生 您好：
+根据刚才的电话沟通，我谨在此阐述您所述问题涉及的范围定义：
+问题定义：新电脑开箱启动后出现Bitlocker正在等待激活问题以及此情况下系统崩溃数据恢复问题
+问题范围：协助用户分析此问题。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+关于自动开启bitlocker驱动器加密情况：
+根据微软官方文档说明，开启bitlocker加密是原Windows 10的默认功能，为了系统和用户数据安全，CMGE并未针对该功能做关闭定制。
+从微软官方文档可以看出：当用户的软硬件系统满足下图条件时，用户经过OOBE过程后，系统会自动开启Bitlocker。
+https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-bitlocker
+关于“Bitlocker正在等待激活”情况下的数据恢复问题：
+根据您在用户环境处于“BitLocker正在等待激活”状态时，利用winpe启动想要复制用户数据无法成功。我这边没有复现此情况，希望您这边能做以下几步操作测试：
+1、 在用户当前情况下已经正在使用的，一直出现“Bitlocker正在等待激活”状态的计算机上，使用管理员权限打开cmd命令行，使用
+manage-bde -status    
+提供这个输出结果截图。
+2、在当前测试环境计算机使用winpe启动测试能否复制数据，并给出截图。
+3、那台忘记密码无法复制数据的计算机，提供winpe启动后无法复制数据的截图。
+服务电话：400-818-0055
+
+====第2封邮件====
+
+发件人：Peter Qi
+发送时间：2020-08-03 18:07:51.252000+00:00
+邮件内容:
+危工好，
+           感谢支持！   我已经将结果跟用户沟通，他们对微软的那个设置没有异议，但是对于在预加密情况下winpe复制内容表示不能理解，这个现象我在用户现场亲自看到也做过相关测试。客户说明天会将测试结果进行反馈。另外用户说如果系统崩了，winpe不能读取出来数据，怎么恢复系统数据，还请给出方案，谢谢！
+Peter Qi (齐现生)
+Mobile: 18910866335
+E-mail：qixs1@lenovo.com <mailto:qixs1@lenovo.com> 
+Technical Support 
+Lenovo China CSME-PTS Department
+2#Buliding Sanbiao
+No. 8  Shang Di Chuang Ye Road, 
+Hai Dian District, Beijing, China
+100085
+Forums <http://forums.lenovo.com/>  | Blogs <http://lenovoblogs.com/>  | RSS <http://lenovosocial.com/>  | Twitter <http://twitter.com/lenovosocial>  | Facebook <http://www.facebook.com/lenovo>  | Flickr <http://www.flickr.com/photos/lenovophotolibrary>  | Wechat
+
+====第3封邮件====
+
+发件人：Peter Qi
+发送时间：2020-08-05 09:57:15.757000+00:00
+邮件内容:
+客户今天反馈信息如下：
+1. 采用manage-bde -status  收集 图片：
+问题2和3现象一样，照片如下，C盘和D盘是机器上的硬盘：
+现在用户需要解决的问题：
+这种由系统自动加密bitlocker的硬盘怎么备份数据，用户强烈要求系统提供商给出方案，谢谢。
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2020-08-05 11:07:35.217000+00:00
+邮件内容:
+Hi Peter:
+根据上次您反馈的信息，我这边也做了相关测试，在显示”BitLocker正在等待激活”状态下，重启电脑，选择使用CMGE安装镜像启动，
+在“现在安装”界面，选择修复计算机，
+选择疑难解答
+选择命令提示符
+在命令提示符下运行  manage-bde -status  命令如下图所示：
+直接输入C:盘，回车切换到C盘根目录，使用dir命令是可以读取C盘的文件的。
+在这种能切换到C盘情况下，我们就可以使用附件中《使用winPE变更windows用户密码》的方法，按照操作步骤去修改用户密码。
+可以建议用户使用CMGE安装镜像按照上述方式操作。
+在用户现场显示的“bitlocker (c:)”的问题，我这边没有复现，您这边能给我们提供用户使用的winpe镜像供我们测试吗？
+如果用户能提供winpe镜像，您可以通过cduc文件上传系统发给我们。
+上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。如果出现类似错误提示，点击后退即可
+用户名：lenovo001
+密码：lenovo001
+注意，，等待上传完毕后点击保存。
+服务电话：400-818-0055
+
+====第5封邮件====
+
+发件人：Wei Liang
+发送时间：2020-08-05 11:30:38.838000+00:00
+邮件内容:
+齐先生 您好：
+如刚才的电话沟通，我这边在“bitlocker正在等待激活”状态下，使用CMGE系统光盘进入cmd命令行模式是可以访问系统盘的。
+这一点和用户使用winPE访问提示“无法解锁驱动器”不一样，这有可能是winpe制作问题，建议用户按照测试步骤操作，确认是否可以访问硬盘数据？
+服务电话：400-818-0055
+
+====第6封邮件====
+
+发件人：Wei Liang
+发送时间：2020-08-05 18:14:49.859000+00:00
+邮件内容:
+齐先生 您好：
+根据您上午提供的用户WinPE环境下的截图，我下载了相关的WinPE进行测试，复现了用户的问题现象。
+问题分析：
+用户PE环境下显示U盘装机助理 和 Usbzl_system 显示，通过网络查找下载了Usbzl v2.3版本，通过U盘加载启动后，访问本地系统盘显示如下图：
+换用CMGE安装镜像启动，选择修复计算机，启用cmd命令行可以访问本地磁盘数据。
+因此判断用户使用的WinPE可能识别磁盘“Bitlocker正在等待激活”状态错误，造成使用此PE无法访问本地磁盘数据。
+下一步计划：
+建议用户使用CMGE安装镜像，按照上午的测试步骤操作，进行文件替换以及修改密码操作，验证能否解决用户问题。
+服务电话：400-818-0055
+
+====第7封邮件====
+
+发件人：Peter Qi
+发送时间：2020-08-06 10:53:58.992000+00:00
+邮件内容:
+收到，
+     已将内容传递给用户，等待用户反馈中。谢谢！
+Peter Qi (齐现生)
+Mobile: 18910866335
+E-mail：qixs1@lenovo.com <mailto:qixs1@lenovo.com> 
+Technical Support 
+Lenovo China CSME-PTS Department
+2#Buliding Sanbiao
+No. 8  Shang Di Chuang Ye Road, 
+Hai Dian District, Beijing, China
+100085
+Forums <http://forums.lenovo.com/>  | Blogs <http://lenovoblogs.com/>  | RSS <http://lenovosocial.com/>  | Twitter <http://twitter.com/lenovosocial>  | Facebook <http://www.facebook.com/lenovo>  | Flickr <http://www.flickr.com/photos/lenovophotolibrary>  | Wechat
+
+====第8封邮件====
+
+发件人：Wei Liang
+发送时间：2020-08-12 11:49:45.541000+00:00
+邮件内容:
+齐先生 您好：
+根据刚才的电话沟通，我将暂时归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：新电脑开箱启动后出现Bitlocker正在等待激活问题以及此情况下系统崩溃数据恢复问题
+问题分析：
+通过复现“BitLocker正在等待激活”此问题，并查找相关文档，总结出现此问题的原因：
+当系统硬件满足自动设备加密要求（如下）时，BitLocker会自动预加密操作系统驱动器，控制面板的BitLocker驱动器加密页面会提示“BitLocker正在等待激活”。
+BitLocker自动设备加密的要求
+1. 该设备包含TPM，TPM 1.2或TPM 2.0芯片。（设备必须包括具有PCR 7支持的TPM）
+2．UEFI安全启动已启用。
+3. CMGE V0-G或更高版本。
+4. 计算机设备支持Modern Standby功能或满足HSTI硬件兼容验证。
+注意：预加密状态时不影响用户复制、修改驱动器的数据。
+可以看到此现象与硬件环境是密切相关的，是属于正常的产品设计。
+在“BitLocker正在等待激活”状态下，无法使用某些第三方PE访问、复制硬盘数据问题，经过多次选择不同版本的第三方PE测试，确认与用户选择的PE版本有关。
+使用CMGE按照镜像自带的PE环境（通过在CMGE镜像启动后的“现在安装”界面，选择“修复计算机”，选择“命令提示符”进入镜像自带的PE的CMD命令行操作界面），可以正常访问、复制硬盘数据。
+也可以建议用户更换其他版本的第三方PE复制硬盘数据。
+问题总结：
+出现“BitLocker正在等待激活”是正常产品设置，当计算机设备满足要求时，会出现此提示。
+在“BitLocker正在等待激活”状态下，用户可以使用PE访问、复制硬盘数据。
+经用户同意，确认暂时关闭CASE。
+服务电话：400-818-0055

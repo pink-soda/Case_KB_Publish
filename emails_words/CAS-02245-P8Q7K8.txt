@@ -1,0 +1,90 @@
+邮件主题：回复: 回复： [案例号:CAS-02245-P8Q7K8] %国网-赤峰供电公司开机登录报错% 案例重新分配 CMIT:0001449
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-05-07 09:48:12.748000+00:00
+邮件内容:
+刘先生 您好，
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 用户无法正常登陆系统，登陆过程中GPSVC服务提示调用失败。
+问题范围: 协助排查此问题并分析故障原因。提供解决方案。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+此外根据电话中沟通，用户在故障修复期间可以拿到备用机替代当前问题设备。经您同意我们可以在您回收故障设备后再排查此问题以避免影响用户正常工作。
+请您在回收故障设备后再次联系我们，或者回复确定时间由我们主动联系您。
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-05-13 10:51:15.658000+00:00
+邮件内容:
+刘先生 您好，
+昨天给您打过电话但您可能不方便未能接听。不知道您是否已经收回用户的问题设备，所以再次发邮件和您确认一下我们能够进行问题排查的时间。
+同时附上如何进入安全模式并修改gpsvc启动方式的文档。希望您可以按照文档步骤进行排查并反馈结果。
+P.S 如果您收到邮件请您回复，以确认邮件正确送达。
+非常感谢，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-05-20 16:47:13.784000+00:00
+邮件内容:
+刘先生，您好：
+循例向您确认一下之前发送给您的解决办法是否能够解决登陆问题？如果您在操作中遇到任何问题请您随时联系我。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第4封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-05-27 17:08:25.123000+00:00
+邮件内容:
+刘先生，您好：
+循例向您确认一下之前发送给您的解决办法是否能够解决登陆问题？如果您在操作中遇到任何问题请您随时联系我。
+感谢您对我们服务的支持
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-06-01 10:32:38.806000+00:00
+邮件内容:
+刘先生，您好
+感谢你抽时间接听我们的电话，以下是我们电话沟通的内容总结：
+-      排错操作步骤邮件已经成功收到
+-      未能有时间进行操作，但是会在操作后反馈结果。
+如果您对以上谈话内容总结有任何意见请及时联系我们。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-06-05 09:18:09.442000+00:00
+邮件内容:
+刘先生，您好：
+循例跟进一下此案例的最新进展。请问上次沟通后您是否有机会尝试我们之前提供的排查步骤？问题是否得到解决？
+如果问题依然存在，请您将执行排查步骤后的报错信息提供给我们。我们将继续进行下一步排查。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-06-11 11:19:46.660000+00:00
+邮件内容:
+刘先生，您好：
+如之前电话中沟通，经您确认此案例可以暂时关闭归档。待您按照之前操作步骤进行操作后再联系我们，我们将届时重新开启此案例继续处理。
+如果以上总结有任何问题，请您及时联系我们。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 

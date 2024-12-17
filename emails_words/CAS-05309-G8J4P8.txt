@@ -1,0 +1,151 @@
+邮件主题：回复: [案例号: CAS-05309-G8J4P8 ] % |P2|ICBC|V2020-L蓝屏问题 % 初次响应 CMIT:0001571
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-10 10:20:11.501000+00:00
+邮件内容:
+吴先生，您好
+如果Dump文件上传完毕，请回复此邮件具体上传位置和dump名称。
+上传完毕后我将与您电话沟通。
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-10 14:49:19.410000+00:00
+邮件内容:
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-10 17:52:01.953000+00:00
+邮件内容:
+吴先生，您好
+根据目前的dump信息，初步分析结果如下：
+案例分析：
+1）目前LiYue登录云桌面蓝屏Dump为Mini dump，无法看到具体内容信息。根据之前电话沟通的结果，已配置Full Dump等待蓝屏复现。
+2）祥总蓝屏Dump中，目前看到Call Stack信息与之前vwifimf.sys问题基本一致，但仍需时间对Dump进行分析确认。分析完成后我将与您电话沟通。
+建议操作：
+等待Li Yue机器新发生蓝屏并将生成的Full Dump上传。
+STACK_TEXT:  
+fffff800`0a081078 fffff800`20549513     : 00000000`00000000 ffff878a`965242a0 00000000`00000000 fffff800`1e1c1f92 : 0x0
+fffff800`0a081080 fffff800`2054d66d     : ffff878a`97235070 fffff800`0a0811d9 fffff800`2054d650 ffff878a`95ec89a0 : nwifi!Dot11SendCompletion+0x4b
+fffff800`0a0810c0 fffff800`1cfa6a13     : fffff800`1e1c1e28 fffff800`0a0811d9 fffff800`1e1c1e28 fffff800`0a0811b0 : nwifi!Pt6SendComplete+0x1d
+fffff800`0a0810f0 fffff800`1cfa1efd     : ffff878a`95cdd793 fffff800`00000000 ffff878a`95f9e180 fffff800`0000000d : ndis!ndisCallSendCompleteHandler+0x33
+fffff800`0a081130 fffff800`1f65593d     : ffff878a`8cf8d1a0 ffff878a`96524030 ffff878a`92676010 ffff878a`96524000 : ndis!NdisMSendNetBufferListsComplete+0x26d
+fffff800`0a081240 fffff800`1f622ef0     : ffff878a`92676010 fffff800`1ffad001 ffff878a`96524030 00000000`00000000 : wdiwifi!CPort::SendCompleteNetBufferLists+0xf5
+fffff800`0a081290 fffff800`1f6174da     : ffff878a`8e3657d0 00000000`0000ff00 ffff878a`97235070 00000000`00000000 : wdiwifi!CAdapter::SendCompleteNbl+0x11c
+fffff800`0a081300 fffff800`1f6171f1     : ffff878a`8e3657d0 00000000`0000ffff ffff878a`8e365900 00000000`00000000 : wdiwifi!CTxMgr::CompleteNdisNbl+0xbe
+fffff800`0a081360 fffff800`1f614395     : fffff800`1f6b2530 ffff878a`8e365900 ffff878a`8e365900 fffff800`1fff06a9 : wdiwifi!CTxMgr::CompleteNBLs+0x59
+fffff800`0a0813a0 fffff800`1f607440     : fffff800`1f607430 fffff800`00000000 00000000`00000000 fffff800`20043c00 : wdiwifi!CTxMgr::TxTransferCompleteInd+0x5c9
+fffff800`0a081460 fffff800`1ffac06a     : ffff878a`96524030 ffff878a`97235070 00000000`00000000 fffff800`2031e2bb : wdiwifi!AdapterTxTransferCompleteInd+0x10
+fffff800`0a081490 fffff800`2002e58e     : 00000000`00000000 00000000`00000000 ffff878a`8798b420 fffff800`20336b00 : Netwtw10+0xc06a
+fffff800`0a081580 fffff800`202d1015     : ffff878a`000000ff 00000000`000000aa ffff878a`8e3b3b01 ffff878a`90112004 : Netwtw10+0x8e58e
+fffff800`0a0816b0 fffff800`202d3671     : fffff800`0a08184f fffff800`0a081830 00000000`00000000 fffff800`0a08184f : Netwtw10+0x331015
+fffff800`0a0816f0 fffff800`202f18b6     : 00000000`000000c5 ffff878a`8798b420 00000000`0000002c ffff878a`8e3b3b20 : Netwtw10+0x333671
+fffff800`0a081780 fffff800`202c61ed     : 000000af`acd3aefb 00000000`000000cf 000000af`acd3aefb ffff878a`8e3b3b20 : Netwtw10+0x3518b6
+fffff800`0a0818f0 fffff800`202c27d3     : 00000000`00000001 00000000`00000091 fffff800`00000091 00000007`00000001 : Netwtw10+0x3261ed
+fffff800`0a0819e0 fffff800`202c1352     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : Netwtw10+0x3227d3
+fffff800`0a081a40 fffff800`1cfb1f73     : ffff878a`8e4e31c0 fffff800`07c739f5 fffff800`0a081b59 fffff800`073c0004 : Netwtw10+0x321352
+fffff800`0a081ab0 fffff800`1cfb2fcb     : ffff878a`8b2b6a20 ffff878a`8e4e3928 ffff878a`8b2b7a60 00000000`00020000 : ndis!ndisQueuedMiniportDpcWorkItem+0x193
+fffff800`0a081bc0 fffff800`072362fc     : fffff800`0583cf80 ffff878a`8b2b7a60 fffff800`0583a180 00000000`00000000 : ndis!ndisPeriodicReceivesTimer+0xeb
+fffff800`0a081c60 fffff800`0723593e     : 00000000`00000006 00000000`00989680 ffff878a`a3532080 00000000`0000001a : nt!KiExecuteAllDpcs+0x2ec
+fffff800`0a081da0 fffff800`073c4f25     : 00000000`00000000 fffff800`0583a180 ffffd585`fda1f4c0 fffff800`07cdcf80 : nt!KiRetireDpcList+0x1ae
+fffff800`0a081fb0 fffff800`073c4d10     : 00000000`00000000 fffff800`07c74af6 00000000`7ffffffe ffffffff`ffffffff : nt!KxRetireDpcList+0x5
+ffffd585`fda1f400 fffff800`073c45d5     : 00007ff8`633bb128 fffff800`073c0071 00000000`00000001 ffffd585`fda1f4c0 : nt!KiDispatchInterruptContinue
+ffffd585`fda1f430 fffff800`073c0071     : 00000000`00000001 ffffd585`fda1f4c0 fffff800`07cdcf80 00000000`c0000034 : nt!KiDpcInterruptBypass+0x25
+ffffd585`fda1f440 00007ff8`632a642c     : 00000000`00000001 00007ff8`633ba170 00007ff8`633bb128 00000000`00000025 : nt!KiInterruptDispatchNoLockNoEtw+0xb1
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-15 15:06:04.324000+00:00
+邮件内容:
+吴先生，您好
+案例分析：
+根据目前的dump中Call Stack结构，与vwifimf.sys问题很相似。但Call Stack中无法找到正在处理的NBL，只能看到Next NBL内容损坏，pTOS为NULL。
+建议操作：
+由于本Dump未能记录完整的NBL，建议按照以下步骤开启NBL跟踪以及special pool，以便在dump中记录更多的信息。
+注意：建议在可复现问题的测试机上进行如下操作后收集dump日志。在之前案例处理过程中，发现有三方软件编写不规范造成启用special pool后计算机频繁蓝屏的现象，因此不建议在客户生产机器上进行如下操作。
+一、开启NBL Trace
+1）以管理员身份运行命令提示符，运行如下命令：
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\NDIS\Parameters" /t REG_DWORD /v TrackNblOwner /d 4 /f
+2）运行regedit，确认HKLM\SYSTEM\CurrentControlSet\Services\NDIS\Parameters界面TrackNblOwner是否设置成功
+二、启用special pool
+1）同时按下Windows+R，运行命令verifier，打开Driver Verifier Manager
+2）选择“创建标准设置”
+3）选择“从一个列表中选择驱动程序名”
+4）选中nwifi.sys，并以“提供程序”排列，勾选非Microsoft Corporation的其他第三方驱动（网卡Netwtw10，vwifimf的驱动等）
+5）点击完成
+6）重启机器生效
+Dump日志
+# Child-SP          RetAddr               Call Site
+00 fffff800`0a081078 fffff800`20549513     0x0
+01 fffff800`0a081080 fffff800`2054d66d     nwifi!Dot11SendCompletion(struct _NET_BUFFER_LIST * pNdisPacket = 0x00000000`00000000, int ndisStatus = 0n0)+0x4b
+02 fffff800`0a0810c0 fffff800`1cfa6a13     nwifi!Pt6SendComplete(struct _ADAPT * pAdapt = 0xfffff800`1e1c1e28, struct _NET_BUFFER_LIST * pNetBufferLists = <Value unavailable error>, unsigned long SendCompleteFlags = 0x1e1c1e28)+0x1d
+03 fffff800`0a0810f0 fffff800`1cfa1efd     ndis!ndisCallSendCompleteHandler(void * ObjectHandle = <Value unavailable error>, <function> * Handler = 0xfffff800`2054d650, void * Context = <Value unavailable error>, struct _NET_BUFFER_LIST * Nbls = <Value unavailable error>, unsigned long Port = 0, unsigned long NumNbls = 0, unsigned long Flags = 1)+0x33
+0: kd> dt ffff878a`972352e0 DOT11_PACKET_CONTEXT
+nwifi!DOT11_PACKET_CONTEXT
+   +0x000 pVElan           : 0xfffff800`2054e6f0 _VELAN
+   +0x008 pMacStateEntry   : 0xffff878a`95ed5010 DOT11_MAC_STATE_ENTRY
+   +0x010 uPriority        : 0x9b1d09c0
+   +0x014 QoSInfo          : _DOT11_QOS_SEND_INFO
+   +0x018 pvEthernetMediaSpecificInfo : 0xfffff800`2054e6b0 Void
+   +0x020 bExcludeWEP      : 0n-1779609584
+   +0x024 bDefaultKeyAllowed : 0n-30838
+   +0x028 pTOS             : (null) 
+   +0x030 CmplArray        : [16] DOT11_COMPLETION_STACK_ENTRY
+   +0x1b0 SendExt          : _DOT11_SEND_CONTEXT
+   +0x1b0 ExtSTASendExt    : DOT11_EXTSTA_SEND_CONTEXT
+   +0x200 ExtV2            : _DOT11_SEND_EXTENSION_INFO_V2
+   +0x206 ucExtRates       : [247]  ""
+   +0x1b0 RecvExt          : _DOT11_RECV_CONTEXT
+   +0x1b0 ExtSTARecvExt    : DOT11_EXTSTA_RECV_CONTEXT
+--------------
+
+====第5封邮件====
+
+发件人：win10升级支持
+发送时间：2021-12-16 10:03:19.911000+00:00
+邮件内容:
+昨晚祥总的那台又蓝屏一次，我再传一次日志。 
+NBL Trace能否提供脚本？ 
+
+====第6封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-16 10:13:33.030000+00:00
+邮件内容:
+吴先生，您好
+*  附件为脚本文件，将txt后缀改为bat。
+*  运行时务必右键点击bat，选择以管理员身份运行。
+*  运行完毕后，在如下注册表位置确认TrackNblOwner值已被改为4。
+--------------
+
+====第7封邮件====
+
+发件人：win10升级支持
+发送时间：2021-12-16 14:06:40.020000+00:00
+邮件内容:
+昨天蓝屏dump已经上传，早上开启后。登陆云桌面一直蓝屏，重复报HWUSBclient.sys。我把机器直接给了华为驻场分析 
+
+====第8封邮件====
+
+发件人：Jia Wei
+发送时间：2021-12-20 14:10:29.674000+00:00
+邮件内容:
+吴先生，您好
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+V2020-L系统在使用过程中出现蓝屏问题。
+案例分析：
+MEMORY1210.DMP – 根据目前的dump中Call Stack结构，与vwifimf.sys问题很相似。但Call Stack中无法找到正在处理的NBL，只能看到Next NBL内容损坏，pTOS为NULL。
+MEMORY1215.DMP – 三方IO驱动hwusbclient.sys在进行IO操作时引发蓝屏问题。
+案例进展：
+hwusbclient.sys已交由华为云桌面支持工程师处理，另外由于目前暂无法在客户生产机器上开启special pool和NBL trace，暂时归档案例。
+--------------

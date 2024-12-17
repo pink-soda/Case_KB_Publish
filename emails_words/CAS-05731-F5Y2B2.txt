@@ -1,0 +1,59 @@
+邮件主题：回复: [案例号:CAS-05731-F5Y2B2] %国网-南瑞集团用户反馈升级到V2022-L后PIN码无法正常登陆% 案例重新分配 CMIT:0001518
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2022-02-24 18:04:26.167000+00:00
+邮件内容:
+聂先生 您好：
+感谢您的电话接听。
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+升级到V20202-L之后，使用PIN码无法登陆系统，输入正确PIN码提示“无法验证你的凭据”。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+请您提供在登录界面使用PIN码登录的截图、登录报错截图信息。
+请您准备PE启动U盘或者系统安装启动U盘，启动到PE系统，可以访问计算机系统数据后，再进行电话沟通，尝试修复问题。
+初步考虑的修复方法如下：
+一、尝试开启wlidsvc服务，测试PIN码登录情况。具体操作步骤如下：
+1）使用PE启动U盘进入PE系统，运行命令regedit，调出注册表编辑器；
+2）单击HKEY_LOCAL_MACHINE项，再点击文件，选择加载配置单元；
+3）点击此电脑，找到C:\Windows\system32\config文件夹，单击SYSTEM文件，打开；
+4）为配置单元命名，例如OFFLINE；
+5）定位到HKEY_LOCAL_MACHINE\OFFLINE\ControlSet001\Services\wlidsvc ，将其中的Start的键值改为2，
+6）单击OFFLINE项，再点击文件，选择卸载配置单元；
+7）同样的操作再加载SOFTWARE文件，为配置单元命名为soft，定位到
+HKEY_LOCAL_MACHINE\soft\Microsoft\PolicyManager\default\Accounts\AllowMicrosoftAccountSignInAssistant，将其中的abvalue的键值改为1，
+8）关闭所有窗口，重启计算机，验证PIN码是否能够正常登录。
+二、测试删除PIN码配置。
+进入pe系统，打开cmd命令行，在cmd命令行中，执行以下命令：
+c:
+cd C:\Windows\ServiceProfiles\LocalService\AppData\Local\Microsoft\Ngc
+rd /s /q “{xxxxxxxxxxx}”
+此操作是删除Ngc目录下的对应文件夹，再重启计算机，此时PIN码配置被移除。
+
+====第2封邮件====
+
+发件人：Wei Liang
+发送时间：2022-02-25 16:08:40.605000+00:00
+邮件内容:
+聂先生 您好：
+感谢您的电话接听，确认您的问题已经解决，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+升级到V20202-L之后，使用PIN码无法登陆系统，输入正确PIN码提示“无法验证你的凭据”。
+问题总结：
+CMGE系统默认禁止使用Microsoft帐户登录，在升级系统版本后会恢复默认安全配置，禁止使用Microsoft帐户。
+通过在PE中修改注册表NoConnectedUser键值暂时启用Microsoft帐户登录系统，并建议用户登录系统后及时切换使用本地帐户登录。
+具体操作：
+1）使用PE启动U盘进入PE系统，运行命令regedit，调出注册表编辑器；
+2）单击HKEY_LOCAL_MACHINE项，再点击文件，选择加载配置单元；
+3）点击此电脑，找到C:\Windows\system32\config文件夹，单击SOFTWARE文件，打开；
+4）为配置单元命名，例如OFFLINE；
+5）定位到  HKEY_LOCAL_MACHINE\OFFLINE\\Microsoft\Windows\CurrentVersion\Policies\System，将其中的NoConnectedUser的键值改为0
+6）关闭所有窗口，重启计算机，验证帐户登录情况。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。

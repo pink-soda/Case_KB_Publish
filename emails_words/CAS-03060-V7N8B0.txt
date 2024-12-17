@@ -1,0 +1,172 @@
+邮件主题：回复: 回复: [案例号: CAS-03060-V7N8B0 ] % |P3|ICBC|政府版V0-H蓝屏问题 % 初次响应 CMIT:0001401
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-09 16:20:57.293000+00:00
+邮件内容:
+吴毓杰先生 您好，
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: CMGE V0-H操作系统在工行应用DSP升级后发生系统蓝屏问题。
+问题范围: 分析蓝屏转储日志。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-09 18:08:00.365000+00:00
+邮件内容:
+吴先生 您好，
+非常感谢您及时上传系统日志。不过从服务器只能看到蓝屏转储文件以及事件查看器日志。请您使用日志收集工具按照下图勾选选项然后收集日志再上传至日志服务器。
+再次感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-13 15:26:38.111000+00:00
+邮件内容:
+吴先生 您好，
+根据之前电话中沟通的案例分析进展特总结以下问题分析及过程供您参考：
+蓝屏问题分析结论：蓝屏原因有可能由vwifimf.sys造成，以下是几点建议供您参考。
+蓝屏问题解决建议：在出错Call Stack中可以看到有IPV6相关函数调用，建议您如果没有IPV6网络环境的话关闭TCP/IPV6协议。另外在网络堆栈看到多个堆栈，有可能由于开启热点造成，建议您不要开启无线热点。同时请您排除有可能影响系统稳定性的未签名驱动，以及C:\Windows\system32\DRIVERS\vwifimf.sys驱动。详细信息请您参照以下分析过程。
+蓝屏问题分析过程：
+1-    !analyze -v 显示蓝屏原因为驱动分页错误，驱动尝试读取被分配内存地址外内存。
+DRIVER_PAGE_FAULT_BEYOND_END_OF_ALLOCATION (d6)
+N bytes of memory was allocated and more than N bytes are being referenced.
+This cannot be protected by try-except.
+When possible, the guilty driver's name (Unicode string) is printed on
+the bugcheck screen and saved in KiBugCheckDriver.
+Arguments:
+Arg1: ffff87043b0ff018, memory referenced
+Arg2: 0000000000000000, value 0 = read operation, 1 = write operation
+Arg3: fffff80017fe8f15, if non-zero, the address which referenced memory.
+Arg4: 000000000000000c, (reserved)
+                                   FAULTING_IP: 
+nwifi!Dot11SendCompletion+29
+fffff800`17fe8f15 488b5c0838      mov     rbx,qword ptr [rax+rcx+38h]
+2-    定位导致出错的NBL。其中NBL存储在rdx, NdisFilterHandle 存储在rcx, SendCompleteFlags值存储在r8。
+1: kd> .frame /r 0b
+            0b ffffc48a`74606e70 fffff806`18161f06 ndis!NdisFSendNetBufferListsComplete+0x23778
+            rax=0000000000000000 rbx=ffff87043bf3aac0 rcx=ffff87043b0fefe0
+            rdx=ffff87042cb5edd0 rsi=ffff87043bf3aac0 rdi=ffff87041bcd2db0
+            rip=fffff806174ca488 rsp=ffffc48a74606e70 rbp=0000000000000000
+             r8=0000000000000000  r9=ffffffffffffffd8 r10=ffff87041c012fe0
+            r11=ffffc48a74606af0 r12=0000000000000000 r13=0000000000000000
+            r14=ffff87041bd6ac60 r15=0000000000000000
+            iopl=0         nv up ei pl nz na pe nc
+            cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+            ndis!NdisFSendNetBufferListsComplete+0x23778:
+            fffff806`174ca488 90              nop
+3-    追踪此NBL来源为vwifimf.sys驱动
+1: kd> !ndiskd.nbl ffff87042cb5edd0
+    NBL                ffff87042cb5edd0    Next NBL           NULL
+    First NB           ffff87042cb5ef50    Source             ffff87041bd6ac60 - NDIS Sample LightWeight Filter 1-0000
+    Flags              NBL_ALLOCATED, NBL_CONTEXT_ALLOCATED
+    Walk the NBL chain                     Dump data payload
+    Show out-of-band information           Show in Microsoft Network Monitor
+Review NBL history
+                                   1: kd> !ndiskd.filter ffff87041bd6ac60 
+FILTER
+    Intel(R) Dual Band Wireless-AC 8260-NDIS Sample LightWeight Filter 1-0000
+    Ndis handle        ffff87041bd6ac60
+    Filter driver      ffff87040e87ed60 - NDIS Sample LightWeight Filter 1
+    Module context     ffff87041bcd2db0
+    Miniport           ffff8b0eca8271a0 - Intel(R) Dual Band Wireless-AC 8260
+    Network interface  ffff87041bda6a20
+    State              Running
+    Datapath           Normal
+    References         1
+    Flags              RUNNING
+    Higher filter      ffff87041bcfec60 - Intel(R) Dual Band Wireless-AC 8260-Native WiFi Filter Driver-0000
+    Lower filter       ffff87041bca8c60 - Intel(R) Dual Band Wireless-AC 8260-Virtual WiFi Filter Driver-0000
+    Driver handlers
+1: kd> !ndiskd.filterdriver ffff87040e87ed60
+FILTER DRIVER
+    NDIS Sample LightWeight Filter 1
+    Ndis handle        ffff87040e87ed60
+    Driver context     ffff87040e868e60
+    Ndis API version   v6.0
+    Driver version     v1.0
+    Driver object      ffff87040e868e60
+    Driver image       vwifimf.sys
+    Bind flags         Mandatory, Modifying, UnbindOnAttach, UnbindOnDetach
+    Class              ms_medium_converter_128
+References         2
+1: kd> lmvm vwifimf
+Browse full module list
+start             end                 module name
+fffff806`18160000 fffff806`1816a000   vwifimf    (no symbols)           
+    Loaded symbol image file: vwifimf.sys
+    Image path: \SystemRoot\system32\DRIVERS\vwifimf.sys
+    Image name: vwifimf.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Wed Dec 25 06:56:58 2019 (5E036AAA)
+    CheckSum:         0000B3DB
+    ImageSize:        0000A000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+4-    NBL相关信息
+1: kd> !ndiskd.nbl ffff87042cb5edd0 -data
+        NET_BUFFER ffff87042cb5ef50
+          MDL ffff87043bfdcfc0
+            ffff87043d15c800  08 01 00 80 1a 0d 9e 19-ec 6c 38 ba f8 d7 43 2b  ·········l8···C+
+            ffff87043d15c810  1a 0d 9e 19 ec 6c 00 00-aa aa 03 00 00 00 88 8e  ·····l··········
+            ffff87043d15c820  01 00 00 30 02 fd 00 30-01 61 75 62 6f 35 38 31  ···0···0·aubo581
+            ffff87043d15c830  31 32 38 62 66 39 30 30-30 38 30 33 38 30 37 6b  128bf9000803807k
+            ffff87043d15c840  49 4e 54 52 41 4e 45 54-5c 6b 66 7a 78 2d 77 61  INTRANET\kfzx-wa
+                ffff87043d15c850  6e 67 6a 72                                                            ngjr
+5-    Rcx寄存器中 NDIS_HANDLE值其实为导致出错NBL的上下文。
+1: kd> dt _net_buffer_list ffff87042cb5edd0
+nwifi!_NET_BUFFER_LIST
+_NET_BUFFER_LIST
+   +0x000 Next             : (null) 
+   +0x008 FirstNetBuffer   : 0xffff8704`2cb5ef50  _NET_BUFFER
+   +0x000 Link             : _SLIST_HEADER
+   +0x000 NetBufferListHeader : _NET_BUFFER_LIST_HEADER
+   +0x010 Context          : 0xffff8704`3b0fefe0 _NET_BUFFER_LIST_CONTEXT
+   +0x018 ParentNetBufferList : (null) 
+   +0x020 NdisPoolHandle   : 0xffff8704`1bcd6a80 Void
+   +0x030 NdisReserved     : [2] (null) 
+   +0x040 ProtocolReserved : [4] 0xffff8704`3d0ccac0 Void
+   +0x060 MiniportReserved : [2] (null) 
+   +0x070 Scratch          : (null) 
+   +0x078 SourceHandle     : 0xffff8704`1bd6ac60 Void
+   +0x080 NblFlags         : 0
+   +0x084 ChildRefCount    : 0n0
+   +0x088 Flags            : 0x500
+   +0x08c Status           : 0n0
+   +0x08c NdisReserved2    : 0
+   +0x090 NetBufferListInfo : [26] (null)
+1: kd> dt _NET_BUFFER_LIST_CONTEXT 0xffff8704`3b0fefe0
+    nwifi!_NET_BUFFER_LIST_CONTEXT
+       +0x000 Next             : (null)
+       +0x008 Size             : 0x10
+       +0x00a Offset           : 0
+       +0x010 ContextData      : [0]  "WWWWWWWWWWWWWWWW"
+6-    最终，由于应该将此NBL传递给对应的Filter Driver处理 (即NDIS_HANDLE) 但是传递的却是NBL的上下文所以导致出错。
+7-    未认证的三方驱动，请排除此因素。
+最后感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第4封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-10-13 15:36:16.847000+00:00
+邮件内容:
+当前使用TMS版本有禁用热点功能策略，近两个月分析重点都围绕vwifimf.sys进行。所以通软这边一再强调没有对该驱动进行过修改，本次出现的蓝屏与之前李琦分析的蓝屏现象不同。但是dump分析的源头还是与TMS驱动有关。截止目前出现蓝屏的客户端都回退至66312版本，观察至今天还未复现蓝屏。因此判断可能与TMS禁用热点有关，该疑点待进一步与通软确认，此观点仅供个人参考。 
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-14 10:08:43.481000+00:00
+邮件内容:
+吴先生，您好
+很高兴与您沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。 
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+电子邮箱： baicx@cmgos.com
+===========================

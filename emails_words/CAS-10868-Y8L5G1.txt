@@ -1,0 +1,219 @@
+邮件主题：回复: [案例号: CAS-10868-Y8L5G1 ] % |P2|ICBC|工行用户反馈V2020-L版本系统安装KB5032196蓝屏问题 % 初次响应 CMIT:0001682
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-02-20 10:18:15.121000+00:00
+邮件内容:
+许先生，您好
+刚刚电话未能联系到您。
+根据日志查看，此机器从2024-01-23开始就已经有安装11月更新失败的记录，目前蓝屏问题是2-6发生
+所以目前看安装补丁失败和蓝屏是2个问题
+一、针对补丁安装失败，需要进行如下操作反馈最新日志
+进行Checking System Update Readiness.
+1）以管理员身份运行命令提示符cmd
+2）运行如下命令
+Dism /online /cleanup-image /scanhealth
+3）运行后不论成功或失败，将C:\Windows\Logs\CBS\cbs.log反馈
+二、针对蓝屏问题
+目前看到dump信息，怀疑可能和FTDI驱动关，FTDI驱动器通常用于与USB设备通信，特别是用于与各种外部设备（如传感器、控制器、模块等）进行连接和通信。
+1）以管理员身份运行cmd，运行如下命令并将C:\oeminf.txt反馈
+pnputil /enum-drivers > C:\oeminf.txt
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-02-21 09:17:33.038000+00:00
+邮件内容:
+许先生，您好
+昨天已和您沟通，目前看到日志只上传了一个dism.log
+按照上封邮件，需要按照要求操作后，立刻收集
+C:\Windows\Logs\CBS\cbs.log 
+C:\oeminf.txt
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2024-02-21 17:47:26.077000+00:00
+邮件内容:
+许先生，您好
+针对此案例蓝屏、更新失败2个问题，其中更新失败问题分析如下：
+案例分析：
+*   Setup 日志显示这台计算机多次尝试安装更新, 都出现了0x80071160 Unknown Error 报错:
+*   查看CBS log, 看到问题发生是, CBS在调用CryptCATAdminAddCatalog时遇到了问题, 看起来和CryptSvc相关服务有关:
+2024-02-18 11:10:33, Info                  CBS    Failed call to CryptCATAdminAddCatalog. [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to install catalog file \\?\C:\WINDOWS\CbsTemp\31089174_2561557039\Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11.cat <file://%3f/C:/WINDOWS/CbsTemp/31089174_2561557039/Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11.cat>  for package [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to install catalog for package: Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11 [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to stage package manifest. [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to add package. [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to persist package: Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11 [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CBS    Failed to update states and store all resolved packages. [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Info                  CSI    00000008@2024/2/18:03:10:33.679 <mailto:00000008@2024/2/18:03:10:33.679>  CSI Transaction @0x236299a9f00 destroyed
+2024-02-18 11:10:33, Info                  CBS    Perf: Resolve chain complete.
+2024-02-18 11:10:33, Info                  CBS    Failed to resolve execution chain. [HRESULT = 0x80071160 - Unknown Error]
+2024-02-18 11:10:33, Error                 CBS    Failed to process single phase execution. [HRESULT = 0x80071160 - Unknown Error]
+*   进一步检查系统日志, 看到问题发生时记录如下事件日志, 指出Cryptographic Services进程存在异常退出问题:
+Log Name:      System
+Source:        Service Control Manager
+Date:          2/18/2024 11:10:41 AM
+Event ID:      7034
+Task Category: None
+Level:         Error
+Keywords:      Classic
+User:          N/A
+Computer:      v10sxjc002491h.Intranet.ICBC.COM.CN
+Description:
+The Cryptographic Services service terminated unexpectedly.  It has done this 8 time(s).
+*   检查系统日志, 看到如下app crashing日志, 且看起来CryptSvc 进程异常退出和Windows 无法访问cat 文件有关, 可能是disk 问题导致该问题:
+Log Name:      Application
+Source:        Application Error
+Date:          2/18/2024 11:10:39 AM
+Event ID:      1005
+Task Category: Application Crashing Events
+Level:         Error
+Keywords:      Classic
+User:          N/A
+Computer:      v10sxjc002491h.Intranet.ICBC.COM.CN
+Description:
+Windows cannot access the file C:\Windows\System32\CatRoot\{F750E6C3-38EE-11D1-85E5-00C04FC295EE}\Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11.cat for one of the following reasons: there is a problem with the network connection, the disk that the file is stored on, or the storage drivers installed on this computer; or the disk is missing. Windows closed the program Host Process for Windows Services because of this error.
+Program: Host Process for Windows Services
+File: C:\Windows\System32\CatRoot\{F750E6C3-38EE-11D1-85E5-00C04FC295EE}\Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11.cat
+…
+Log Name:      Application
+Source:        Application Error
+Date:          2/18/2024 11:10:39 AM
+Event ID:      1000
+Task Category: Application Crashing Events
+Level:         Error
+Keywords:      Classic
+User:          N/A
+Computer:      v10sxjc002491h.Intranet.ICBC.COM.CN
+Description:
+Faulting application name: svchost.exe_CryptSvc, version: 10.0.17763.3346, time stamp: 0xb6a0daab
+Faulting module name: bcryptPrimitives.dll, version: 10.0.17763.3887, time stamp: 0xc310ed30
+Exception code: 0xc0000006
+Fault offset: 0x000000000000418c
+Faulting process id: 0x2d50
+Faulting application start time: 0x01da6218092b0f5f
+Faulting application path: C:\WINDOWS\system32\svchost.exe
+Faulting module path: C:\WINDOWS\System32\bcryptPrimitives.dll
+Report Id: 31cb01fb-4c13-47c5-ac76-fd13fa96e101
+Faulting package full name: 
+Faulting package-relative application ID: 
+建议操作：
+1.	以管理员身份运行cmd
+2.	运行如下命令先对磁盘进行检测，确认磁盘是否有问题：
+chkdsk
+3.	如果检测有问题，使用如下命令进行修复（需要重启）
+chkdsk /r
+重启修复磁盘。（时间较长）
+--------------
+
+====第4封邮件====
+
+发件人：Jia Wei
+发送时间：2024-02-22 17:22:28.710000+00:00
+邮件内容:
+许先生，您好
+蓝屏问题：
+*   针对蓝屏问题，看到bugcheck 为0X7e SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, 这个错误一般表示系统线程生成了一个异常，但错误处理程序没有捕获到它，大部分情况下和3方驱动有关。
+*   从收集的日志看, 是ftdibus.sys 组件在调用IofCallDriver 接口后出现异常导致的系统蓝屏。
+*   检查并升级一下ftdibus 相关驱动,这个驱动时间戳非常老（2013年1月Jan 22 22:25:49 2013）。
+补丁安装失败问题：
+*   从日志看, 每次出现问题都是访问同一个数字签名文件。建议从有问题设备上手动剪切该文件, 然后再次尝试安装补丁看是否还有问题
+建议操作：
+一、针对蓝屏问题
+1） 下载解压附件FTDI.zip https://cduc.cmgos.com/download.php?id=1259&token=MfmI9RsIIDmg1eMvSFaz0sWffELjFoTM
+2） 按照《AN_396_FTDI_Drivers_Installation_Guide_for_Windows_10_11.pdf》手册中3.2 Pre-Installation using the FTDI setup executable的步骤，在连接USB设备的情况下，安装另一个zip包中的exe文件升级驱动
+二、针对补丁安装失败问题
+1)      登录至有问题设备, 访问至C:\Windows\System32\CatRoot\{F750E6C3-38EE-11D1-85E5-00C04FC295EE} 目录
+2)      找到Package_3577_for_KB5032196~31bf3856ad364e35~amd64~~10.0.1.11.cat, 将其剪切后保存至其他路径
+3)      然后请再次尝试安装KB5032196 看是否还有问题
+日志信息：
+2: kd> !mex.tc ffff94090a698440
+Process                   Thread           CID       UserTime KernelTime ContextSwitches Wait Reason Time State
+System (ffff94090a67c300) ffff94090a698440 4.cc            0s      813ms            1162 Executive     0s Running on CPU 2
+Priority:
+    Current Base UB FB IO Page
+    12      12   0  0  2  5
+ # Call Site                                                                                  Info
+ 0 nt!KeBugCheckEx+0x0 
+ 1 nt!PspUnhandledExceptionInSystemThread+0x27
+ 2 nt!PspSystemThreadStartup$filt$0+0x44
+ 3 nt!__C_specific_handler+0x9f 
+ 4 nt!RtlpExecuteHandlerForException+0xf
+ 5 nt!RtlDispatchException+0x430 
+ 6 nt!KiDispatchException+0x144 
+ 7 nt!KiExceptionDispatch+0xc2 
+ 8 nt!KiPageFault+0x428                                                                       TrapFrame @ fffffe01fcbdaed0
+ 9 nt!IofCallDriver+0x15 
+ a ftdibus+0xa886 
+ b ftdibus+0xa476 
+ c ftdibus+0xa00c 
+ d ftdibus+0x1e27 
+ e ftdibus+0x177d 
+ f ftdibus+0x139b 
+10 nt!IopfCallDriver+0x44 
+11 nt!IofCallDriver+0x59 
+12 nt!PnpAsynchronousCall+0xea 
+13 nt!PnpSendIrp+0x95 
+14 nt!PnpStartDevice+0x88 
+15 nt!PnpStartDeviceNode+0xdb 
+16 nt!PipProcessStartPhase1+0x6f 
+17 nt!PipProcessDevNodeTree+0x3dc 
+18 nt!PiProcessReenumeration+0x82 
+19 nt!PnpDeviceActionWorker+0x1dd 
+1a nt!ExpWorkerThread+0x16a 
+1b nt!PspSystemThreadStartup+0x55 
+1c nt!KiStartSystemThread+0x1c 
+This thread is crashing
+Exception Record: fffffe01fcbdae28
+ExceptionAddress: fffff8023a043ef5 (nt!IopfCallDriver)
+   ExceptionCode: c0000005 (Access violation)
+  ExceptionFlags: 00000000
+NumberParameters: 2
+   Parameter[0]: 0000000000000001
+   Parameter[1]: 0000000000000043
+Attempt to write to address 0000000000000043
+Context Record: fffffe01fcbda670
+rax=0000000000000000 rbx=ffff9409140561a0 rcx=ffff9409129614a0
+rdx=0000000000000000 rsi=0000000000000009 rdi=ffff940914400000
+rip=fffff8023a043ef5 rsp=fffffe01fcbdb060 rbp=ffff94090a110ca0
+ r8=ffff940914089010  r9=ffff9409129614a0 r10=ffff94090a6f9a20
+r11=ffff9409141bcab0 r12=00000000fffffe01 r13=0000000000000016
+r14=ffff9409129614a0 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246
+nt!IopfCallDriver [inlined in nt!IofCallDriver+0x15]:
+fffff802`3a043ef5 fe4a43          dec     byte ptr [rdx+43h] ds:002b:00000000`00000043=??
+2: kd> lmvm ftdibus
+Browse full module list
+start             end                 module name
+fffff802`57400000 fffff802`57411400   ftdibus    (no symbols)           
+    Loaded symbol image file: ftdibus.sys
+    Image path: \SystemRoot\system32\drivers\ftdibus.sys
+    Image name: ftdibus.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Tue Jan 22 22:25:49 2013 (50FEA16D)
+    CheckSum:         0001FDE7
+    ImageSize:        00011400
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+--------------
+
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2024-03-05 13:56:17.605000+00:00
+邮件内容:
+许先生，您好
+根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+工行反馈用户计算机多次尝试安装更新, 都出现了0x80071160 Unknown Error 报错。
+同时出现蓝屏问题
+案例进展：
+分析日志并对问题文件的解决方案，用户操作后可以正常安装补丁，问题不再复现，归档案例。
+--------------

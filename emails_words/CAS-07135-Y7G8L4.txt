@@ -1,0 +1,11 @@
+邮件主题：RE: [案例号: CAS-07135-Y7G8L4 ] % TAM反馈中再保险无法打开teams应用 % 初次响应 CMIT:0001026
+
+====第1封邮件====
+
+发件人：Wang Jianheng
+发送时间：2022-09-16 15:45:50.151000+00:00
+邮件内容:
+Hi，jiawei：
+SFTP登录方式：sftp://ocean.cmgos.com  端口：22222
+用户名：zgzbx
+密码： Zxbc2DV5

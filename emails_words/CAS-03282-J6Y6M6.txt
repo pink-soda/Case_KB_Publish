@@ -1,0 +1,196 @@
+邮件主题：RE: 回复：RE: 回复：RE: 回复：RE: [案例号: CAS-03282-J6Y6M6 ] % 国网-鲁能集团重启电脑后无法启用codemeter证书服务 % 案例关闭CMIT:0001866
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-10 09:42:43.024000+00:00
+邮件内容:
+张女士 您好,
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 三方应用codemeter在CMGE V0-H操作系统上安装后无法正常启用服务。应用开发商表示并未在Windows10操作系统下作过测试所以无法确保在CMGE V0-H系统中正常运行。
+问题范围: 初步判断此问题并非操作系统问题，而是三方应用 codemeter 兼容性问题。就本案定义的问题给予最大的技术支持。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+安装包上传空间地址：https://cduc.cmgos.com/index.php
+登陆用户名：mszhang
+密码：mszhang
+备注：如果您在登陆上传系统时遇见以下错误代码请不要关闭页面，点击浏览器中后退按钮即可。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-10 11:00:09.466000+00:00
+邮件内容:
+张女士 您好：
+您上传的安装包已经下载并安装成功。但是目前没法在本地复现您所遇到的问题。麻烦您通过邮件确认此问题的复现步骤。
+另外请您下载附件日志下载工具，解压缩至本地后右键单击以管理员权限运行并点击收集按钮。待日志收集成功后请您将日志上传至之前提供的日志上传空间。
+按照以下截图勾选选项并点击收集
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-12 10:48:35.156000+00:00
+邮件内容:
+张女士您好，
+如之前电话中沟通，您上报的问题经本地测试并没有办法复现您所遇到的问题。所以需要收集问题设备上的系统日志以便分析。
+但由于您近期无法进行日志收集，所以经您同意现将暂时关闭归档此案例。待您可以提供日志时请再次联系我们，届时我们将继续处理此案例。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第4封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-27 10:18:20.008000+00:00
+邮件内容:
+张女士 您好，
+对不起，由于最近两天单位都是在做全天的培训没能及时联系您。目前查看此问题是由于服务 CodeMeter Runtime Server 意外停止造成的。但此服务意外停止原因尚未查明，且在本地测试环境中无法复现此问题，codemeter运行正常。不知道今天中午11：30左右电话联系您是否方便。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-11-27 15:52:39.382000+00:00
+邮件内容:
+张女士 您好，
+日志已收到，目前正在下载中。后续我将及时与您更新分析结果。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-12-01 09:37:09.949000+00:00
+邮件内容:
+张女士 您好，
+您上传的日志已经收到，我会在仔细分析后再次联系您。
+非常感谢您对我们工作的支持。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-12-02 10:02:55.565000+00:00
+邮件内容:
+张女士 您好，
+如同昨天在电话中沟通此案例目前分析结果如下：
+-      此问题在神州网信 CMGE V0-H, V2020-L 下并无复现。应用可以正常运行且证书没有问题。多次重启计算机后也无任何异常。所以此问题并非操作系统问题或应用兼容性问题。
+-      在多次远程排查及日志分析发现造成此问题的主要原因是由于 codemeter runtime 服务异常退出造成。此服务是通过services.exe服务控制管理器启动codemeter.exe可执行文件加上参数 I 启动（与codemeter控制中心中启动服务过程一致）。但是在安装后发现codemeter.exe文件被未知程序篡改。
+修复建议：
+-      安装病毒防护软件进行系统全盘扫描。
+-      全盘扫描完成后卸载codemeter runtime并重启计算机。
+-      待计算机重启后重新安装codemeter runtime。
+-      如果codemeter runtime服务启动时提示有程序尝试修改codemeter.exe文件再尝试清理相关程序。
+以下是此案例分析报告供您参考：
+在测试环境中codemeter运行正常，下图为事件截图。
+在问题设备系统日志中发现，codemeter不显示证书的原因是由于其对应服务异常退出
+在问题设备上发现如下信息
+问题状态下
+PS C:\Program Files (x86)\CodeMeter\Runtime\bin> Get-FileHash .\CodeMeter.exe
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          07FCF4E9C5077147F804C76655132096F1A77290EBCA6DA9DDC88F42791DF98B       C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+重新安装codemeter后HASH及文件大小对比测试环境中codemeter.exe的HASH和文件信息一致，确认此HASH及文件信息准确。
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          7682DD44179B9956B2BA33A1332B5E13729EFFA74466AF36ED1FD5CE87429BEA       C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+PS C:\Program Files (x86)\CodeMeter\Runtime\bin> get-item .\CodeMeter.exe | select *
+PSPath            : Microsoft.PowerShell.Core\FileSystem::C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+PSParentPath      : Microsoft.PowerShell.Core\FileSystem::C:\Program Files (x86)\CodeMeter\Runtime\bin
+PSChildName       : CodeMeter.exe
+PSDrive           : C
+PSProvider        : Microsoft.PowerShell.Core\FileSystem
+PSIsContainer     : False
+Mode              : -a----
+VersionInfo       : File:             C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+                    InternalName:     CodeMeter
+                    OriginalFilename: CodeMeter.exe
+                    FileVersion:      Version 6.20 of 2016-Apr-06 (Build 2147)
+                    FileDescription:  CodeMeter Runtime Server
+                    Product:          CodeMeter
+                    ProductVersion:   Version 6.20 of 2016-Apr-06 (Build 2147)
+                    Debug:            False
+                    Patched:          False
+                    PreRelease:       False
+                    PrivateBuild:     False
+                    SpecialBuild:     False
+                    Language:         英语(美国)
+BaseName          : CodeMeter
+Target            : {}
+LinkType          :
+Name              : CodeMeter.exe
+Length            : 4562920
+DirectoryName     : C:\Program Files (x86)\CodeMeter\Runtime\bin
+Directory         : C:\Program Files (x86)\CodeMeter\Runtime\bin
+IsReadOnly        : False
+Exists            : True
+FullName          : C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+Extension         : .exe
+CreationTime      : 4/6/2016 12:20:00 PM
+CreationTimeUtc   : 4/6/2016 4:20:00 AM
+LastAccessTime    : 12/1/2020 10:55:19 AM
+LastAccessTimeUtc : 12/1/2020 2:55:19 AM
+LastWriteTime     : 4/6/2016 12:20:00 PM
+LastWriteTimeUtc  : 4/6/2016 4:20:00 AM
+Attributes        : Archive
+使用CodeMeter控制中心重启服务后codemeter.exe的HASH及文件大小均发生变化。证明此可执行文件被篡改
+PS C:\Program Files (x86)\CodeMeter\Runtime\bin> Get-FileHash .\CodeMeter.exe
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          972439BB56330B086C62DD7F34F86C9AD955C6EE194837E0155F78715D40E8C2       C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+PS C:\Program Files (x86)\CodeMeter\Runtime\bin> Get-Item .\CodeMeter.exe | select *
+PSPath            : Microsoft.PowerShell.Core\FileSystem::C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+PSParentPath      : Microsoft.PowerShell.Core\FileSystem::C:\Program Files (x86)\CodeMeter\Runtime\bin
+PSChildName       : CodeMeter.exe
+PSDrive           : C
+PSProvider        : Microsoft.PowerShell.Core\FileSystem
+PSIsContainer     : False
+Mode              : -a----
+VersionInfo       : File:             C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+                    InternalName:     CodeMeter
+                    OriginalFilename: CodeMeter.exe
+                    FileVersion:      Version 6.20 of 2016-Apr-06 (Build 2147)
+                    FileDescription:  CodeMeter Runtime Server
+                    Product:          CodeMeter
+                    ProductVersion:   Version 6.20 of 2016-Apr-06 (Build 2147)
+                    Debug:            False
+                    Patched:          False
+                    PreRelease:       False
+                    PrivateBuild:     False
+                    SpecialBuild:     False
+                    Language:         英语(美国)
+BaseName          : CodeMeter
+Target            : {}
+LinkType          :
+Name              : CodeMeter.exe
+Length            : 4645301
+DirectoryName     : C:\Program Files (x86)\CodeMeter\Runtime\bin
+Directory         : C:\Program Files (x86)\CodeMeter\Runtime\bin
+IsReadOnly        : False
+Exists            : True
+FullName          : C:\Program Files (x86)\CodeMeter\Runtime\bin\CodeMeter.exe
+Extension         : .exe
+CreationTime      : 2016-04-06 12:20:00
+CreationTimeUtc   : 2016-04-06 4:20:00
+LastAccessTime    : 2020-12-01 16:12:05
+LastAccessTimeUtc : 2020-12-01 8:12:05
+LastWriteTime     : 2016-04-06 12:20:00
+LastWriteTimeUtc  : 2016-04-06 4:20:00
+Attributes        : Archive
+如果您对此分析有任何疑问请随时与我联系，届时我将及时为您提供解答。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第8封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-12-03 17:14:13.244000+00:00
+邮件内容:
+张女士 您好，
+如之前电话中沟通，经您确认此案例将关闭归档。如果您在今后使用当中遇到操作系统相关问题欢迎您联系我们的技术支持服务热线，届时我们将及时为您提供帮助。
+电子邮箱： baicx@cmgos.com
+===========================

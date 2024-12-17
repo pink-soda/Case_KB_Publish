@@ -1,0 +1,205 @@
+邮件主题：答复: 答复: [案例号: CAS-05886-N6F1M6 ] % 国网-北京智芯微电子科技有限公司用户反馈V2022-L升级失败问题 % 初次响应 CMIT:0001862
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-17 15:27:10.341000+00:00
+邮件内容:
+李先生 您好：
+感谢您的电话接听。
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+在线升级V2022-L，在86%左右自动退出，升级失败。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+针对您这个问题，请您按照以下方法帮忙收集相关系统日志进行分析。
+1）请您通过以下链接下载CMGELogCollector.zip，解压后运行CMGELogCollector.exe，勾选全部选项，点击“收集”，运行几分钟后会在桌面生成日志压缩包。
+https://cduc.cmgos.com/download.php?id=354&token=vTpcZzovLVtqzQoQJuSFmS5BtJ2psir5
+日志上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。如果出现类似错误提示，点击后退即可。
+用户名：smartchip
+密码：smartchip
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第2封邮件====
+
+发件人：lilei2@sgitg.sgcc.com.cn
+发送时间：2022-03-17 16:40:49.830000+00:00
+邮件内容:
+危亮，您好！
+     日志已经上传。请查收。
+________________________________
+顺颂时祺！
+________________________
+李  雷 
+北京智芯微电子科技有限公司
+研发中心（基础技术部）
+电话：010-51971404
+传真：010-51971688
+手机：13810446725
+邮箱：lilei2@sgitg.sgcc.com.cn <mailto:liangyuxia@sgitg.sgcc.com.cn> 
+网站：http://www.sgitg.sgcc.com.cn
+地址：北京市海淀区西小口路66号中关村东升科技园B区3号楼
+	
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-17 17:31:11.524000+00:00
+邮件内容:
+李先生 您好：
+分析您上传的日志，查看UpgradeLog\C_Win_BT_Panther\setupact.log，其中有错误提示为：
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to get registry value. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to get registry value. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} Flags: 0x4 Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to clone store. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: BcdExportStore: Failed clone BCD to \??\C:\$WINDOWS.~BT\Sources\Rollback\EFI\Microsoft\Boot\BCD. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB OSRollbackService::CBootFilesRestoreCheckpoint::Finalize: Failed to backup BCD database from "F:\EFI\Microsoft\Boot\BCD" to "C:\$WINDOWS.~BT\Sources\Rollback\EFI\Microsoft\Boot\BCD".[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x064199] IBSLIB SetCheckpoint(WinPEBootFilesRestoreCheckpoint): threw exception.: class RollbackException: RollbackException: Error(6), CSystemVolumeSelectionCheckpoint: Failed to backup BCD database. void __cdecl OSRollbackService::CBootFilesRestoreCheckpoint::Finalize(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x06418a] IBSLIB RollbackSetCheckpoint(WinPEBootFilesRestoreCheckpoint): threw exception.: class RollbackException: RollbackException: Error(6), CSystemVolumeSelectionCheckpoint: Failed to backup BCD database. void __cdecl OSRollbackService::CCheckpointImpressario::SetCheckpoint(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)
+void __cdecl OSRollbackService::CBootFilesRestoreCheckpoint::Finalize(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x06414e] IBSLIB RollbackSetCheckpoint(WinPEBootFilesRestoreCheckpoint) failed. Disabling Rollback.[gle=0x00000006]
+这个错误是指处理BCD中的一些启动项失败。
+请您按照以下操作查询您设备上的BCD启动配置。
+以管理员权限打开cmd命令行，执行以下命令查询BCD情况。
+bcdedit /enum all -v
+C:\Windows\system32>bcdedit /enum all -v
+Windows 启动管理器
+-----
+标识符                  {9dea862c-5cdd-4e70-acc1-f32b344d4795}
+device                  partition=\Device\HarddiskVolume1
+description             Windows Boot Manager
+locale                  zh-CN
+inherit                 {7ea2e1ac-2e61-4728-aaa3-896d9d0a9f0e}
+bootshutdowndisabled    Yes
+default                 {3662c44c-ac97-11e7-88fa-cf588b777aac}
+resumeobject            {3662c44b-ac97-11e7-88fa-cf588b777aac}
+displayorder            {3662c44c-ac97-11e7-88fa-cf588b777aac}
+toolsdisplayorder       {b2721d73-1db4-4c62-bf78-c548a880142d}
+timeout                 30
+Windows 启动加载器
+----
+标识符                  {3662c44c-ac97-11e7-88fa-cf588b777aac}
+device                  partition=C:
+path                    \Windows\system32\winload.exe
+description             Windows Server 2016
+locale                  zh-CN
+inherit                 {6efb52bf-1766-41db-a6b3-0ee5eff72bd7}
+recoverysequence        {3662c44d-ac97-11e7-88fa-cf588b777aac}
+recoveryenabled         Yes
+allowedinmemorysettings 0x15000075
+osdevice                partition=C:
+systemroot              \Windows
+resumeobject            {3662c44b-ac97-11e7-88fa-cf588b777aac}
+nx                      OptOut
+hypervisorlaunchtype    Auto
+Windows 启动加载器
+----
+标识符                  {3662c44d-ac97-11e7-88fa-cf588b777aac}
+.....................................................
+您可以通过邮件或CDUC上传您设备上的 bcdedit /enum all -v 的输出信息，确认{443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} 的具体配置信息。
+如果此标识符代表的内容与当前操作系统无关，可以执行以下命令删除其配置信息后，再次验证升级情况。
+bcdedit /delete {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} 
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第4封邮件====
+
+发件人：lilei2@sgitg.sgcc.com.cn
+发送时间：2022-03-17 17:56:42.533000+00:00
+邮件内容:
+危工，您好！
+        附件是bcdedit /enum all -v 打印信息。
+________________________________
+顺颂时祺！
+________________________
+李  雷 
+北京智芯微电子科技有限公司
+数字芯片设计中心（计算技术部）
+电话：010-51971621
+传真：010-51971688
+手机：13810446725
+邮箱：lilei2@sgitg.sgcc.com.cn <mailto:liangyuxia@sgitg.sgcc.com.cn> 
+网站：http://www.sgitg.sgcc.com.cn
+地址：北京市海淀区西小口路66号中关村东升科技园B区3号楼
+	
+====第5封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-17 18:05:38.411000+00:00
+邮件内容:
+李先生 您好：
+您这边的bcdedit /enum all -v显示标识符为{443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}的详细配置为空。
+从休眠状态恢复
+------
+标识符                  {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}
+请您以管理员权限打开cmd命令行，执行以下命令删除{443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}这个配置后，再次验证升级V2022-L是否成功。
+bcdedit /delete {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} 
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第6封邮件====
+
+发件人：lilei2@sgitg.sgcc.com.cn
+发送时间：2022-03-18 09:51:43.382000+00:00
+邮件内容:
+危工，您好！
+          问题已解决，谢谢支持。
+________________________________
+顺颂时祺！
+________________________
+李  雷 
+北京智芯微电子科技有限公司
+数字芯片设计中心（计算技术部）
+电话：010-51971621
+传真：010-51971688
+手机：13810446725
+邮箱：lilei2@sgitg.sgcc.com.cn <mailto:liangyuxia@sgitg.sgcc.com.cn> 
+网站：http://www.sgitg.sgcc.com.cn
+地址：北京市海淀区西小口路66号中关村东升科技园B区3号楼
+	
+====第7封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-18 16:07:51.400000+00:00
+邮件内容:
+李先生 您好：
+感谢您的回复确认，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+在线升级V2022-L，在86%左右自动退出，升级失败。
+问题总结：
+删除出错的BCD配置信息后，升级V2022-L成功。
+详细分析：
+查看收集的日志UpgradeLog\C_Win_BT_Panther\setupact.log，其中有错误提示为：
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to get registry value. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to get registry value. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: BcdCopyObjectEx: Failed to enumerate source elements. Target: {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} Flags: 0x4 Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: Failed to clone store. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB BCD: BcdExportStore: Failed clone BCD to \??\C:\$WINDOWS.~BT\Sources\Rollback\EFI\Microsoft\Boot\BCD. Status: c0000024[gle=0x00000002]
+2022-03-15 09:47:54, Error                 IBSLIB OSRollbackService::CBootFilesRestoreCheckpoint::Finalize: Failed to backup BCD database from "F:\EFI\Microsoft\Boot\BCD" to "C:\$WINDOWS.~BT\Sources\Rollback\EFI\Microsoft\Boot\BCD".[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x064199] IBSLIB SetCheckpoint(WinPEBootFilesRestoreCheckpoint): threw exception.: class RollbackException: RollbackException: Error(6), CSystemVolumeSelectionCheckpoint: Failed to backup BCD database. void __cdecl OSRollbackService::CBootFilesRestoreCheckpoint::Finalize(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x06418a] IBSLIB RollbackSetCheckpoint(WinPEBootFilesRestoreCheckpoint): threw exception.: class RollbackException: RollbackException: Error(6), CSystemVolumeSelectionCheckpoint: Failed to backup BCD database. void __cdecl OSRollbackService::CCheckpointImpressario::SetCheckpoint(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)
+void __cdecl OSRollbackService::CBootFilesRestoreCheckpoint::Finalize(const unsigned short *,struct OSRollbackService::ICheckpointParameters *)[gle=0x00000006]
+2022-03-15 09:47:54, Error      [0x06414e] IBSLIB RollbackSetCheckpoint(WinPEBootFilesRestoreCheckpoint) failed. Disabling Rollback.[gle=0x00000006]
+这个错误是指处理BCD中的一些启动项失败。
+以管理员权限打开cmd命令行，执行以下命令查询BCD情况。
+bcdedit /enum all -v
+确认标识符为{443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}的详细配置为空。
+从休眠状态恢复
+------
+标识符                  {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}
+执行命令删除{443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d}这个配置后，再次验证升级V2022-L成功。
+bcdedit /delete {443b1d0c-f42d-4af1-b9b7-3a3aa36e3e5d} 
+以上，如您后续有任何问题，可随时与我们联系，谢谢。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________

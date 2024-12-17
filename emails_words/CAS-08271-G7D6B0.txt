@@ -1,0 +1,91 @@
+邮件主题：回复: [案例号: CAS-08271-G7D6B0 ] % |P3|Lenovo|Vpro机型存在“App Crash”错误事件问题 % 初次响应 CMIT:0001575
+
+====第1封邮件====
+
+发件人：Gao Meng
+发送时间：2023-02-27 15:10:33.480000+00:00
+邮件内容:
+Hi Jiawei，
+Lenovo反馈目前复现概率低正在收集日志，稍后收集到日志后再提供。
+BR//Gao Meng
+
+====第2封邮件====
+
+发件人：Gao Meng
+发送时间：2023-03-06 10:20:08.382000+00:00
+邮件内容:
+Hi Jiawei，
+联想对3台有报错的机器进行了测试，开启“Performance Logs & Alerts”服务后还是会报错。
+是否需要收集更多日志？
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 
+
+====第3封邮件====
+
+发件人：Gao Meng
+发送时间：2023-03-08 11:10:20.985000+00:00
+邮件内容:
+Hi Jiawei,
+客户反馈1000和1010的问题需要进行longrun测试，目前仍在进行中。
+请根据目前的日志先分析下关于event ID 17 持续报错的原因。
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 
+
+====第4封邮件====
+
+发件人：Gao Meng
+发送时间：2023-03-22 11:23:53.491000+00:00
+邮件内容:
+Hi Li Qi，
+联想测试机已收到，稍后给到你们分析。
+机器目前的状态是还没有开启Performance Logs & Alerts服务，并且复现到error id 17 和Longrun error id 1000/1010问题，可以直接收集日志。
+如需重新longrun, restart tool的用法如下：
+1.解压桌面文件夹：LongRunATS_AOAC_v5.7z并进入文件夹
+2.打开文件夹：ATS_Sys_Files，以管理员身份运行Set Execution Policy_Bypass.bat
+3.以Powershell方式运行LongRunATS_AOAC.ps1
+4.出现弹框点击确定
+5.设置参数如图片所示（也可以根据需要自行调整），然后点击ok
+如需PBR之后再Longrun：
+1先备份桌面文件LongRunATS_AOAC_v5.7z和npi.exe
+2 做PBR reset
+3 OOBE之后在桌面用管理员运行npi.exe，再用管理员运行前置设置自动化工具（黄色图标）initialsetting
+4 手动禁用密码，再按照上述方法使用Longrun tool
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 
+
+====第5封邮件====
+
+发件人：Gao Meng
+发送时间：2023-04-25 10:39:31.877000+00:00
+邮件内容:
+Hi Jia Wei，
+是否可以认定 error ID 17为 by design，是否其他驱动安装出现error ID 17都可以认定为与CMIT基线设定有关？
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 
+
+====第6封邮件====
+
+发件人：Gao Meng
+发送时间：2023-04-28 09:47:24.285000+00:00
+邮件内容:
+Hi Jiawei，
+关于此问题联想希望能够得到具体可能影响的具体策略说明。
+联想对error ID 17的复现更新了如下信息：
+关于卸载DTT driver不复现的结论，我们最近又进行了几轮测试，发现是preload的时候不加DTT driver module的话，这个问题就不复现。加了DTT driver module的话，进系统之后从设备管理器禁用驱动之后，也会有概率复现问题
+Monica Gao Meng（高曚）
+    C&M Information Technology Co., Ltd.
+公司地址：北京市海淀区科学院南路2号C座11层
+电话: 13681158072
+Email: gaomeng@cmgos.com <mailto:gaomeng@cmgos.com> 

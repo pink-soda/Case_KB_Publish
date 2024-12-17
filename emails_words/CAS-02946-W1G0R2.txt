@@ -1,0 +1,46 @@
+邮件主题：回复: [案例号: CAS-02946-W1G0R2 ] % |P3|ICBC|用户反馈蓝屏问题 % 初次响应 CMIT:0001093
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2020-09-15 18:05:19.936000+00:00
+邮件内容:
+毓杰，您好：
+如昨天电话沟通，目前针对任重远.dmp的分析已完成初步分析，发生蓝屏的问题原因与之前相同，仍然是vwifimf在处理NBL的send complete过程中，错误传递参数导致，请参见以下dump的分析结果：
+Bugcheck：
+Call stack：
+下一步动作：
+基于之前的讨论结果，请TMS根据自身软件逻辑提供收到ndis!ndisCallSendCompleteHandler的入参信息和传递给ndis!NdisFSendNetBufferListsComplete的出参信息，进行分析对比。谢谢
+
+====第2封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-09-29 10:40:54.288000+00:00
+邮件内容:
+Owner 	机型 	TMS版本 	无线网卡版本 	是否开启special pool 	Enable Tracking NBL 	收集dump名称 	分析结论 
+任重远 	T470S 	　 	　 	是 	是 	任重远.dmp 	vwifimf在处理NBL的send complete过程中，错误传递参数导致蓝屏。
+请TMS根据自身软件逻辑提供收到ndis!ndisCallSendCompleteHandler的入参信息和传递给ndis!NdisFSendNetBufferListsComplete的出参信息，进行分析对比 
+魏普 	T490S 	　66476 	　21.120.2.1 	　是 	是　 	Memory0923.dmp
+Memory0925.dmp 	建议升级无线网卡驱动。
+未开启special pool及tracking NBL，待开启后继续观察 
+　黄彦淳 	T490S　 	　66476 	　21.120.2.1 	是　 	是　 	Memory.dmp　 	　 
+黄彦淳日志正在上传，已开启special pool、Enable Tracking NBL。 
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2020-10-16 11:24:21.957000+00:00
+邮件内容:
+毓杰，您好：
+获悉您的来电告知，现同意将此case做归档处理，我将暂时归档此问题，以下为案例总结：
+Case No：CAS-02946-W1G0R2
+问题描述：
+=====================
+用户反馈蓝屏问题
+问题分析：
+=====================
+经dump分析，目前确认该问题与之前反馈蓝屏问题的case原因相同。即：网络包数据异常（内部数据pTOS异常）引起的蓝屏重启。通过查看该网络包的内部结构，该内存地址由三方迷你网卡过滤驱动（mini-port filter driver）vwifimf.sys 维护。
+问题总结：
+=====================
+经用户来电确认后，在问题终端降级TMS版本后不再复现蓝屏问题，此case将暂做归档处理。
+以上，如您后续有任何问题，可随时与我们联系，谢谢

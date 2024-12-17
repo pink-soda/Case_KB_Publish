@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:41:12
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-16 11:29:56
+LastEditTime: 2024-12-17 16:16:18
 FilePath: \test\knowledge_graph.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -36,7 +36,7 @@ class KnowledgeGraph:
                     return {}
                     
                 root_names = result['root_names']
-                logging.info(f"找到根节点: {root_names}")
+                #logging.info(f"找到根节点: {root_names}")
 
                 # 2. 获取所有节点和它们的关系
                 result = session.run("""
@@ -70,7 +70,7 @@ class KnowledgeGraph:
                     elif parent_name and parent_name in nodes:
                         nodes[parent_name]['children'].append(nodes[name])
 
-                logging.info(f"构建的层级结构: {hierarchy}")
+                #logging.info(f"构建的层级结构: {hierarchy}")
                 return hierarchy
 
         except Exception as e:

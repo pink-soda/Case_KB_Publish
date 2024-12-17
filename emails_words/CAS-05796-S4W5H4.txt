@@ -1,0 +1,601 @@
+邮件主题：回复: 【外来邮件，注意核实】答复: [案例号: CAS-05796-S4W5H4 ] % 工行升级-总行设备win10系统升级问题 % 初次响应 CMIT:0001680
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-03 14:21:52.588000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+根据您提供的信息，我谨在此阐述我们双方针对这个问题所涉及范围界定：
+问题定义:
+升级到V2020-L之后，有一台设备连接办公无线网络ICBCOTP使用，频繁出现蓝屏问题。
+问题范围:
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+1.	请您收集以下日志文件并压缩：
+C:\Windows\MEMORY.DMP
+C:\Windows\Minidump\ 文件夹
+CMGELogCollector日志收集工具收取的系统日志
+请 @吴毓杰 <mailto:win10sup@sdc.icbc.com.cn>  帮忙把这些日志上传到sftp服务器上。
+2、请您使用这台设备连接ICBCOTP无线网络，做一些数据传输测试工作，测试是否能复现蓝屏问题。
+3、在复现蓝屏问题后，请您升级这台设备的无线网卡驱动，再进行相同操作测试。
+
+====第2封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-09 14:18:27.055000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+根据当前Dump文件的分析结果，是因为Next NBL 内容损坏，显示为NULL，这对nwifi.sys来说是非法的，导致了系统蓝屏。
+而这个导致系统蓝屏的NBL是vwifimf.sys驱动分配的。建议厂商进行分析处理。
+当前dump未记录完整的NBL，可以按照以下方式开启NBL跟踪以及special pool，并复现蓝屏收集新的dump日志，以便在dump中记录更多的信息。
+在问题计算机上打开TrackNblOwner和special pool操作：
+1）开启TrackNblOwner
+打开注册便编辑器，定位到：
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NDIS\Parameters
+将TrackNblOwner键值修改为4，重启计算机生效。（如果设置为4对当前计算机性能影响较大，可以将键值设置为3）
+2）使用driver verifier启用special pool
+special pool启用步骤：
+-. 以管理员权限运行命令verifier.exe，打开驱动程序验证程序管理器，选择“创建标准设置”
+-. 选择 “从一个列表选择驱动程序名”，点击“下一步”
+-. 选中nwifi.sys，以及第三方驱动：当前的无线网卡驱动Netwtw08.sys，vwifimf.sys驱动。（无线网卡驱动更新后有可能是Netwtw10.sys）
+-. 点击“完成”，重启计算机生效。
+具体dump分析：
+蓝屏crash发生的call stack如下，Crash发生在网卡返回了发送完成的通知由ndisInvokeNextSendCompleteHandler去处理。
+# Child-SP          RetAddr               Call Site
+00 fffff807`1f680028 fffff807`1cf2d6ce     nt!KeBugCheckEx
+01 fffff807`1f680030 fffff807`1ce63baf     nt!KiFatalExceptionHandler+0x22
+02 fffff807`1f680070 fffff807`1cce0f60     nt!RtlpExecuteHandlerForException+0xf
+03 fffff807`1f6800a0 fffff807`1cdb7154     nt!RtlDispatchException+0x430
+04 fffff807`1f6807f0 fffff807`1ce6c9c2     nt!KiDispatchException+0x144
+05 fffff807`1f680ea0 fffff807`1ce6884b     nt!KiExceptionDispatch+0xc2
+06 fffff807`1f681080 fffff807`24e66110     nt!KiGeneralProtectionFault+0x30b
+07 fffff807`1f681218 fffff807`24e09513     nwifi!guard_dispatch_icall_nop
+08 fffff807`1f681220 fffff807`24e0d66d     nwifi!Dot11SendCompletion+0x4b
+09 fffff807`1f681260 fffff807`22e06a13     nwifi!Pt6SendComplete+0x1d
+0a fffff807`1f681290 fffff807`22e01efd     ndis!ndisCallSendCompleteHandler+0x33
+0b fffff807`1f6812d0 fffff807`280f593d     ndis!NdisMSendNetBufferListsComplete+0x26d
+0c fffff807`1f6813e0 fffff807`280c2ef0     wdiwifi!CPort::SendCompleteNetBufferLists+0xf5
+0d fffff807`1f681430 fffff807`280b74da     wdiwifi!CAdapter::SendCompleteNbl+0x11c
+0e fffff807`1f6814a0 fffff807`280b71f1     wdiwifi!CTxMgr::CompleteNdisNbl+0xbe
+0f fffff807`1f681500 fffff807`280b4395     wdiwifi!CTxMgr::CompleteNBLs+0x59
+10 fffff807`1f681540 fffff807`280a7440     wdiwifi!CTxMgr::TxTransferCompleteInd+0x5c9
+11 fffff807`1f681600 fffff807`277c9cf8     wdiwifi!AdapterTxTransferCompleteInd+0x10
+12 fffff807`1f681630 fffff807`2781d0f6     Netwtw08+0x49cf8
+13 fffff807`1f681690 fffff807`27bb9850     Netwtw08+0x9d0f6
+14 fffff807`1f6817c0 fffff807`27bc6882     Netwtw08+0x439850
+15 fffff807`1f6817f0 fffff807`27beb16e     Netwtw08+0x446882
+16 fffff807`1f681850 fffff807`27bbdbb2     Netwtw08+0x46b16e
+17 fffff807`1f681950 fffff807`27bb5dc3     Netwtw08+0x43dbb2
+18 fffff807`1f681a40 fffff807`27bb4881     Netwtw08+0x435dc3
+19 fffff807`1f681aa0 fffff807`27bb590b     Netwtw08+0x434881
+1a fffff807`1f681b00 fffff807`22e06ba8     Netwtw08+0x43590b
+1b fffff807`1f681b30 fffff807`1ccf243c     ndis!ndisInterruptDpc+0x188
+1c fffff807`1f681c60 fffff807`1ccf1a7e     nt!KiExecuteAllDpcs+0x2ec
+1d fffff807`1f681da0 fffff807`1ce61f25     nt!KiRetireDpcList+0x1ae
+1e fffff807`1f681fb0 fffff807`1ce61d10     nt!KxRetireDpcList+0x5
+1f ffffc902`5b56f9c0 fffff807`1ce615d5     nt!KiDispatchInterruptContinue
+20 ffffc902`5b56f9f0 fffff807`1ce5cb71     nt!KiDpcInterruptBypass+0x25
+21 ffffc902`5b56fa00 00007ff6`f41bee70     nt!KiInterruptDispatch+0xb1
+22 000000eb`113fd430 000002c0`69920480     CMClient+0x62ee70
+23 000000eb`113fd438 22206574`61642121     0x000002c0`69920480
+24 000000eb`113fd440 000000eb`113fd6c8     0x22206574`61642121
+25 000000eb`113fd448 00000000`00000002     0x000000eb`113fd6c8
+26 000000eb`113fd450 00000000`00000008     0x2
+27 000000eb`113fd458 000000eb`113fd560     0x8
+28 000000eb`113fd460 000000eb`00000000     0x000000eb`113fd560
+29 000000eb`113fd468 000000eb`113fd6c8     0x000000eb`00000000
+2a 000000eb`113fd470 22206574`61642121     0x000000eb`113fd6c8
+2b 000000eb`113fd478 00000000`00000000     0x22206574`61642121
+0: kd> .frame /r 08
+08 fffff807`1f681220 fffff807`24e0d66d     nwifi!Dot11SendCompletion+0x4b
+rax=7a664d4602070000 rbx=ffffdd06904faac0 rcx=ffffdd0689c0bda0
+rdx=0000000000000000 rsi=ffffdd0689c0bda0 rdi=ffffdd068d4fcee0
+rip=fffff80724e09513 rsp=fffff8071f681220 rbp=0000000000000000
+ r8=0000000000000000  r9=000000000058f202 r10=0000000000000001
+r11=ffffdd068f9a69c0 r12=ffffdd0689863a20 r13=ffffdd068980f020
+r14=ffffdd0689862c58 r15=ffffdd0689567040
+iopl=0         nv up ei ng nz na po nc
+cs=0010  ss=0000  ds=002b  es=002b  fs=0053  gs=002b             efl=00000286
+nwifi!Dot11SendCompletion+0x4b:
+fffff807`24e09513 4883eb18        sub     rbx,18h
+0: kd> !nbl ffffdd0689c0bda0
+    NBL                ffffdd0689c0bda0    Next NBL           NULL
+    First NB           ffffdd0689c0bf20    Source             ffffdd06898628b0 - NDIS Sample LightWeight Filter 1-0000
+    Context stack      ffffdd068d4fcea0    Pool               ffffdd0689863040 - 
+    Flags              NBL_ALLOCATED, NBL_CONTEXT_ALLOCATED
+    Walk the NBL chain                     Dump data payload
+    Show out-of-band information           Show in Microsoft Network Monitor
+0: kd> !ndiskd.nblpool ffffdd0689863040
+NBL POOL
+    Ndis handle        ffffdd0689863040
+    Allocation tag     Filt
+    Owner
+    Allocated by       vwifimf+1809
+    Flags              CONTAINS_NET_BUFFER
+    Structure size     0n560
+    Context size       0
+    Data size          0
+All allocated NBLs
+Next NBL内容损坏，显示为NULL，这对nwifi.sys来说是非法的，导致了系统蓝屏。
+而这个数据来源是vwifimf.sys驱动，NBL POOL是由vwifimf分配的。
+0: kd> !ndiskd.filter ffffdd06898628b0
+FILTER
+    Intel(R) Wireless-AC 9560 160MHz-NDIS Sample LightWeight Filter 1-0000
+    Ndis handle        ffffdd06898628b0
+    Filter driver      ffffdd06814bb8a0 - NDIS Sample LightWeight Filter 1
+    Module context     ffffdd0686af8d20
+    Miniport           ffffdd068570f1a0 - Intel(R) Wireless-AC 9560 160MHz
+    Network interface  ffffdd0686bd4010
+    State              Running
+    Datapath           Normal
+    References         1
+    Flags              RUNNING
+    Higher filter      ffffdd0689863a20 - Intel(R) Wireless-AC 9560 160MHz-Native WiFi Filter Driver-0000
+    Lower filter       ffffdd068985d9a0 - Intel(R) Wireless-AC 9560 160MHz-Virtual WiFi Filter Driver-0000
+    Driver handlers
+0: kd> !ndiskd.filterdriver ffffdd06814bb8a0
+FILTER DRIVER
+    NDIS Sample LightWeight Filter 1
+    Ndis handle        ffffdd06814bb8a0
+    Driver context     ffffdd067f6eead0
+    Ndis API version   v6.0
+    Driver version     v1.0
+    Driver object      ffffdd067f6eead0
+    Driver image       vwifimf.sys
+    Bind flags         Mandatory, Modifying, UnbindOnAttach, UnbindOnDetach
+    Class              ms_medium_converter_128
+    References         2
+0: kd> !lmi fffff807242c0000
+Loaded Module Info: [fffff807242c0000] 
+         Module: vwifimf
+   Base Address: fffff807242c0000
+     Image Name: vwifimf.sys
+   Machine Type: 34404 (X64)
+     Time Stamp: 617a05d2 Thu Oct 28 10:07:14 2021
+           Size: a000
+       CheckSum: 6880
+Characteristics: 22  
+Debug Data Dirs: Type  Size     VA  Pointer
+             CODEVIEW    79,  41bc,    2fbc RSDS - GUID: {830C02D3-7A8B-4493-A0E5-C2FCFA5F758F}
+               Age: 1, Pdb: d:\6.5\icbc\phenix_6.5_icbc_20180315\sources\drivers\vwifimf\objfre_win7_amd64\amd64\ndislwf.pdb
+     Image Type: MEMORY   - Image read successfully from loaded memory.
+    Symbol Type: NONE     - PDB not found from symbol server.
+    Load Report: no symbols loaded
+0: kd> lmvm vwifimf
+Browse full module list
+start             end                 module name
+fffff807`242c0000 fffff807`242ca000   vwifimf    (no symbols)           
+    Loaded symbol image file: vwifimf.sys
+    Image path: \SystemRoot\system32\DRIVERS\vwifimf.sys
+    Image name: vwifimf.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Thu Oct 28 10:07:14 2021 (617A05D2)
+    CheckSum:         00006880
+    ImageSize:        0000A000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-11 10:44:54.450000+00:00
+邮件内容:
+吴先生  您好：
+感谢您的电话接听。
+如电话中所说，当前的dump未记录完整的NBL，要进一步分析这个问题，请开启NBL Trace以及special pool，并复现蓝屏收集新的dump日志，以便在dump中记录更多的信息。
+如果您有多台设备可以升级到V2020-L系统，请在升级到V2020-L系统后，先更新无线网卡驱动，再按照上一封邮件说明开启 NBL Trace 和 special pool ，观察使用过程中是否会出现蓝屏问题。
+
+====第4封邮件====
+
+发件人：Liu Jian
+发送时间：2022-03-15 14:27:50.776000+00:00
+邮件内容:
+FYI
+Thank you for your time!
+----------
+Best Regards,
+Carl Liu（刘健）
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+
+====第5封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-15 16:06:17.950000+00:00
+邮件内容:
+吴先生 & 毓杰 你们好：
+感谢电话接听。
+如电话中所说，要进一步分析在V2020-L中连接无线网络使用过程中出现蓝屏的问题，请开启NBL Trace以及special pool，并复现蓝屏收集新的dump日志，以便在dump中记录更多的信息。
+请在升级到V2020-L系统后，先更新无线网卡驱动，再按照先前的邮件说明开启 NBL Trace 和 special pool ，观察使用过程中是否会出现蓝屏问题。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第6封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-17 11:14:25.921000+00:00
+邮件内容:
+吴先生 & 毓杰 你们好：
+来信是想咨询当前案例进展状况。更新无线网卡驱动，并开启 NBL Trace 和 special pool 后，是否有复现蓝屏问题？
+如果针对当前案件还有需要我们帮助的地方, 欢迎随时联系我们。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第7封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-23 14:34:06.213000+00:00
+邮件内容:
+吴先生 & 毓杰 你们好：
+来信是想咨询当前案例进展状况。开启 NBL Trace 和 special pool 后，近期是否有复现蓝屏问题？
+如果针对当前案件还有需要我们帮助的地方, 欢迎随时联系我们。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第8封邮件====
+
+发件人：win10升级支持
+发送时间：2022-03-23 14:39:54.153000+00:00
+邮件内容:
+最新蓝屏日志已经上传FTP\总行\总行0321
+________________________________
+	-----原始邮件-----
+	
+====第9封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-23 17:18:16.429000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+您提供的“总行0321” dump 文件显示蓝屏问题与 Intel 显卡驱动有关，而不是使用无线导致的蓝屏。这个dump文件记录的信息显示这台设备型号是T14s，未开启 NBL Trace 和 special pool，上一次使用无线出现蓝屏问题的机型为T490s。
+要分析使用无线时导致蓝屏的问题，请您开启 NBL Trace 和 special pool ，在上次类似使用环境下复现蓝屏问题，得到记录更详细信息的dump文件。
+针对新的dump文件分析情况如下：
+bugcheck ID 为 19c，这表示 Win32k 未及时打开监视器。
+*******************************************************************************
+*                                                                             *
+*                        Bugcheck Analysis                                    *
+*                                                                             *
+*******************************************************************************
+WIN32K_POWER_WATCHDOG_TIMEOUT (19c)
+Win32k did not turn the monitor on in a timely manner.
+Arguments:
+Arg1: 0000000000000050, Calling monitor driver to power on.
+Arg2: ffffad028cdb2080, Pointer to the power request worker thread.
+Arg3: 0000000000000000
+Arg4: 0000000000000000
+Debugging Details:
+---
+...........................
+STACK_COMMAND:  .thread 0xffffad028cdb2080 ; kb
+SYMBOL_NAME:  igdkmd64+355f27
+MODULE_NAME: igdkmd64
+IMAGE_NAME:  igdkmd64.sys
+IMAGE_VERSION:  27.20.100.8190
+BUCKET_ID_FUNC_OFFSET:  355f27
+FAILURE_BUCKET_ID:  0x19C_DRVSETMONITORPOWERSTATE_HANG_STACKPTR_ERROR_igdkmd64!unknown_function
+OS_VERSION:  10.0.17763.1
+BUILDLAB_STR:  rs5_release
+.............................
+指向igdkmd64.sys导致蓝屏问题，查看其线程的 CallStack 
+6: kd> kn
+  *** Stack trace for last set context - .thread/.cxr resets it
+ # Child-SP          RetAddr           Call Site
+00 ffffee84`81467680 fffff800`52ed6ab7 nt!KeAcquireSpinLockAtDpcLevel+0x36
+01 ffffee84`814676b0 fffff800`52ed6550 nt!KeIntSteerPeriodic+0x57
+02 ffffee84`814677c0 fffff800`52f3aa90 nt!PpmParkSteerInterrupts+0x3e0
+03 ffffee84`81467bf0 fffff800`52f0cbec nt!PpmCheckRun+0x40
+04 ffffee84`81467c60 fffff800`52f0c22e nt!KiExecuteAllDpcs+0x2ec
+05 ffffee84`81467da0 fffff800`52fc0985 nt!KiRetireDpcList+0x1ae
+06 ffffee84`81467fb0 fffff800`52fc0770 nt!KxRetireDpcList+0x5
+07 ffffee84`820dd420 fffff800`52fbfe62 nt!KiDispatchInterruptContinue
+08 ffffee84`820dd450 fffff800`5d715f27 nt!KiDpcInterrupt+0x2e2
+09 ffffee84`820dd5e0 fffff800`5d715562 igdkmd64+0x355f27
+0a ffffee84`820dd5f0 fffff800`5d710725 igdkmd64+0x355562
+0b ffffee84`820dd6e0 fffff800`5d70eeec igdkmd64+0x350725
+0c ffffee84`820dd760 fffff800`5d49cbc5 igdkmd64+0x34eeec
+0d ffffee84`820dd790 fffff800`5d613a92 igdkmd64+0xdcbc5
+0e ffffee84`820dd7d0 fffff800`5d5ecea4 igdkmd64+0x253a92
+0f ffffee84`820dd800 fffff800`5d5ec457 igdkmd64+0x22cea4
+10 ffffee84`820dd830 fffff800`5d5ebe7d igdkmd64+0x22c457
+查看igdkmd64模块，它是Intel显卡驱动
+6: kd> lmvm igdkmd64
+Browse full module list
+start             end                 module name
+fffff800`5d3c0000 fffff800`5ed16000   igdkmd64   (no symbols)           
+    Loaded symbol image file: igdkmd64.sys
+    Image path: \SystemRoot\System32\DriverStore\FileRepository\iigd_dch.inf_amd64_5a902455b8e8b8c8\igdkmd64.sys
+    Image name: igdkmd64.sys
+    Browse all global symbols  functions  data
+    Timestamp:        Wed May  6 02:55:20 2020 (5EB1B698)
+    CheckSum:         019567C9
+    ImageSize:        01956000
+    File version:     27.20.100.8190
+    Product version:  27.20.100.8190
+    File flags:       0 (Mask 3F)
+    File OS:          40004 NT Win32
+    File type:        3.4 Driver
+    File date:        00000000.00000000
+    Translations:     0409.04b0
+    Information from resource tables:
+        CompanyName:      Intel Corporation
+        ProductName:      Intel HD Graphics Drivers for Windows(R)
+        InternalName:     igdkmd64.sys
+        OriginalFilename: igdkmd64.sys
+        ProductVersion:   27.20.100.8190
+        FileVersion:      27.20.100.8190
+        FileDescription:  Intel Graphics Kernel Mode Driver
+        LegalCopyright:   Copyright (c) 1998-2018 Intel Corporation.
+未开启NBL Trace 和 special pool
+6: kd> !ndiskd.nbllog
+    This command requires NBL tracking to be enabled on the debugee target
+    machine.  (By default, client operating systems have level 2, and servers
+    have level 0).  To enable, set this REG_DWORD value to a nonzero value on
+    the target machine and reboot the target machine:
+    HKLM\SYSTEM\CurrentControlSet\Services\NDIS\Parameters ! TrackNblOwner
+    Possible Values (features are cumulative)
+    * 0:  Disable all tracking.
+    * 1:  Track the most recent owner of each NBL (enables !ndiskd.pendingnbls)
+    * 2:  Scan for leaks at runtime (use with StuckNblReaction)
+    * 3:  Keep a full history of all activity (enables !ndiskd.nbllog and
+    !ndiskd.nbl -log)
+    * 4:  Take stack capture snapshots (slow, but enables !ndiskd.nbl -log
+    -stacks)
+    This command requires level 3 or higher.
+6: kd> !verifier
+Verify Flags Level 0x00000000
+  STANDARD FLAGS:
+    [ ] (0x00000000) Automatic Checks
+    [ ] (0x00000001) Special pool
+    [ ] (0x00000002) Force IRQL checking
+    [ ] (0x00000008) Pool tracking
+    [ ] (0x00000010) I/O verification
+    [ ] (0x00000020) Deadlock detection
+    [ ] (0x00000080) DMA checking
+    [ ] (0x00000100) Security checks
+    [ ] (0x00000800) Miscellaneous checks
+    [ ] (0x00020000) DDI compliance checking
+  ADDITIONAL FLAGS:
+    [ ] (0x00000004) Randomized low resources simulation
+    [ ] (0x00000200) Force pending I/O requests
+    [ ] (0x00000400) IRP logging
+    [ ] (0x00002000) Invariant MDL checking for stack
+    [ ] (0x00004000) Invariant MDL checking for driver
+    [ ] (0x00008000) Power framework delay fuzzing
+    [ ] (0x00010000) Port/miniport interface checking
+    [ ] (0x00040000) Systematic low resources simulation
+    [ ] (0x00080000) DDI compliance checking (additional)
+    [ ] (0x00200000) NDIS/WIFI verification
+    [ ] (0x00800000) Kernel synchronization delay fuzzing
+    [ ] (0x01000000) VM switch verification
+    [ ] (0x02000000) Code integrity checks
+    [X] Indicates flag is enabled
+针对这台出现蓝屏问题的设备，建议先更新 Intel 显卡驱动，再观察其是否再次出现蓝屏问题。 
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第10封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-25 16:22:22.849000+00:00
+邮件内容:
+吴先生 您好：
+您提供的最新的dump文件已经收到，有任何进展会及时与您联系。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第11封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-29 16:43:36.024000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+针对“总行0325.dmp”文件分析结果如下：
+	1、根据 call stack 显示：nwifi!Dot11SendCompletion处理NBL时出现异常，对应的 NBL 为 ffff8f0485ce5da0 。
+	2、查看该 NBL 完整历史，这个 NBL 是 vwifimf.sys 申请的，在 FilterSendCompleted 时，并没有正常完成并释放 NBL ，反而传给了 nwifi 导致错误蓝屏。
+	（ https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ndis/nf-ndis-ndisfsendnetbufferlistscomplete ）
+	3、请vwifimf厂商排查vwifimf未释放其申请的NBL原因。
+	4、vwifimf厂商关注的NdisPoolHandle 和 SourceHandle 值等参数，在dump中无法看到完整历史的每一个阶段时的 _NET_BUFFER_LIST 中的对应值，我们将从以下方面协助：
+		1）建议vwifimf厂商添加调试日志，在进入和离开 vwifimf filter driver相关函数时，增加NdisPoolHandle 和 SourceHandle等相关信息日志。
+		2）建议vwifimf厂商提供private symbol pdb文件，我们尝试使用此pdb文件查看vwifimf的更多信息。
+dump文件具体分析如下：
+0: kd> .frame /r 0x6;.echo;!mex.x
+06 fffff800`11078d00 fffff800`19c8d66d     nwifi!Dot11SendCompletion+0x4b [onecoreuap\net\wlan\sys\infra\driver\pktutil.c @ 97]
+rax=ffff8f047043d010 rbx=ffff8f048288fc70 rcx=ffff8f0485ce5da0
+rdx=0000000000000000 rsi=ffff8f0485ce5da0 rdi=ffff8f047e5fceb0
+rip=fffff80019c89513 rsp=fffff80011078d00 rbp=0000000000000000
+r8=ffff8f048322c780  r9=ffff8f04707d1010 r10=0000000000000001
+r11=0000000000000018 r12=ffff8f0479a639a0 r13=ffff8f04793b6810
+r14=0000000000000000 r15=ffff8f04793b6810
+iopl=0         nv up ei pl zr na po nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+nwifi!Dot11SendCompletion+0x4b:
+fffff800`19c89513 4883eb18        sub     rbx,18h
+@rsi              pNdisPacket = 0xffff8f04`85ce5da0 _NET_BUFFER_LIST
+@ebp              ndisStatus = 0n0
+@rdi              pBOS = 0xffff8f04`7e5fceb0
+@rbx              pTOS = 0xffff8f04`8288fc70
+此dump开启了TrackNblOwner，可以看到NBL的完整历史
+0: kd> !ndiskd.nbl -log ffff8f0485ce5da0
+    Allocated            ß 该NBL是vwifimf申请的
+    FilterSent         ffff8f0479a5b9a0 - Virtual WiFi Filter Driver-0000
+    FilterSent         ffff8f0479993c70 - WFP Native MAC Layer LightWeight Filter-0000
+    FilterSent         ffff8f047432b1a0 - Intel(R) Wireless-AC 9560 160MHz
+    SentToMiniport     ffff8f047432b1a0 - Intel(R) Wireless-AC 9560 160MHz
+    MiniportSendCompleted ffff8f0479993c70 - WFP Native MAC Layer LightWeight Filter-0000
+    FilterSendCompleted ffff8f0479a5b9a0 - Virtual WiFi Filter Driver-0000
+    FilterSendCompleted ffff8f0479a929d0 - NDIS Sample LightWeight Filter 1-0000   ß 这个是vwifimf filter driver，没有完成并释放NBL，反而传给了nwifi导致错误蓝屏
+    FilterSendCompleted ffff8f0479a639a0 - Native WiFi Filter Driver-0000
+0: kd> !nbl 0xffff8f04`85ce5da0
+    NBL                ffff8f0485ce5da0    Next NBL           NULL
+    First NB           ffff8f0485ce5f20    Source            ffff8f0479a929d0 - NDIS Sample LightWeight Filter 1-0000
+Unable to load image \SystemRoot\system32\DRIVERS\vwifimf.sys, Win32 error 0n2
+    Context stack      ffff8f047e5fce70    Pool              ffff8f0479aec040 -
+    Flags              NBL_ALLOCATED, NBL_CONTEXT_ALLOCATED
+0: kd> !ndiskd.nblpool ffff8f0479aec040
+NBL POOL
+    Ndis handle        ffff8f0479aec040    dt  ffff8f0479aec040 ndis!_NDIS_NET_BUFFER_LIST_POOL
+    Allocation tag     Filt
+    Owner
+    Allocated by       vwifimf+1809
+0: kd> !ndiskd.filter ffff8f0479a929d0
+FILTER
+    Intel(R) Wireless-AC 9560 160MHz-NDIS Sample LightWeight Filter 1-0000
+    Ndis handle        ffff8f0479a929d0    dt  ffff8f0479a929d0 ndis!_NDIS_FILTER_BLOCK
+    Filter driver      ffff8f0470642d70 - NDIS Sample LightWeight Filter 1
+    Module context     ffff8f0479ab0620
+    Miniport           ffff8f047432b1a0 - Intel(R) Wireless-AC 9560 160MHz
+    Network interface  ffff8f0479aea8c0
+    State              Running
+    Datapath           Normal
+    References         1
+    Flags              RUNNING
+    Higher filter      ffff8f0479a639a0 - Intel(R) Wireless-AC 9560 160MHz-Native WiFi Filter Driver-0000
+    Lower filter       ffff8f0479a5b9a0 - Intel(R) Wireless-AC 9560 160MHz-Virtual WiFi Filter Driver-0000
+    Driver handlers
+0: kd> !ndiskd.filterdriver ffff8f0470642d70
+FILTER DRIVER
+    NDIS Sample LightWeight Filter 1
+    Ndis handle        ffff8f0470642d70    dt  ffff8f0470642d70 ndis!_NDIS_FILTER_DRIVER_BLOCK
+    Driver context     ffff8f0470643de0
+    Ndis API version   v6.0
+    Driver version     v1.0
+    Driver object      ffff8f0470643de0
+    Driver image       vwifimf.sys
+    Bind flags         Mandatory, Modifying, UnbindOnAttach, UnbindOnDetach
+    Class              ms_medium_converter_128
+    References         2
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第12封邮件====
+
+发件人：Wei Liang
+发送时间：2022-03-31 17:32:10.791000+00:00
+邮件内容:
+吴先生 您好：
+刚刚给您电话没有接通。
+来信是想询问无线蓝屏案例进展情况，针对上一封邮件所说的dump分析，如果还有需要我们帮助的地方, 欢迎随时联系我们。
+下午已经收到发送的 vwifimf private symbol 文件，我们会使用此pdb文件尝试查看vwifimf的更多信息。
+关于增加调试日志的驱动测试情况，请您帮忙关注其测试进展。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第13封邮件====
+
+发件人：Wei Liang
+发送时间：2022-04-02 11:31:01.794000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+如电话中所谈，待vwifimf厂商提供带有调试日志的驱动进行测试。在测试中如有新的dump日志，我们可以协助vwifimf厂商查找问题原因。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第14封邮件====
+
+发件人：Wei Liang
+发送时间：2022-04-07 13:50:51.295000+00:00
+邮件内容:
+吴先生 & 吴迪 你们好：
+如电话中所说，当前的蓝屏dump中显示导致系统出错的nbl是vwifimf创建的，出现蓝屏问题的原因指向vwifimf，我们提出使用 private symbol 是用来辅助分析，为了更了解vwifimf的一些内部函数。
+但是dump信息是出现蓝屏问题时间点的现场，不能查询到对某个nbl的处理过程中的信息，vwifimf厂商想要知道他们在处理过程中的参数情况，这需要vwifimf去跟踪调试。
+根据您提供的信息，vwifimf厂商已经提供了带有调试日志信息的驱动vwifimf.sys供测试分析。请您按照以下配置获取最新的日志信息：
+1、请vwifimf厂商提供带调试日志信息的驱动vwifimf.sys替换、配置及使用方法更新最新的vwifimf.sys驱动，并确认调试日志的配置和日志输出位置。
+2、在操作系统的“系统属性”的“高级”页面，配置“启动和故障恢复”信息，“写入调试信息”项配置为“完全内存转储”或“核心内存转储”。
+3、按照下列方法配置TrackNblOwner和special pool：
+a）开启TrackNblOwner
+打开注册便编辑器，定位到：
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NDIS\Parameters
+将TrackNblOwner键值修改为4，重启计算机生效。（如果设置为4对当前计算机性能影响较大，可以将键值设置为3）
+b）使用driver verifier启用special pool
+special pool启用步骤：
+-. 以管理员权限运行命令verifier.exe，打开驱动程序验证程序管理器，选择“创建标准设置”
+-. 选择 “从一个列表选择驱动程序名”，点击“下一步”
+-. 选中nwifi.sys，以及第三方驱动：当前的无线网卡驱动Netwtw08.sys，vwifimf.sys驱动。（无线网卡驱动更新后有可能是Netwtw10.sys）
+-. 点击“完成”，重启计算机生效。
+在测试机上进行以上配置，当使用无线网络时出现蓝屏问题后，请您将C:\Windows\MEMORY.DMP和vwifimf.sys的调试日志一块通过SFTP上传。
+情况
+
+====第15封邮件====
+
+发件人：Wei Liang
+发送时间：2022-04-18 11:40:26.347000+00:00
+邮件内容:
+吴先生 您好：
+如电话中所说，连接无线网络时出现蓝屏的问题，是由vwifimf创建的一个NBL未正常完成并释放，反而传给了nwifi导致蓝屏。
+在dump中查询这个出错的NBL的详细信息，其NdisPoolHandle和SourceHandle值均可以确认这个NBL来源于vwifimf，需要vwifimf厂商排查未释放其申请的NBL原因。
+关于在处理NBL的过程中的各个参数情况，需要vwifimf去跟踪调试输出对应日志。开启vwifimf调试日志并复现问题后，我们可以协助vwifimf厂商进一步分析vwifimf调试日志和对应dump。
+
+====第16封邮件====
+
+发件人：Wei Liang
+发送时间：2022-04-24 10:59:13.966000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+如电话中所说，在测试环境中，使用了启用调试日志的vwifimf.sys驱动，使用无线网络时，如果出现了蓝屏问题，您可以将C:\Windows\MEMORY.DMP和vwifimf.sys的调试日志一块通过SFTP上传提供给我们进行分析。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第17封邮件====
+
+发件人：Wei Liang
+发送时间：2022-04-26 18:06:52.614000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+您上传的测试环境中出现的蓝屏dump，分析是由vwifimf创建的一个NBL未正常完成并释放，反而传给了nwifi导致蓝屏。
+在dump中查询这个出错的NBL的详细信息，其NdisPoolHandle和SourceHandle值均可以确认这个NBL来源于vwifimf。
+您提供的所说的关于TMS相关的调试日志，查看其记录的时间，相关日志都是在操作系统发生蓝屏问题再次重启之后的日志，并没有TMS在系统出现蓝屏时的日志。
+如dump显示蓝屏发生的时间是：2022.4.25 17:22:45
+而TMS记录的日志时间是蓝屏重启后的时间：17:32:45
+这个调试日志对这个问题分析没有帮助。
+根据TMS给出的流程图， 需要记录SendNetBufferListsCompleteHandler处理NBL时的相关参数信息进一步分析。
+根据private symbol文件，SendNetBufferListsCompleteHandler指向vwifimf!FilterSendNetBufferListsComplete。
+查看vwifimf!FilterSendNetBufferListsComplete函数情况，建议跟踪其入参及函数内部的相关变量值。
+电子邮箱： weiliang@cmgos.com
+官方网站： www.cmgos.com
+________________________________
+
+====第18封邮件====
+
+发件人：Wei Liang
+发送时间：2022-05-05 14:51:29.373000+00:00
+邮件内容:
+吴先生 您好：
+感谢您的电话接听。
+如电话中所说，当前提供的所有蓝屏dump分析，均是由vwifimf创建的一个NBL未正常完成并释放，反而传给了nwifi导致蓝屏。
+在dump中查询这个出错的NBL的详细信息，其NdisPoolHandle和SourceHandle值均可以确认这个NBL来源于vwifimf。
+dump信息是出现蓝屏问题时间点的现场，不能查询到对某个nbl每个处理过程中的信息，需要vwifimf去跟踪其内部对NBL的处理过程，根据TMS给出的流程图， 请TMS记录SendNetBufferListsCompleteHandler处理NBL时的相关参数信息进一步分析。
+建议TMS调试跟踪其FilterSendNetBufferListsComplete函数入参及函数内部的相关变量值。
+
+====第19封邮件====
+
+发件人：Wei Liang
+发送时间：2022-06-06 17:36:52.462000+00:00
+邮件内容:
+吴先生 您好：
+经过您的同意，我将暂时归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+升级到V2020-L之后，有一台设备连接办公无线网络ICBCOTP使用，频繁出现蓝屏问题。
+问题总结：
+通过分析多个蓝屏dump，显示由vwifimf创建的一个NBL未正常完成并释放，反而传给了nwifi导致蓝屏，此问题需要vwifimf厂商排查vwifimf未释放其申请的NBL原因。
+当前由vwifimf厂商排查、处理其驱动问题，可以暂时归档案例。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。

@@ -27,7 +27,7 @@ class LLMHandler:
     def analyze_description_with_categories(self, description: str, category_hierarchy: dict) -> dict:
         """
         使用Azure LLM分析描述文本，并根据知识图谱中的类别进行分类
-        返回格式：每个匹配的类别都会返回完整的层级路径，每个层级都有自己的置信度
+        返回格式：只返回最小子类别及其置信度和解释
         """
         try:
             # 格式化类别层级结构
@@ -35,7 +35,8 @@ class LLMHandler:
             
             # 构建prompt
             prompt = f"""
-            请分析以下技术支持描述，并从给定的类别层级中选择最合适的类别进行分类。
+            请分析以下技术支持描述，并从给定的类别层级中选择最合适的最小子类别进行分类。
+            请只返回一个最具体的子类别（最深层级的类别）。
 
             描述文本：
             {description}
@@ -44,15 +45,15 @@ class LLMHandler:
             {formatted_hierarchy}
 
             请以JSON格式返回结果，包含以下字段：
-            1. categories: 匹配的类别列表
-            2. confidence_scores: 对应的置信度列表（0-1之间的浮点数）
-            3. explanation: 分类理由的简要说明
+            1. categories: 包含一个元素的列表，表示最合适的最小子类别
+            2. confidence_scores: 对应的置信度（0-1之间的浮点数）
+            3. explanation: 选择该类别的理由说明
 
             示例返回格式：
             {{
-                "categories": ["类别1", "类别2"],
-                "confidence_scores": [0.9, 0.8],
-                "explanation": "根据描述中的关键词和问题特征进行分类..."
+                "categories": ["音频设备问题"],
+                "confidence_scores": [0.9],
+                "explanation": "根据描述中提到的音频设备故障特征，该问题属于音频设备问题类别。"
             }}
             """
 
@@ -61,28 +62,17 @@ class LLMHandler:
             result = self._parse_llm_response(response)
             logger.info(f"LLM原始分析结果: {result}")
 
-            # 处理每个识别出的类别
-            processed_categories = []
-            processed_confidences = []
-            
-            for i, category in enumerate(result.get('categories', [])):
-                confidence = result.get('confidence_scores', [])[i]
-                # 获取类别的完整路径和每一级的置信度
-                category_path = self._get_category_with_parents(category, category_hierarchy)
-                
-                if category_path:
-                    # 将每一级类别都添加到结果中
-                    for level, cat in enumerate(category_path):
-                        if cat not in processed_categories:
-                            processed_categories.append(cat)
-                            # 父级类别的置信度稍低于子类别
-                            level_confidence = confidence * (0.9 ** (len(category_path) - level - 1))
-                            processed_confidences.append(level_confidence)
-                            logger.info(f"添加类别: {cat}, 置信度: {level_confidence}")
+            # 确保只返回一个类别
+            if result.get('categories'):
+                category = result['categories'][0]
+                if " - " in category:
+                    # 如果返回的是完整路径，只取最后一个类别
+                    category = category.split(" - ")[-1].strip()
+                    result['categories'] = [category]
 
             return {
-                'categories': processed_categories,
-                'confidence_scores': processed_confidences,
+                'categories': result.get('categories', ['未分类']),
+                'confidence_scores': result.get('confidence_scores', [0.5]),
                 'explanation': result.get('explanation', '')
             }
 
@@ -194,25 +184,48 @@ class LLMHandler:
         解析LLM的响应内容为字典格式
         """
         try:
+            # 打印原始响应以便调试
+            print("原始响应:", response)
+            
+            # 如果响应已经是字典格式，直接返回
+            if isinstance(response, dict):
+                return response
+            
+            # 确保响应不是空的
+            if not response or not isinstance(response, str):
+                raise ValueError(f"无效的响应格式: {type(response)}")
+            
             # 清理响应文本，移除多余的空格和换行
-            cleaned_response = response.replace('\n', '').replace('    ', '')
+            cleaned_response = response.strip().replace('\n', '').replace('    ', '')
+            print("清理后的响应:", cleaned_response)
             
             # 尝试直接解析JSON
             try:
                 result = json.loads(cleaned_response)
+                print("成功解析JSON:", result)
             except json.JSONDecodeError:
                 # 如果解析失败，尝试提取JSON部分
                 import re
                 json_pattern = r'\{[^{}]*\}'
                 match = re.search(json_pattern, cleaned_response)
                 if match:
-                    result = json.loads(match.group())
+                    json_str = match.group()
+                    print("提取的JSON字符串:", json_str)
+                    try:
+                        result = json.loads(json_str)
+                        print("成功解析提取的JSON:", result)
+                    except json.JSONDecodeError as e:
+                        print(f"JSON解析错误位置: 行 {e.lineno}, 列 {e.colno}")
+                        print(f"JSON解析错误信息: {e.msg}")
+                        raise
                 else:
-                    raise Exception("无法解析LLM返回的JSON格式")
+                    raise Exception("无法从响应中提取有效的JSON格式")
             
             # 确保所有必需的字段都存在
-            if not all(key in result for key in ['categories', 'confidence_scores']):
-                logger.warning("LLM响应缺少必要字段，使用默认值")
+            required_fields = ['categories', 'confidence_scores']
+            missing_fields = [field for field in required_fields if field not in result]
+            if missing_fields:
+                logger.warning(f"LLM响应缺少必要字段: {missing_fields}，使用默认值")
                 return {
                     "categories": result.get('categories', ["未分类"]),
                     "confidence_scores": [0.5] * len(result.get('categories', ["未分类"])),
@@ -225,8 +238,13 @@ class LLMHandler:
                 for score in result['confidence_scores']
             ]
             
+            print("最终处理结果:", result)
             return result
+            
         except Exception as e:
+            print(f"解析LLM响应时出现错误: {type(e).__name__}")
+            print(f"错误信息: {str(e)}")
+            print(f"原始响应内容: {response}")
             logger.error(f"解析LLM响应失败: {str(e)}")
             return {
                 "categories": ["未分类"],
@@ -304,7 +322,14 @@ class LLMHandler:
         返回格式: [一级分类, 二级分类, 三级分类]
         """
         logger.info(f"开始查找类别 '{category}' 的父类")
-        logger.info(f"当前层级结构: {json.dumps(hierarchy, ensure_ascii=False, indent=2)}")
+        
+        # 如果输入的类别包含完整路径（用 " - " 分隔），先尝试提取最后一个类别
+        if " - " in category:
+            categories = category.split(" - ")
+            target_category = categories[-1].strip()  # 获取最后一个类别名称
+            logger.info(f"从完整路径中提取目标类别: {target_category}")
+        else:
+            target_category = category
         
         def search_in_hierarchy(current_category: str, current_hierarchy: dict, path: list = None) -> list:
             if path is None:
@@ -346,6 +371,15 @@ class LLMHandler:
             logger.warning(f"未找到类别 '{current_category}' 的父类")
             return []
 
-        result = search_in_hierarchy(category, hierarchy)
+        # 使用提取出的目标类别进行搜索
+        result = search_in_hierarchy(target_category, hierarchy)
+        if not result and " - " in category:
+            # 如果使用最后一个类别没找到，尝试使用完整路径中的其他部分
+            for cat in category.split(" - "):
+                cat = cat.strip()
+                result = search_in_hierarchy(cat, hierarchy)
+                if result:
+                    break
+        
         logger.info(f"类别 '{category}' 的最终完整路径: {result}")
         return result

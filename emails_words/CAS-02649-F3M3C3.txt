@@ -1,0 +1,174 @@
+邮件主题：[案例号:CAS-02649-F3M3C3] %国家外汇管理局中央外汇业务中心普通权限用户无法运行IFILE程序%
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-24 10:50:14.789000+00:00
+邮件内容:
+陈女士 您好,
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义:用户使用USERS组成员帐户登陆系统后无法正常运行基础办公软件IFILE2.0。需要协助分析问题原因，并提供相关修复建议。
+问题范围: 就本案定义的问题给予最大的技术支持，如果能及时解决本案抑或涉及到三方，或者是by-design的行为，我们将考虑关闭本案。如果存在多个问题，则我们考虑拆分case进行分析。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+通过电话中沟通了解到IFILE2.0正常运行需要用户具备一定权限，而普通USERS组成员无法满足软件运行需要。由于案例描述中在Windows 7 环境中关闭用户控制帐户通知后用户可以正常运行此软件，所以尝试关闭用户账户控制但是并未解决此问题。所以请您提供IFILE2.0软件安装包以便我们在本地实验环境中进行问题复现以及进一步排查。由于贵公司对于信息上传有相关规定不允许使用外部提供文件服务器进行上传只能通过邮件发送，所以请您按照公司规定通过邮件将IFILE2.0安装包通过邮件分享。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-24 18:10:15.229000+00:00
+邮件内容:
+陈女士 您好，
+接到您的询问确认邮件收发状况，您发送的邮件并未收到。如果您邮件中添加了Ifile安装包，请您将安装文件压缩后再添加至邮件附件发送以避免被服务器拦截。
+感谢您的积极配合，如果遇到任何问题请随时与我联系。
+	电子邮箱： baicx@cmgos.com
+	官方网站： www.cmgos.com <http://www.cmgos.com> 
+	在 2020年7月24日，10:50，Bai Chengxiao <baicx@cmgos.com> 写道：
+	﻿ 
+	陈女士 您好,
+	根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+	问题定义:用户使用USERS组成员帐户登陆系统后无法正常运行基础办公软件IFILE2.0。需要协助分析问题原因，并提供相关修复建议。
+	问题范围: 就本案定义的问题给予最大的技术支持，如果能及时解决本案抑或涉及到三方，或者是by-design的行为，我们将考虑关闭本案。如果存在多个问题，则我们考虑拆分case进行分析。
+	接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+	通过电话中沟通了解到IFILE2.0正常运行需要用户具备一定权限，而普通USERS组成员无法满足软件运行需要。由于案例描述中在Windows 7 环境中关闭用户控制帐户通知后用户可以正常运行此软件，所以尝试关闭用户账户控制但是并未解决此问题。所以请您提供IFILE2.0软件安装包以便我们在本地实验环境中进行问题复现以及进一步排查。由于贵公司对于信息上传有相关规定不允许使用外部提供文件服务器进行上传只能通过邮件发送，所以请您按照公司规定通过邮件将IFILE2.0安装包通过邮件分享。
+	感谢您对我们服务的支持，
+	电子邮箱： baicx@cmgos.com
+	官方网站： www.cmgos.com <http://www.cmgos.com> 
+	
+====第3封邮件====
+
+发件人：chenqiubo
+发送时间：2020-07-27 08:18:41.463000+00:00
+邮件内容:
+柏工：
+您好，因贵方邮件服务器限制文件大小（见下图），我将iFile软件安装包压缩为三个分卷，附件为分卷1，仅供贵司在本地实验环境中进行问题复现以及进一步排查使用。
+    感谢大力支持!
+陈秋博
+
+====第4封邮件====
+
+发件人：chenqiubo
+发送时间：2020-07-27 08:20:48.106000+00:00
+邮件内容:
+附件为分卷3
+
+====第5封邮件====
+
+发件人：chenqiubo
+发送时间：2020-07-27 08:20:53.309000+00:00
+邮件内容:
+附件为分卷2
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-27 08:57:43.994000+00:00
+邮件内容:
+陈女士 您好，
+iFile安装包已经收到，感谢您的及时回复。我会在本地实验环境尝试复现修复此问题。期间我会及时同您更新最新进展。
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-28 17:46:04.130000+00:00
+邮件内容:
+陈女士 您好，
+为了复现此问题，我们搭建了三组测试环境。
+测试结果：
+A） 神州网信政府版V2020-L，本地管理员账户Admin，本地普通用户User1（隶属Users组）
+1-    通过图形界面关闭用户账户控制通知。
+2-    以本地管理员账户Admin双击打开运行iFiles.exe，未有任何提示窗口。程序运行成功显示登陆界面。
+3-    以本地普通用户User1双击打开运行iFiles.exe，提示用户是否允许iFiles.exe对计算机更改并输入管理员账户密码。此提示根本原因是User1不具备计算机本地管理员权限，而iFiles.exe正常运行必需用户具有本地管理员权限。为验证此结论，我们搭建了微软Windows7测试环境进行验证。
+B） 微软通用Windows 10，本地管理员账户Admin，本地普通用户User1（隶属Users组）：测试结果与神州网信政府版V2020-L一致。
+C） 微软Windows 7，本地管理员账户Admin，本地普通用户User（隶属Users组）
+1.      通过图形界面关闭用户账户控制通知。
+2.      以本地管理员账户Admin双击打开运行iFiles.exe，未有任何提示窗口。程序运行成功显示登陆界面。
+3.      以本地普通用户User1双击打开运行iFiles.exe，提示用户是否允许iFiles.exe对计算机更改并输入管理员账户密码。
+4.      将iFiles.exe设置为以兼容模式运行：Windows XP SP3后，普通用户无需权限提升便可正常运行。
+目前进展：
+目前可以确认在微软Windows 10或神州网信政府版V2020-L系统中正确运行此系统需要用户具有管理员权限。而且UAC用户账户控制提示也已经成功关闭。
+用户遇到的UAC权限提升提升是在当前用户运行程序所需权限不足情况下系统的正常行为。
+关于具体解决方法目前还没有办法提供，因为在既不赋予用户管理员权限又要运行必需管理员权限才能运行的应用没有已知方法可以达成。
+下一步建议：
+如果能够联系到此系统的开发商售后服务确认软件运行必需条件将对问题解决很有帮助。因为即使在Windows 7 环境下此系统也需要以兼容方式才能在不赋予用户管理员权限的前提下正常运行。
+同时我会针对此问题进行分析。
+以下是微软Windows7测试环境以及结果截图供您参考：
+User用户所属安全组截图：
+用户账户控制设置截图：
+以普通用户User双击运行iFile.exe
+提供管理员账户密码后
+感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第8封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-04 11:20:18.316000+00:00
+邮件内容:
+陈女士 您好，
+经过本地测试环境验证现向您建议以下两种解决方案供您选择：
+a)     将附件压缩文件保存并解压缩至您具有管理员权限登陆账户的桌面（例如C:\Users\Administrator\Deskto\iFiles），然后打开文件夹后右键点击iFiles-Patch.bat批处理文件选择“以管理员身份运行”。
+注：此解决方案无需修改用户账户控制选项设置。
+b)    如果a方案无法正常工作请您以管理员权限登录， 打开注册表导航到“HKEY_LOCAL_MACHINE \ SOFTWARE \ Microsoft \ Windows \ CurrentVersion \ Policies \ System” 
+在右窗格中，将EnableLUA的DWORD值的值修改为0并重启。注：此方案将禁用系统范围的用户账户控制通知。
+请您尝试以上解决方案并将结果反馈给我们。感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第9封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-04 18:14:13.426000+00:00
+邮件内容:
+陈女士 您好，
+如之前电话中沟通，以下是两种解决方案的详细说明：
+方案A：解压缩并执行文件夹中的批处理文件。
+              此方案为针对iFile.exe使用微软兼容性管理工具创建的兼容性修复程序来实现普通用户在CMGE系统中正常运行电子文档临时管理系统的需求。
+批处理文件中的两行命令按照顺序依次为：
+1.     复制iFiles.sdb（修复程序数据库）至系统默认修复程序数据库存放目录
+2.     运行sdbinst.exe系统命令按照修复程序数据库。
+由于此方案为针对电子文档临时管理系统定制的兼容性修复程序，所以不需要关闭您当前系统的用户账户控制通知选项。
+因此推荐您使用此修复方案。
+方案B：修改系统注册表。此方案关闭所有用户的用户账户控制通知。虽然能够令普通用户执行电子文档临时管理系统，但是会增加系统的潜在安全风险。
+              所以仅建议在没有其它解决方案的前提下谨慎使用。
+方案A相关文档链接：
+https://docs.microsoft.com/zh-cn/windows/deployment/planning/compatibility-administrator-users-guide <https://docs.microsoft.com/zh-cn/windows/deployment/planning/compatibility-administrator-users-guide> 
+https://docs.microsoft.com/zh-cn/windows/deployment/planning/creating-a-custom-compatibility-fix-in-compatibility-administrator <https://docs.microsoft.com/zh-cn/windows/deployment/planning/creating-a-custom-compatibility-fix-in-compatibility-administrator> 
+方案B相关文档链接:
+https://docs.microsoft.com/zh-cn/openspecs/windows_protocols/ms-gpsb/958053ae-5397-4f96-977f-b7700ee461ec <https://docs.microsoft.com/zh-cn/openspecs/windows_protocols/ms-gpsb/958053ae-5397-4f96-977f-b7700ee461ec> 
+同时请您确认此案例是否可以关闭归档，感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第10封邮件====
+
+发件人：chenqiubo
+发送时间：2020-08-07 08:36:34.943000+00:00
+邮件内容:
+柏工 您好，
+方案A经测试可行，确认此案例可以关闭归档，非常感谢您及神州网信提供技术支持。
+陈秋博
+
+====第11封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-08-07 09:31:18.009000+00:00
+邮件内容:
+陈女士 您好，
+感谢您的回复确认，此案例已经关闭并归档。稍后您会收到由系统自动发送的满意度调查问卷，烦请您抽时间对我们的服务做出评价。
+再次感谢您对我们服务的支持。
+顺祝商祺，
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第12封邮件====
+
+发件人：Shi Guannan
+发送时间：2021-11-23 09:42:37.715000+00:00
+邮件内容:

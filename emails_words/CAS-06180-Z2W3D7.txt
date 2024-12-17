@@ -1,0 +1,153 @@
+邮件主题：回复:【外来邮件，注意核实】回复: [案例号: CAS-06180-Z2W3D7 ] % |工行升级|工行福建分行升级报错 % 初次响应 CMIT:0001454
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-06 11:14:35.282000+00:00
+邮件内容:
+陈先生，您好
+很高兴与您电话沟通，您可以参考本邮件收集日志并反馈。
+问题定义: 
+福建分行有2台终端经F2恢复出厂后升级仍然报错，尝试过断开其他外设仍然不行，还请协助。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+日志收集：
+一、工具收集
+*  在出现问题的计算机上，下载附件zip文件并解压到本地磁盘。之后双击运行exe文件，同意后，按照下图勾选系统日志，组策略信息、网络信息、软件信息，系统进程、更新日志，升级日志点击收集。 
+*  收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并定为压缩文件。 
+*  将压缩文件上传。
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：GSYHFJFH
+密码：GSYHFJFH
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-06 13:09:42.075000+00:00
+邮件内容:
+陈先生，您好
+您上传的日志文件解压时报错，请确认是否可以正常解压，如果可以可再次上传，或再次收集。
+--------------
+
+====第3封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-07 16:04:56.338000+00:00
+邮件内容:
+陈先生，您好
+1.     已经将“日志”发省行
+好的，那我继续等待ICBC内部流程，如果收到日志会马上进行分析。
+2.     能在下载中心下载工行用的镜像包吗？或者給个下载链接！
+下载中心中没有ICBC专用的镜像，ICBC专用镜像包括工行定制项。如需要您可以与内部IT部门沟通获取。
+--------------
+
+====第4封邮件====
+
+发件人：Windows Server技术支持
+发送时间：2022-05-10 10:37:04.843000+00:00
+邮件内容:
+日志以上传，请尽快分析。
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+中国工商银行软件开发中心（珠海）
+许  翔
+系统一部
+电话：17606669571
+☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ 
+	-----原始邮件-----
+	
+====第5封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-10 11:24:13.209000+00:00
+邮件内容:
+许先生，您好
+正在下载、分析日志。如果有进展会第一时间与客户沟通。
+再次感谢。
+--------------
+
+====第6封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-10 15:21:09.682000+00:00
+邮件内容:
+陈先生、许先生，您好
+阶段性结论：
+经过对于两次升级失败日志的查看，目前发现系统在Upgrade过程中发生了回滚，怀疑造成此问题的原因可能与lwfmgr.sys、vwifimf.sys有关。
+建议操作：
+现阶段临时解决方案：禁用TMS的lwfmgr服务。
+1.	同时按下Windows+R键，输入regedit，点击确定；
+2.	在注册表编辑器中，定位置HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\lwfmgr；
+3.	在右侧界面，将start键的值改为4，确定；
+4.	关闭注册表编辑器，升级。
+5.	升级之后确认此服务启动类型已经自动改为1（TMS初始配置）。
+6.	*如果升级过程仍有回退，可在注册表同一目录下，先重复步骤1-5，再找到vwifimf。将start键的值改为4，确定-升级；
+日志分析：
+1） 从Dump日志来看，问题的根本原因OS启动加载driver的过程中，lwfmgr.sys这个driver调用ndis!NdisFDeregisterFilterDriver去访问了一个无效的地址导致的。
+# Child-SP          RetAddr               Call Site
+00 ffffec01`df2062d8 fffff804`0c9d08c2     nt!KeBugCheckEx
+01 ffffec01`df2062e0 fffff804`0c991bcf     nt!PspSystemThreadStartup$filt$0+0x44
+02 ffffec01`df206320 fffff804`0c9c0baf     nt!_C_specific_handler+0x9f
+03 ffffec01`df206390 fffff804`0c83df60     nt!RtlpExecuteHandlerForException+0xf
+04 ffffec01`df2063c0 fffff804`0c914154     nt!RtlDispatchException+0x430
+05 ffffec01`df206b10 fffff804`0c9c99c2     nt!KiDispatchException+0x144
+06 ffffec01`df2071c0 fffff804`0c9c5cae     nt!KiExceptionDispatch+0xc2
+07 ffffec01`df2073a0 fffff804`1c02a2b7     nt!KiPageFault+0x42e
+08 ffffec01`df207530 fffff804`1c7d5167     ndis!NdisFDeregisterFilterDriver+0x47
+09 ffffec01`df207570 fffff804`1c7db49a     lwfmgr+0x5167
+0a ffffec01`df2075a0 fffff804`0cebb709     lwfmgr+0xb49a
+0b ffffec01`df207830 fffff804`0d1ca7c8     nt!IopLoadDriver+0x4bd
+0c ffffec01`df207a10 fffff804`0d1a9132     nt!IopInitializeSystemDrivers+0x134
+0d ffffec01`df207ab0 fffff804`0cf19742     nt!IoInitSystem+0x12
+0e ffffec01`df207ae0 fffff804`0c92d195     nt!Phase1Initialization+0x42
+0f ffffec01`df207b10 fffff804`0c9bf51c     nt!PspSystemThreadStartup+0x55
+10 ffffec01`df207b60 00000000`00000000     nt!KiStartSystemThread+0x1c
+通过一些公开的资料：
+NdisFDeregisterFilterDriver:
+NdisFDeregisterFilterDriver function (ndis.h) - Windows drivers | Microsoft Docs <https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ndis/nf-ndis-ndisfderegisterfilterdriver> 
+A filter drivers calls the NdisFDeregisterFilterDriver function to release resources that it previously allocated with the NdisFRegisterFilterDriver function.
+这个function其实是去释放filter driver之前调用NdisFRegisterFilterDriver分配的资源。
+NdisFRegisterFilterDriver:
+NdisFRegisterFilterDriver function (ndis.h) - Windows drivers | Microsoft Docs
+A filter driver calls the NdisFRegisterFilterDriver function to register its FilterXxx functions with NDIS.
+NDIS_STATUS NdisFRegisterFilterDriver(
+  PDRIVER_OBJECT                      DriverObject,
+  NDIS_HANDLE                         FilterDriverContext,
+  PNDIS_FILTER_DRIVER_CHARACTERISTICS FilterDriverCharacteristics,
+  PNDIS_HANDLE                        NdisFilterDriverHandle
+);
+2） 此外，从setupapi.dev.log日志，可以看到在驱动迁移过程中，lwfmgr、vwifimf均失败
+          ……
+     inf: DelService=lwfmgr,0x200  (lwfmgr.inf line 82)
+     dvi: Deleted service 'lwfmgr'.
+     inf: {Install from INF Section - Install.Remove} 16:18:32.167
+     inf:      Flags         - 0x00000040
+     inf: {Install from INF Section - exit(0x00000000)} 16:18:32.167
+<<<  Section end 2022/05/05 16:18:32.182
+<<<  [Exit status: FAILURE(0x80071a2d)]
+          ……
+     inf: DelService=vwifimf,0x200  (vwifimf.inf line 83)
+     dvi: Deleted service 'vwifimf'.
+     inf: {Install from INF Section - Install.Remove} 16:18:39.212
+     inf:      Flags         - 0x00000040
+     inf: {Install from INF Section - exit(0x00000000)} 16:18:39.212
+<<<  Section end 2022/05/05 16:18:39.212
+<<<  [Exit status: FAILURE(0x80071a2d)]
+--------------
+
+====第7封邮件====
+
+发件人：Jia Wei
+发送时间：2022-05-11 09:24:26.408000+00:00
+邮件内容:
+陈先生 您好!
+很高兴与您电话沟通，根据沟通的结果，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+案例描述：
+工行福建分行有一台终端经F2恢复出厂后升级仍然报错，尝试过断开其他外设仍然不行，还请协助
+案例进展：
+经过对于两次升级失败日志的查看，目前发现系统在Upgrade过程中发生了回滚，怀疑造成此问题的原因可能与lwfmgr.sys、vwifimf.sys有关。使用建议操作禁用驱动后升级成功，归档案例。
+--------------

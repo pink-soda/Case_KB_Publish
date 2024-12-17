@@ -1,0 +1,62 @@
+邮件主题：回复: [External]  回复: [案例号:CAS-02545-H7T7Y8] %|普通事件| 联想|无法加域% 初次响应 CMIT:0001177
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-03 09:18:43.003000+00:00
+邮件内容:
+藕宏发 先生/小姐 您好, 
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 客户计算机无法加入Windows AD域。
+问题范围: 解决客户计算机无法加入Windows AD域的问题
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+从您提供的报错截图分析，用户遇到加入域失败问题时，Netlogon服务为禁用状态。而在设置Netlogon服务为启用，启动类型为自动并启动服务时遇到报错。
+请您将Netlogon服务设置为启动，并将启动类型设置为手动后不要启动服务直接尝试加入域。如果问题仍然存在，请您提供出错截图。
+非常感谢您对我们服务的支持。
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第2封邮件====
+
+发件人：Hongfa HF2 Ou
+发送时间：2020-07-03 16:22:08.842000+00:00
+邮件内容:
+Hi，
+方案已收到，已经提供给终端用户，待用户反馈最终结果。
+感谢支持。
+OuHongfa (藕宏发)
+18910864457
+CSD L2 Technical Support
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-03 16:25:07.718000+00:00
+邮件内容:
+藕先生 您好，
+感谢您的再次确认。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 
+
+====第4封邮件====
+
+发件人：Hongfa HF2 Ou
+发送时间：2020-07-06 09:49:18.891000+00:00
+邮件内容:
+方案有效，感谢支持。
+谢谢。
+OuHongfa (藕宏发)
+18910864457
+CSD L2 Technical Support
+
+====第5封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-07-06 10:25:46.980000+00:00
+邮件内容:
+藕先生 您好,
+非常感谢您的及时反馈信息。此案例将关闭归档。
+再次感谢您对我们服务的支持。
+电子邮箱： baicx@cmgos.com
+官方网站： www.cmgos.com <http://www.cmgos.com> 

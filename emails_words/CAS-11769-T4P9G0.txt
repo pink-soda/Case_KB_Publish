@@ -1,0 +1,53 @@
+邮件主题：回复: [案例号: CAS-11769-T4P9G0 ] % |P2|ICBC|工行用户反馈V2020-L系统安装5月补丁失败  - 陆民超% 初次响应 CMIT:0001600
+
+====第1封邮件====
+
+发件人：Jia Wei
+发送时间：2024-07-18 09:21:45.498000+00:00
+邮件内容:
+许先生，您好
+陆民超5月补丁安装失败问题。
+主机名: QDFHKJLUMC1
+USERNAME=qdfh-lumc
+问题定义: 
+工行用户反馈V2020-L系统安装5月补丁失败  - 陆民超
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。
+案例分析：
+报错1：用户系统是V2020-L，尝试安装V2022-L版本补丁失败
+2024-07-11 15:33:17, Error                 CBS    Package "Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.4412.1.15" requires Servicing Stack v10.0.19041.980 but current Servicing Stack is v10.0.17763.5920. [HRESULT = 0x800f0823 - CBS_E_NEW_SERVICING_STACK_REQUIRED]
+无法安装 Windows 更新 ，因为发生错误: 2149842967“”(命令行:“"C:\WINDOWS\system32\wusa.exe" "C:\Users\qdfh-lumc\Documents\新建文件夹\2024-05win10政府版\win10政府版\2024-05适用�-Windows 10 神州网信政府版V2022-L基于x64系统�-NET Framework 3.5 �-4.8累积更新 (KB5037592).msu" ”)
+报错2：系统组件损坏
+2024-07-12 13:41:44, Info                  CBS    =================================
+2024-07-12 13:41:44, Info                  CBS    Checking System Update Readiness.
+2024-07-12 13:41:44, Info                  CBS    
+2024-07-12 13:41:44, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-lsa-minwin_31bf3856ad364e35_10.0.17763.1_none_2e318b82ea77d31b\lsass.exe
+2024-07-12 13:41:44, Info                  CBS    Repair failed: Missing replacement payload.
+2024-07-12 13:41:44, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-lsa-minwin_31bf3856ad364e35_10.0.17763.1_none_2e318b82ea77d31b\ksecdd.sys
+2024-07-12 13:41:44, Info                  CBS    Repair failed: Missing replacement payload.
+2024-07-12 13:41:44, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-lsa-minwin_31bf3856ad364e35_10.0.17763.1490_none_8af6d7d8641e46c6\lsass.exe
+2024-07-12 13:41:44, Info                  CBS    Repair failed: Missing replacement payload.
+2024-07-12 13:41:44, Info                  CBS    (p)  CSI Payload Corrupt     (n)                 amd64_microsoft-windows-lsa-minwin_31bf3856ad364e35_10.0.17763.1490_none_8af6d7d8641e46c6\ksecdd.sys
+2024-07-12 13:41:44, Info                  CBS    Repair failed: Missing replacement payload.
+2024-07-12 13:41:44, Info                  CBS    (p)  CSI Payload Corrupt     (n)             wow64_curl_31bf3856ad364e35_10.0.17763.5933_none_d60f42842389af0b\r\curl.exe
+2024-07-12 13:41:44, Info                  CBS    Repair failed: Missing replacement payload.
+建议操作：
+下载附件的zip并解压，替换问题计算机的文件对应的文件
+https://cduc.cmgos.com/download.php?id=1495&token=lkvZoruzF4A8WB8DT5W4i41gUH2RPxhw
+--------------
+
+====第2封邮件====
+
+发件人：Jia Wei
+发送时间：2024-07-25 17:01:15.684000+00:00
+邮件内容:
+许先生，您好
+很高兴与您沟通，根据目前的案例情况，我将暂时归档此问题。案例归档后您会收到调查问卷的邮件，希望可以对我们的服务进行评价。
+案例总结：
+案例描述：
+工行用户反馈V2020-L系统安装5月补丁失败  - 陆民超
+案例进展：
+发现组件库损坏并提供可5个替换文件后，问题解决。归档案例
+--------------

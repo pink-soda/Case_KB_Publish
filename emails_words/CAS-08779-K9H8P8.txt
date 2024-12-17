@@ -1,0 +1,121 @@
+邮件主题：回复: [案例号: CAS-08779-K9H8P8 ] % 联想OEM用户-退役军人服务中心用户反馈高拍仪无法正常使用问题 % 初次响应 CMIT:0001895
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2023-04-23 15:26:35.170000+00:00
+邮件内容:
+岳先生，您好：
+       如刚才电话沟通，我谨以此封邮件阐述我们双方针对这个问题所涉及范围界定： 
+问题定义: 
+用户反馈在内网环境下的神州网信系统设备在使用高拍仪的扫描功能时无法识别证件，而其他在外网环境下的win10系统设备可以正常使用高拍仪的扫描功能。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作：
+       如案例描述，当前您遇到的问题请尝试在外网下是否可以复现或将win10系统放置于内网下是否依然可以正常扫描。您可以将对比测试的结果回复此邮件告知我，谢谢。
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2023-04-26 13:24:47.416000+00:00
+邮件内容:
+岳先生，您好：
+       由于电话未联系到您，请您方便时按如下步骤在正常机器和异常机器上分别收取日志并上传，供后续分析：
+1．下载Process Monitor，解压备用：
+Process Monitor - Windows Sysinternals | Microsoft Docs <https://docs.microsoft.com/en-us/sysinternals/downloads/procmon> 
+2. 以管理员运行cmd，cd到Process Monitor的解压路径，输入下述命令开启日志：
+procmon /backingfile C:\logfile.pml /nofilter /AcceptEula /Minimized /Quiet
+Wpr -start generalprofile -start CPU -filemode
+3. 复现问题，在刚刚的cmd窗口中输入以下命令停止收集：
+procmon /terminate
+WPR -stop C:\mslog.etl 
+tasklist /svc > C:\servicepid.txt
+msinfo32 /nfo C:\SYSSUM.NFO /categories +systemsummary
+4. 将正常机器和异常机器收集的日志并上传
+C:\mslog.etl
+C:\servicepid.txt
+C:\SYSSUM.NFO
+C:\logfile.pml
+日志上传方法： 
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。 
+用户名：tyjryue01
+密码：tyjryue01
+注意：添加文件，点击上传后，跳转到新的页面点击保存。 
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2023-04-28 11:13:16.419000+00:00
+邮件内容:
+岳先生，您好：
+       由于电话未联系到您，循例跟进下当前案例进展如何，如有任何疑问可随时与我联系，谢谢。
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-10 11:31:15.274000+00:00
+邮件内容:
+岳先生，您好：
+       由于电话未联系到您，和您汇报下当前案例进展。目前失败电脑上的日志查看正常，并未发现明显错误；但成功电脑上的日志收取有问题，无法打开，请您按照如下步骤重新收取一下，谢谢
+1.        以管理员运行cmd，执行如下命令：
+Wpr -start generalprofile -start CPU -filemode
+2.        复现问题，在刚刚的cmd窗口中输入以下命令停止收集：
+WPR -stop C:\mslog.etl 
+3.        将C:\mslog.etl压缩并上传至CDUC
+日志上传方法： 
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。 
+用户名：tyjryue01
+密码：tyjryue01
+注意：添加文件，点击上传后，跳转到新的页面点击保存。 
+
+====第5封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-15 14:24:11.344000+00:00
+邮件内容:
+岳先生，您好：
+       由于电话未联系到您，循例跟进下当前案例进展如何，如有任何疑问可随时与我联系，谢谢。
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-17 15:58:03.869000+00:00
+邮件内容:
+岳先生，您好：
+       由于刚才电话掉线，请您方便时按之前邮件内容操作，收集正常电脑的wpr日志，并上传给我，谢谢。
+
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2023-05-26 10:03:53.788000+00:00
+邮件内容:
+岳先生，您好：
+       如刚才电话沟通，针对之前收集的部分日志分析如下：
+从提取照片内容这个步骤之后，正常的机器还可以在create jpg文件之后继续进行，但是失败的日志就没有操作了。从这个角度来看，问题是发生在create jpg之后为何没有继续执行。
+查看wpr日志，由于涉及三方软件的symbol问题，我们无法理解bauchescan软件的运行逻辑，所以还是需要软件厂商对此进一步给出解释。
+从日志中，目前我发现两个差异点如下：
+1). 问题机器的bauchescan安装在C:\Program Files (x86)\Bauche Scan，正常的机器是安装在D:\Bauche Scan。
+16:31:28.9011441            BaucheScan.exe  4628      5948      CreateFile              C:\Program Files (x86)\Bauche Scan\vfwwdm32.dll              NAME NOT FOUND  Desired Access: Generic Read, Disposition: Open, Options: , Attributes: n/a, ShareMode: Read, AllocationSize: n/a DESKTOP-GEB372I\信
+16:32:14.4513615            BaucheScan.exe  4692      4584      CreateFile              D:\Bauche Scan\vfwwdm32.dll     NAME NOT FOUND          Desired Access: Generic Read, Disposition: Open, Options: , Attributes: n/a, ShareMode: Read, AllocationSize: n/a        DESKTOP-6O0SEC9\lenovo 
+2). 问题机器上bauchescan.exe运行的前后有奇安信软件的参与，正常的机器则没有奇安信软件的运行。
+16:31:30.2539955            TQClient.exe       2844      8440      CreateFile              C:\Program Files (x86)\Qianxin\Tianqing\entclient\data\netflow_quota.dat  PATH NOT FOUND              Desired Access: Read Attributes, Disposition: Open, Options: Open For Backup, Open Reparse Point, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a            NT AUTHORITY\SYSTEM
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2023-06-01 10:40:49.309000+00:00
+邮件内容:
+岳先生，您好：
+       如刚才电话沟通，经您的确认，此问题目前已解决，该case将做关闭处理，以下为案例总结，请您知悉：
+Case No：CAS-08779-K9H8P8
+问题描述：
+=================
+用户反馈高拍仪无法正常使用问题。
+问题分析：
+=================
+经正常日志和失败日志的对比分析，建议用户将软件安装至非系统盘，以避免软件运行中可能存在的权限问题，经测试可以正常使用。
+问题总结：
+=================
+以上，经用户同意，此case将做关闭处理，如有任何其他问题，可随时与我联系，谢谢。

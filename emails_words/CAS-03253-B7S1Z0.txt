@@ -1,0 +1,1234 @@
+邮件主题：回复: 【外来邮件，注意核实】回复: 回复: 回复: 回复: [案例号: CAS-03253-B7S1Z0 ] % |P2|ICBC|高新支行营业室新安装的生产终端在修改客户信息异常 %  CMIT:0001784
+
+====第1封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-03 18:01:05.769000+00:00
+邮件内容:
+李先生 您好：
+刚才电话没有联系到您，我谨在此阐述您所述问题涉及的范围定义：
+问题定义：使用生产终端应用操作“修改客户信息”选项，点击“确定”提交时，系统一直出现以下两种情况：一是画面持续跳动，无法处理，二是光标持续旋转，无法提交。
+问题范围：协助用户分析、处理此问题。
+如您对以上问题范围定义有任何疑问请直接与我联系。
+想要和您先了解以下信息：
+1、生产终端应用是web应用还是C/S应用？
+2、这个问题是在什么时候出现的？升级V2020-L之前是否有问题？还是说升级V2020-L之后就出现这个问题？
+3、其他的计算机访问此应用页面是否出现同样问题？未出现此问题的计算机操作系统是什么版本？
+服务电话：400-818-0055
+
+====第2封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-11-04 08:49:46.916000+00:00
+邮件内容:
+18653002553 李洪波 
+
+====第3封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-04 10:47:55.051000+00:00
+邮件内容:
+李先生 您好：
+根据刚才的电话沟通，接下来需要您收集生产终端应用的procmon日志，具体操作如下：
+1、访问链接https://download.sysinternals.com/files/ProcessMonitor.zip 下载procmon工具。
+2、下载后，解压processmonitor.zip ,双击“Procmon64.exe”，弹出提权窗口点击“是”运行ProcessMonitor工具。（首次运行会弹出License Agreement窗口，点击Agree）；
+3、进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击 停止捕获，再点击清除当前捕获的事件条目。至此准备工作完毕；
+4、点击开始捕获 
+5、使用生产终端应用，复现“修改客户信息”选项时出现的闪烁和无法提交现象，等待出现问题后，点击停止捕获；
+6、点击，选择“All Events”并在Path选择保存路径，点击OK；
+7、去到日志保存目录，将保存的Logfile.PML日志压缩后，通过CDUC上传给我们。
+文件上传方法：
+您可以登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息。如果出现类似错误提示，点击后退即可
+用户名：icbchz
+密码：icbchz
+注意：添加文件，点击上传后，跳转到新的页面点击保存。
+服务电话：400-818-0055
+
+====第4封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-10 11:06:38.318000+00:00
+邮件内容:
+李先生 您好：
+根据刚才的电话沟通，除了按照上一封邮件所说的收集procmon日志外，还可以通过任务管理器创建出错应用的转储文件信息，操作如下：
+1、打开任务管理器，当生产终端应用出错，问题复现时，选中应用程序的进程，右键选择创建转储文件，操作系统会生成一个应用dump，操作如下：
+2、打开操作系统的事件查看器，选择操作系统的应用程序日志、安全日志和系统日志，通过右键保存这些日志。
+把保存的procmon日志、操作系统日志和应用转储文件dump压缩后，通过CDUC上传给我们。
+服务电话：400-818-0055
+
+====第5封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-10 17:55:41.982000+00:00
+邮件内容:
+李先生 您好：
+分析您发送的procmon日志，可以看到Win_NCTB.exe应用在操作.ctb.lock时一直报sharing violation 错误，一直在循环处理此问题，如图所示：
+怀疑闪屏现象与这个问题有关。
+您可以使用process monitor再抓取一个能正常提交“修改客户信息”页面的procmon日志，提供给我们进行对比，确认问题所在。
+也可以把这个.ctb.lock报错问题，提交给Win_NCTB应用的开发人员，请他们协助分析.ctb.lock提示sharing violation是否会影响应用。
+服务电话：400-818-0055
+
+====第6封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-13 10:09:31.539000+00:00
+邮件内容:
+李先生 您好：
+使用cduc上传失败的日志，您可以通过sftp客户端把日志传给我们。
+数据上传： 
+您可以在Filezilla或者winscp等sftp客户端上使用以下账户信息登入神州网信网站。 
+l  Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client <https://filezilla-project.org/download.php?type=client>  
+l  登陆地址：sftp://ocean.cmgos.com 
+l  用户名为：ICBC（区分大小写） 
+l  密码：2qfs52ninbFB 
+l  端口：22222
+登陆之后，选择日志文件上传至/upload/heze_log文件夹
+服务电话：400-818-0055
+
+====第7封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-16 17:18:29.337000+00:00
+邮件内容:
+黄先生 您好：
+根据当前的电话沟通，麻烦您帮忙收集在V0-H下的生产终端正常运行时的procmon日志，在V2020-L下生产终端应用出错时生成procdump以及procmon日志，具体操作如下：
+在以下地址下载procmon工具和procdump工具.
+Procmon:    https://download.sysinternals.com/files/ProcessMonitor.zip
+Procdump:   https://download.sysinternals.com/files/Procdump.zip
+一、在V0-H系统上收集正常运行的procmon日志：
+1、解压processmonitor.zip ,双击“Procmon64.exe”，弹出提权窗口点击“是”运行ProcessMonitor工具。（首次运行会弹出License Agreement窗口，点击Agree）；
+2、进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击 停止捕获，再点击清除当前捕获的事件条目。至此准备工作完毕；
+3、点击开始捕获 
+4、使用生产终端应用，复现“修改客户信息”选项时能提交信息，操作完成后，点击停止捕获；
+5、点击，选择“All Events”并在Path选择保存路径，点击OK；
+6、去到日志保存目录，将保存的Logfile.PML日志压缩，标记为V0-H下的procmon日志。
+二、在V2020-L系统上，收集生产终端应用出现问题时的dump和procmon日志:
+1、解压Procdump.zip后，以管理员身份运行cmd命令行。 
+2、使用命令行cd /d <路径>将当前的路径跳转到procdump所在的路径。 
+3、运行命令：procdump.exe -e -t -h -ma Win_NCTB.exe C:\appdump（需要预先在C:\下面创建appdump文件夹）
+4、运行procmon64.exe工具，进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击 停止捕获，再点击清除当前捕获的事件条目。至此准备工作完毕；
+5、点击开始捕获 
+6、点击操作系统的开始菜单，选择“Windows附件”，选择 步骤记录器 运行，点击“开始记录”
+7、使用生产终端应用，复现“修改客户信息”选项时出现的闪烁和无法提交现象，等待出现问题后，点击停止捕获；
+8、点击，选择“All Events”并在Path选择保存路径，点击OK；
+9、去到日志保存目录，将保存的Logfile.PML日志压缩并注明为V2020-L下的日志。
+10、选择“步骤记录器”点击“停止记录”，zai 弹出的窗口中点击“保存”记录为Zip。
+11、去到 c:\appdump目录下查看是否生成dump文件，把这个dump文件压缩。
+将所有收集到的procmon日志，dump文件、步骤记录zip文件通过sftp方式上传。
+数据上传： 
+您可以在Filezilla或者winscp等sftp客户端上使用以下账户信息登入神州网信网站。 
+l  Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client <https://filezilla-project.org/download.php?type=client>  
+l  登陆地址：sftp://ocean.cmgos.com 
+l  用户名为：ICBC（区分大小写） 
+l  密码：2qfs52ninbFB 
+l  端口：22222
+登陆之后，选择日志文件上传至/upload/heze_log文件夹
+服务电话：400-818-0055
+
+====第8封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-17 14:51:48.199000+00:00
+邮件内容:
+黄先生 您好：
+根据刚才的电话沟通，确认出现闪烁窗口的进程为javaw.exe。这需要麻烦您再通过procdump收集javaw.exe在出现窗口闪烁时的dump。
+利用管理员权限打开cmd命令行，切换到procdump所在文件夹，运行以下命令收集javaw.exe 的dump日志
+procdump.exe -e -t -h -ma javaw.exe C:\appdump（需要预先在C:\下面创建appdump文件夹）
+如果没有正常生成dump文件，您可以在出现闪烁情况后，打开任务管理器，选中javaw.exe进程，右键选择创建转储文件。
+服务电话：400-818-0055
+
+====第9封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-19 11:01:06.047000+00:00
+邮件内容:
+黄先生 您好：
+根据您收集的procmon日志，可以发现Javaw运行一直有以下日志”D:\CTB\novanctb-2011\ctielog\logFile.log”,  “D:\CTB\novanctb-2011\ctielog\tradelog\trade.log”, “D:\CTB\novanctb-2011\ctt\log\测试工具运行日志@2020-11-17.log”, “D:\CTB\novanctb-2011\xwj\log\seal.log”, “C:\Program Files\ICBC\EapClient\log\EapBrowser.log”。需要您确认这些日志文件对这个问题分析是否有帮助。
+分析收集的javaw dump日志，可以看到主要与jvm组件有关：
+387ffab8 77c7eb1d     ffffffff 00000000 00000001 ntdll!NtTerminateProcess+0xc
+387ffb94 696ebbb2     00000000 00000000 00000001 ntdll!RtlExitUserProcess+0xbd
+387ffba8 696ea33d     387ffbc4 765f4f33 00000000 AcLayers!NS_FaultTolerantHeap::FthExitUserProcess+0x92
+387ffbb0 765f4f32     00000000 77e8f3b0 ffffffff AcLayers!NS_FaultTolerantHeap::APIHook_RtlExitUserProcess+0xd
+387ffbc4 7c348d03     00000000 7c3476c9 00000000 kernel32!ExitProcessImplementation+0x12
+387ffbcc 7c3476c8     00000000 0232fb40 0232fb40 msvcr71!__crtExitProcess+0x2e
+387ffbfc 7c348d11     00000000 00000000 00000000 msvcr71!doexit+0xab
+387ffc0c 6d9da88d     00000000 387ffc48 6d9fe4dd msvcr71!exit+0xd
+WARNING: Stack unwind information not available. Following frames may be wrong.
+387ffc18 6d9fe4dd     00000000 023be2b8 6d9fe523 jvm!JVM_Clone+0x3a16d
+387ffc48 6d9fd7ee     00000000 00000000 00000003 jvm!JVM_Clone+0x5ddbd
+387ffc8c 6d9fdb12     0232fb40 005eb910 023c1400 jvm!JVM_Clone+0x5d0ce
+387ffce4 6d9fdf22     7c3494f6 023c1400 ffffffff jvm!JVM_Clone+0x5d3f2
+387ffd0c 6da2217c     00000000 387ffd24 77c20000 jvm!JVM_Clone+0x5d802
+387fff3c 7c349565     023c1400 7c3494f6 7c3494f6 jvm!JVM_FindSignal+0x53cc
+387fff70 765f0419     023c20b8 765f0400 387fffdc msvcr71!_threadstartex+0x6f
+387fff80 77c866ed     023c20b8 984dc617 00000000 kernel32!BaseThreadInitThunk+0x19
+387fffdc 77c866bd     ffffffff 77ca53b1 00000000 ntdll!__RtlUserThreadStart+0x2f
+387fffec 00000000     7c3494f6 023c20b8 00000000 ntdll!_RtlUserThreadStart+0x1b
+0:000> lmvm jvm
+Browse full module list
+start    end        module name
+6d8e0000 6db90000   jvm        (export symbols)       jvm.dll
+    Loaded symbol image file: jvm.dll
+    Image path: D:\CTB\novanctb-2011\jre\bin\client\jvm.dll
+    Image name: jvm.dll
+    Browse all global symbols  functions  data
+    Timestamp:        Wed Mar 27 06:50:32 2013 (51522638)
+    CheckSum:         002A3394
+    ImageSize:        002B0000
+    File version:     20.45.0.1
+    Product version:  6.0.450.6
+    File flags:       0 (Mask 3F)
+    File OS:          4 Unknown Win32
+    File type:        2.0 Dll
+    File date:        00000000.00000000
+    Translations:     0000.04b0
+    Information from resource tables:
+        CompanyName:      Sun Microsystems, Inc.
+        ProductName:      Java(TM) Platform SE 6u45
+        InternalName:     jvm
+        OriginalFilename: jvm.dll
+        ProductVersion:   6.0.450.6
+        FileVersion:      20.45.0.01
+        FileDescription:  Java HotSpot(TM) Client VM
+        LegalCopyright:   Copyright 2013
+Java相关的问题，建议您可以使用java开发工具进入debug调试模式，查看出现闪屏问题时的调试输出情况。
+也可以使用java JDK自带的调试、监控工具 jps、jstack等，查看出现问题时，java调用的堆栈信息，用于分析java问题。
+服务电话：400-818-0055
+
+====第10封邮件====
+
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-11-20 16:51:08.789000+00:00
+邮件内容:
+这是广研使用debug输出日志 
+
+====第11封邮件====
+
+发件人：Wei Liang
+发送时间：2020-11-23 18:09:27.926000+00:00
+邮件内容:
+黄先生 您好：
+根据刚才的电话沟通，您可以进行以下操作，测试当前问题是否与安全软件或者IE有关。
+尝试测试操作：
+1、确认亚信安全、tsm、dsp等安全软件的版本一致情况下的应用运行情况，并尝试在关闭安全软件环境下生产终端应用的运行情况。
+2、查看V0-H和V2020-L下IE11的update version版本是否一致？能否测试升级V0-H的IE11，使两个操作系统下的IE update version版本一致，再测试在V0-H下，生产终端应用能否复现问题？
+3、是否有条件在通用Win10 1809下，测试生产终端应用能否复现问题？
+服务电话：400-818-0055
+
+====第12封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-03 17:14:17.744000+00:00
+邮件内容:
+黄先生 您好：
+附件中是一个简单的java remote debug演示说明和演示代码，您这边可以尝试在您的开发测试环境中测试remote debug调试的可行性。
+如果remote debug调试成功，您这边可以尝试对新生产终端应用进行remote debug调试。
+服务电话：400-818-0055
+
+====第13封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-07 18:21:35.346000+00:00
+邮件内容:
+黄先生 您好：
+根据刚才的电话沟通，需要麻烦您这边进行以下操作，收取相关的procmon日志。
+1）Win10 1809企业版上运行的procmon日志和步骤记录器记录。
+2）V2020-L系统上操作过程中，切换到其他窗口再切换回来时出现弹窗报错的过程的procmon日志和步骤记录器记录。
+3）尝试是否可以通过java debug在java代码中设置断点，定位到调用的js方法，缩小代码范围？
+4）您这边是否可以在V2020-L上使用浏览器测试运行您这边怀疑的js代码，验证其运行情况？
+Procmon日志和步骤记录器操作方法：
+在以下地址下载procmon工具.
+Procmon:    https://download.sysinternals.com/files/ProcessMonitor.zip
+运行procmon.exe工具，进入后出现ProcMon窗口，此时已经处于事件捕获状态，点击 停止捕获，再点击清除当前捕获的事件条目。至此准备工作完毕；
+1、点击开始捕获 
+2、点击操作系统的开始菜单，选择“Windows附件”，选择 步骤记录器 运行，点击“开始记录”
+3、使用生产终端应用，复现“修改客户信息”选项的问题现象，等待出现问题后，点击停止捕获；
+4、点击，选择“All Events”并在Path选择保存路径，点击OK；
+5、去到日志保存目录，将保存的Logfile.PML日志压缩并注明日志的系统名称。
+6、选择“步骤记录器”点击“停止记录”，在弹出的窗口中点击“保存”记录为Zip。
+服务电话：400-818-0055
+
+====第14封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-08 18:46:10.367000+00:00
+邮件内容:
+黄先生 您好：
+根据刚才的电话沟通，当前情况总结如下：
+1、Win7系统上出现相同的提示窗，但不会出现页面卡住情况；
+2、当前的V0-H测试客户端需要重新配置，暂时无法进行测试；
+3、Win10 1809企业版与V2020-L系统上出现页面卡住情况，需要进行窗口切换后才能看到提示窗。
+基于当前情况，建议您这边排查 生产终端应用 连接的服务端环境，确保测试环境下的生产终端应用客户端能复现生产环境下的问题。
+1、Procmon日志中有连接 122.18.93.84:1521和122.16.125.101:10001，您可以查看与之相关的服务器上的配置有变化或者服务器是否有调用第三方的服务发生变化。
+2、是否可以分析在出现窗口闪屏时的页面给 生产终端应用服务端发送或者获取的数据与正常页面运行时的不同？
+服务电话：400-818-0055
+
+====第15封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-10 17:38:36.959000+00:00
+邮件内容:
+黄先生 您好：
+根据刚才的电话沟通，当前情况总结如下：
+确认上次测试出现卡屏、弹出报错窗口的原因：准备的测试数据不同，导致的报错。
+使用新的测试数据进行测试，结果如下：
+1、Win7、V0-H系统上，生产终端应用运行正常。
+2、Win10 1809专业版、企业版和V2020-L系统上，均出现闪屏问题。
+基于专业版和企业版都复现问题，可以说明不是V0-H升级导致的，这是原生Windows的版本升级造成的。
+关于应用debug层面的问题排查，还需要您这边的研发人员进行分析。
+关于eclipse中js代码调试，您可以参考以下链接说明：
+http://wiki.eclipse.org/JSDT/Debug/Rhino/Embedding_Rhino_Debugger
+http://wiki.eclipse.org/JSDT/Debug/Rhino/Local_Rhino_Debugging
+服务电话：400-818-0055
+
+====第16封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-11 18:27:01.547000+00:00
+邮件内容:
+吴先生 您好：
+感谢吴工与广研人员的大力配合和协助！
+现已得到广研开发人员的测试结果。针对此Case做了阶段性总结如下：
+一、问题描述：
+山东分行高新支行柜员在升级到Windows 10（V2020-L.1207.000版本），在生产终端应用软件上进行新交易（活期开户-10101或定期开户-10102）期间调起4235交易修改客户信息，触发联网核查（7646）并进行人脸对比时，点击“确认”后，出现闪屏（7646人脸识别页面与4235客户信息填写页面交替出现）现象（在Win7和Win10【V0-H.1020.000版本】正常）。
+二、测试场景设计与测试结论：
+V2020-L是基于Windows 10 1809企业版定制的，为了判断是否由CMIT定制项导致的闪屏问题，本周对相关Windows各版本进行了对比测试，结果如下。
+系统
+现象
+备注
+Windows 7
+无闪屏现象
+Windows 7和V0-H现象一致
+V0-H
+Windows 10 1809 Ent
+复现闪屏
+Windows 10 1809和V2020-L问题现象一致
+Windows 10 1809 Pro
+V2020-L
+基于以上测试结果与了解到的应用程序的开发运行环境，有如下结论：
+*   由上述表格中的测试结果可以判定闪屏问题与CMGE定制（由Windows 10 1809企业版定制为V2020-L）无关。
+*   通过查询相关资料，该应用程序使用的Java运行环境（JRE）版本为1.6.0.45，为2013年发布的版本，Oracle已经在2018年以后停止对其进行官方支持。Oracle官网 <https://www.java.com/en/download/help/win10_faq.html> 显示Windows 10支持的JRE版本是1.8.0.51以上。应用程序使用的JRE 1.6.0.45与V2020-L（Windows 10 1809）未进行过认证。
+三、为了解决应用程序闪屏的问题，CMIT有如下建议：      
+*        Java程序的跨平台运行是通过JRE提供的虚拟机实现的，程序本身并不与操作系统做直接交互。当Windows升级导致操作系统API接口发生变化时，应用程序开发商（JRE）必须发布新的版本来适配操作系统的接口变化（针对此案例，支持Windows 10版本为1.8.0.51以上），所以建议先将JRE版本升级后，观察问题是否可以得到解决。
+*        如果因为客观原因导致JRE版本无法进行升级，建议应用开发人员进行代码层面的debug，操作系统本身并不会为应用程序做反向适配，所以，如果选择不升级JRE版本，从操作系统层面能提供的技术支持有限。
+Java应用程序在操作系统的运行流程如下图所示：
+服务电话：400-818-0055
+
+====第17封邮件====
+
+发件人：Wei Liang
+发送时间：2020-12-14 16:24:04.488000+00:00
+邮件内容:
+吴先生 您好：
+很高兴和您沟通，根据沟通的结果，我将暂时归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如果您的问题复现，或有新的问题出现，您也可以致电我们的技术支持热线4008180055。
+案例总结：
+----
+案例描述：
+山东分行高新支行柜员机升级到Windows 10（V2020-L.1207.000版本），在生产终端应用软件上进行新交易（活期开户-10101或定期开户-10102）期间调起4235交易修改客户信息，触发联网核查（7646）并进行人脸对比时，点击“确认”后，出现闪屏（7646人脸识别页面与4235客户信息填写页面交替出现）现象（在Win7和Win10【V0-H.1020.000版本】正常）。
+案例进展：
+经用户确认，同意暂时归档此案例。
+处理建议：
+1、在Win10 1809专业版、企业版和V2020-L系统上，测试生产终端应用，均复现闪屏现象，基于此测试结果，可以判定闪屏问题与CMGE定制（由Windows 10 1809企业版定制为V2020-L）无关。
+2、出现闪屏问题涉及的页面是基于Java运行环境（JRE）呈现的。由此给出以下建议：
+1)      Java程序的跨平台运行是通过JRE提供的虚拟机实现的，程序本身并不与操作系统做直接交互。当Windows升级导致操作系统API接口发生变化时，应用程序开发商（JRE）必须发布新的版本来适配操作系统的接口变化（针对此案例，支持Windows 10版本为1.8.0.51以上），所以建议先将JRE版本升级后，观察问题是否可以得到解决。
+2)      如果因为客观原因导致JRE版本无法进行升级，建议应用开发人员进行代码层面的debug，操作系统本身并不会为应用程序做反向适配，所以，如果选择不升级JRE版本，从操作系统层面能提供的技术支持有限。
+服务电话：400-818-0055
+
+====第18封邮件====
+
+发件人：win10升级支持
+发送时间：2021-01-13 17:12:04.843000+00:00
+邮件内容:
+这是新终端最新的日志信息 
+
+====第19封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-13 17:47:49.780000+00:00
+邮件内容:
+吴先生 您好：
+今天与广研电话会议，了解到的新终端应用窗口切换问题相关信息如下：
+1.       应用程序利用Java Swing实现用户界面；
+2.       应用程序利用JavaScript实现业务逻辑；
+3.       与问题相关的窗口为“修改客户信息、联网核查、人脸识别“；
+4.       广研使用设置断点方式调试代码，问题不固定复现；
+下一步计划：
+1.       广研：在涉及的三个窗口的代码中（窗口关闭、隐藏、显示等操作的前后代码段）加入日志输出，判断代码对窗口的操作情况；ETA：1/15
+2.       广研：在日志输出的代码中，加入检测当前哪个窗体处于前台（获得焦点）的代码，以便确认当前应用是在对哪个窗口进行操作；ETA：1/15
+3.       广研：在关闭“人脸识别窗口”的代码中，加入设置“修改客户信息窗口”为不可见的代码，测试是否还会出现窗口切换问题；ETA：1/15
+4.       广研：将之前排查过程中输出的日志提供给CMIT（已提供）；
+5.       CMIT：分析广研提供的日志并提供排查思路；ETA：1/14
+另外，今天电话中未提及，但以下信息对于我们非常重要，希望广研可以提供：
+*   需要广研提供三个窗口之间逻辑关系和所涉及的API，以协助CMIT解读日志。ETA：1/14
+如今日约定，明天下午我们再开会讨论一下各自的进展。
+服务电话：400-818-0055
+
+====第20封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-14 18:14:43.650000+00:00
+邮件内容:
+吴先生 您好：
+今日案例处理进程如下：
+与广研电话会议沟通，会议纪要如下：
+1.       当前测试环境的应用为使用JDK1.6编译，在JRE1.6上运行，未在JRE1.8上运行测试。
+2.       广研在得出升级JRE1.8还复现问题的结论时，使用的应用程序为用JDK1.6编译的，测试的运行环境JRE为1.8版本，此时不等同于完整升级到 Java 1.8 运行环境。
+3.       广研无法在JDK1.8下重新编译后再测试。
+4.       广研制作了简易模拟窗口问题应用，经广研测试未复现问题。
+为了更进一步排查问题，下一步计划（今日新增）：
+1.       广研提供简易模拟窗口问题应用的执行日志。
+2.       广研提供[3004 Process Event][UI][/][event=btnPrint][*****point3]的问题触发点。
+3.       日志分析，发现以下报错，已通过电话沟通反馈给广研，需要广研进行排查、修复：
+[LogicRealm_face_20][7054 Get I18n file failure]
+[LogicRealm_face_20][7057 Rc error]
+任务进度更新：
+Action
+Owner
+ETA
+Status: 1/13
+Status: 1/14
+在涉及的三个窗口的代码中（窗口关闭、隐藏、显示等操作的前后代码段）加入日志输出，判断代码对窗口的操作情况
+广研
+1/15
+进行中
+进行中
+在日志输出的代码中，加入检测当前哪个窗体处于前台（获得焦点）的代码，以便确认当前应用是在对哪个窗口进行操作
+广研
+1/15
+进行中
+进行中
+在关闭“人脸识别窗口”的代码中，加入设置“修改客户信息窗口”为不可见的代码，测试是否还会出现窗口切换问题
+广研
+1/15
+进行中
+进行中
+将之前排查过程中输出的日志提供给CMIT
+广研
+1/15
+完成
+完成
+分析广研提供的日志并提供排查思路
+CMIT
+1/14
+	进行中
+根据目前的问题提供一个DEMO code，模拟问题场景。
+广研
+1/18
+	无法提供
+广研提供简易模拟窗口问题应用的执行日志。
+广研
+1/15
+进行中
+广研提供[3004 Process Event][UI][/][event=btnPrint][*****point3]的问题触发点。
+广研
+1/15
+进行中
+排查修复日志中的错误信息
+广研
+1/18
+进行中
+
+====第21封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-15 18:11:15.289000+00:00
+邮件内容:
+吴先生 您好：
+今日案例处理进程如下：
+与广研电话沟通，当前的任务进展如下：
+1.       广研对三个窗口的代码中（窗口关闭、隐藏、显示等操作的前后代码段）加入调试日志代码，并初步梳理了三个窗口之间逻辑处理关系，已提供最新的调试输出日志。
+2.       广研的简易模拟窗口问题应用未复现问题，此次提供了简易demo的调试日志。
+3.       广研给出了完整的 [3004 Process Event][UI][/][event=btnPrint][*****point3]问题触发点的调试日志输出。
+4.       发现的以下报错日志，广研认为无影响，不做进一步处理。
+[LogicRealm_face_20][7054 Get I18n file failure]
+[LogicRealm_face_20][7057 Rc error]
+为了更进一步排查问题，下一步计划：
+CMIT进一步分析广研最新提供的调试日志。
+任务进度更新：
+Action
+Owner
+ETA
+Status: 
+1/13
+Status: 1/14
+Status: 
+1/15
+在涉及的三个窗口的代码中（窗口关闭、隐藏、显示等操作的前后代码段）加入日志输出，判断代码对窗口的操作情况
+广研
+1/15
+进行中
+进行中
+进行中
+在日志输出的代码中，加入检测当前哪个窗体处于前台（获得焦点）的代码，以便确认当前应用是在对哪个窗口进行操作
+广研
+1/15
+进行中
+进行中
+不做测试
+不确定调试代码加到哪里合适
+在关闭“人脸识别窗口”的代码中，加入设置“修改客户信息窗口”为不可见的代码，测试是否还会出现窗口切换问题
+广研
+1/15
+进行中
+进行中
+不做测试
+不确定调试代码加到哪里合适
+加入了新的调试代码的输出日志提供给CMIT
+广研
+1/15
+已完成
+分析广研最新提供的日志并提供排查思路
+CMIT
+1/18
+		进行中
+根据目前的问题提供一个DEMO code，模拟问题场景。
+广研
+1/18
+	无法提供
+无法提供且未复现问题
+广研提供简易模拟窗口问题应用的调试日志。
+广研
+1/15
+进行中
+已完成
+[3004 Process Event][UI][/][event=btnPrint][*****point3]问题触发点的更详细的日志信息。
+广研
+1/15
+进行中
+已完成
+排查修复日志中的错误信息
+广研
+1/18
+进行中
+认为无影响
+不做处理
+服务电话：400-818-0055
+
+====第22封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-18 18:26:29.806000+00:00
+邮件内容:
+吴先生 您好：
+今日案例处理进程如下：
+1.       CMIT工程师肖波已经到达珠海，明天入场支持。
+2.       广研对三个窗口切换问题进行调试的最新日志，分析认为是“修改客户信息”下边的蒙版与“联网核查”上边的蒙版在来回切换出现问题，与问题视频的窗口切换问题现象不一致。
+3.       CMIT分析日志看到dialog0与dialog2在来回切换，结合广研最新的分析情况，需要再进一步分析日志。
+4.       CMIT提出的需要广研提供业务代码中调用的Windows API，供分析、对比不同版本操作系统API的执行结果对比，广研确认业务代码进行了封装，无法提供调用的Windows API列表。
+5.       广研人员已经到达珠海，确认明天：
+                   i.           可以现场查看代码；
+                  ii.           编译并调试；
+                 iii.           裁剪的demo不允许复制出来；
+                 iv.           用户代码无法拷贝。
+给到的广研建议：
+1.       建议取消创建蒙版的过程，不绘制蒙版，验证是否复现窗口切换问题。
+2.       建议在“人脸识别”页面的“确认”的事件中加入设置其他的窗口和蒙版为不可见的代码。
+3.       建议在添加调试代码时，加入一个标识，可以在调试日志中明确指出当前dialog的具体窗体。
+为了更进一步排查问题，下一步计划：
+CMIT工程师肖波在现场协助广研人员分析。
+CMIT为工程师肖波提供远程支持。
+服务电话：400-818-0055
+
+====第23封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-19 18:39:09.906000+00:00
+邮件内容:
+吴先生 您好：
+今日案例处理进程如下：
+1.       现场反馈的问题现象：出现窗口切换问题时，javaw进程cpu占用非常高，java窗口中所有焦点在不停切换并置顶，Windows其他所有窗口无法取得焦点，
+2.       使用windbg设置断点调试时，这时cpu占用降低，不会复现窗口切换问题。
+3.       查看javaw的callstack，主要集中在javaw自身发起的调用执行，并最终调用到操作系统相关底层API，认为与操作系统无关。
+4.       初步判断是javaw中的线程的问题，但是无法查看到出现问题时的javaw中具体的线程。
+5.       现场工程师认为与操作系统关系不大。
+6.       移除所有业务代码，未复现问题。通过逐步添加代码的方式，最终定位到“人脸识别的业务逻辑代码“会复现问题。
+7.       正在与广研合作分析人脸识别的业务逻辑代码。
+下一步计划：
+尝试换一种方式处理业务逻辑（人脸识别）。
+服务电话：400-818-0055
+
+====第24封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-20 19:16:00.325000+00:00
+邮件内容:
+吴先生 您好：
+今日案例处理进程如下：
+1.       现场工程师与广研合作分析人脸识别的业务逻辑代码，进行代码修改后测试，广研人员在近一百次测试中只复现了一次窗口切换的问题，后续测试未复现问题。
+2.       在JRE1.8+V2020-L测试环境下，终端应用会出现卡死的情况，与窗口切换问题的现象不同。
+3.       广研认为修改代码后，还是出现了窗口切换问题，尽管概率很低，在经过现场工程师沟通后，广研仍不接受修改代码的方式。
+4.       已经与您沟通，CMIT给工行提供Windows 10 1903企业版镜像，已经上传到sftp服务器/upload/win10 1903/目录。
+下一步计划：
+1.       工行：请寻求人脸识别模块的开发团队协助分析问题。
+2.       工行：请分析代码修改后，窗口切换问题复现的概率降低的原因。
+3.       工行：请协助在Windows 10 1903企业版上测试是否会复现问题。
+4.       CMIT：收取javaw的TTT（Time Travel Trace）日志和spy++日志，以供分析。
+5.       CMIT：收集JRE1.8 + V2020-L测试环境下的应用dump和TTT日志。
+6.       CMIT&工行：在JRE1.8 + V0-H测试环境下，验证终端应用的情况。
+服务电话：400-818-0055
+
+====第25封邮件====
+
+发件人：win10升级支持
+发送时间：2021-01-21 10:54:27.984000+00:00
+邮件内容:
+新的1809日志已经上传FTP\闪屏日志对比 
+
+====第26封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-21 19:28:21.320000+00:00
+邮件内容:
+吴先生 您好：
+今天的案例处理进程如下：
+1.       工行的java专家在JRE1.6 + V2020-L上测试，得出的结论：javaw进程里面的线程，在处理窗口相关的消息造成此问题，jvm的两个线程awt-queue和awt-window在一直运行。
+2.       测试在“修改客户信息”和“联网核查”页面上，再多加一个无业务逻辑的窗口就会复现问题，初步判断与人脸识别功能无关，可能与窗口的层数过多有关。
+3.       Windows 10 1903 上的测试结果与V2020-L上的测试结果一致。
+4.       当前收集了V2020-L上的TTT和dump日志，V0-H上的日志还未收集。
+下一步计划：
+1.       工行：测试通过如删除蒙版等方法减少窗口层数，能否规避这个问题。
+2.       工行：从现象看是两个页面在争抢焦点，测试将“修改用户信息”页面设置成不可见，能否规避该问题。
+3.       工行：考虑到这个问题在其他页面不出现，建议查看涉及的几个页面的业务层代码，尤其是“修改用户信息”页面，是否有特殊的代码（例如有特殊的事件监听代码之类的）。
+4.       CMIT：分析收集的TTT和dump日志。
+服务电话：400-818-0055
+
+====第27封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-22 18:29:31.214000+00:00
+邮件内容:
+吴先生 您好：
+今天的案例处理进程如下：
+现场工程师收集了应用在V0-H正常的日志，和V2020-L上出问题时的日志，日志通过您上传到ftp，已经收到。
+下一步计划：
+1.       工行：测试通过如删除蒙版等方法减少窗口层数，能否规避这个问题。
+2.       工行：从现象看是两个页面在争抢焦点，测试将“修改用户信息”页面设置成不可见，能否规避该问题。
+3.       工行：考虑到这个问题在其他页面不出现，建议查看涉及的几个页面的业务层代码，尤其是“修改用户信息”页面，是否有特殊的代码（例如有特殊的事件监听代码之类的）。
+4.       CMIT：分析收集的TTT和dump日志。
+服务电话：400-818-0055
+
+====第28封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-25 18:01:42.819000+00:00
+邮件内容:
+吴先生 您好：
+今日的案例处理进程如下：
+1.       与广研确认，“修改客户信息”与“联网核查”不是层级关系，是从同一个主窗口创建的。
+2.       与广研确认，“修改客户信息”、“联网核查”的创建、修改等方法经过封装，广研认为做一些修改测试如“设置修改客户信息”页面不可见等比较困难，无法实现。
+3.       初步查看V2020-L的日志中，显示环境变量多了一条，__COMPAT_LAYER=VistaSP2，广研测试取消后，还是复现问题。
+下一步计划：
+1.       需要工行提供一个剥离了业务逻辑的demo程序能够重现窗口切换现象以便诊断问题。
+2.       进一步分析收取的日志。
+服务电话：400-818-0055
+
+====第29封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-26 19:24:30.590000+00:00
+邮件内容:
+吴先生 您好：
+当前案例处理的进程如下：
+1.       经过广研测试，在创建窗口的代码方法中取消创建蒙版，问题不再复现。此更改对业务有影响，但是可以依此初步判断与操作系统无关。
+2.       结合debug输出日志和Jstack日志分析。与广研沟通可能导致问题的方法调用：toFront() – 设置窗口前台显示。
+3.       从日志输出中看到，广研使用了第三方公共代码sun.awt.windows.WWindowPeer，日志显示toFront()方法是Native Method，存在底层调用，怀疑与问题相关。
+4.       从可能出现问题的日志中，有广研自开发代码JWindowWithGlass.java与toFront()方法有关。
+下一步计划：
+1.       请广研提供第三方公共代码sun.awt.windows.WWindowPeer，以及版本信息和下载地址。
+2.       请广研提供自开发代码JWindowWithGlass.java中所有import内容名称，判断三方依赖性。
+服务电话：400-818-0055
+
+====第30封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-27 18:15:47.539000+00:00
+邮件内容:
+吴先生 您好：
+当前案例处理的进程如下：
+1.       广研已经提供包含sun.awt.windows.WWindowPeer的第三方公共包。
+2.       广研已提供自开发代码JWindowWithGlass.java中所有import内容名称。
+3.       广研询问从操作系统层面尝试对某些模块回退测试的可能性：操作系统作为一个整体无法单独回退其中某个模块。对于此类兼容性问题，建议还是由应用开发层面对操作系统进行适配。
+下一步计划：
+1.       与广研沟通应用窗口管理的相关代码调用。
+2.       进一步分析收取的日志。
+服务电话：400-818-0055
+
+====第31封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-28 18:10:41.918000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+1.       与广研沟通应用窗口管理的相关代码调用。
+2.       与广研的沟通中，了解到广研在调试过程中有新的debug输出日志和jstack日志，该日志对分析应用窗口管理逻辑有帮助。
+下一步计划：
+1.       广研提供当前测试、排查问题过程中的debug输出日志和jstack日志。
+2.       分析广研提供的debug输出日志和jstack日志。
+服务电话：400-818-0055
+
+====第32封邮件====
+
+发件人：win10升级支持
+发送时间：2021-01-29 10:15:49.580000+00:00
+邮件内容:
+
+====第33封邮件====
+
+发件人：Wei Liang
+发送时间：2021-01-29 18:15:02.523000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+1.       广研已提供当前测试、排查问题过程中的debug输出日志和jstack日志。
+2.       分析广研提供的debug输出日志，理解应用窗口管理逻辑。
+下一步计划：
+继续分析广研提供的debug输出日志。
+
+====第34封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-01 18:33:13.983000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+分析广研提供的TTT日志和debug输出日志，暂无新的进展。
+下一步计划：
+进一步分析广研提供的TTT日志和debug输出日志。
+
+====第35封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-02 17:58:18.720000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+分析广研提供的TTT日志和debug输出日志，暂无新的进展。
+下一步计划：
+进一步分析广研提供的TTT日志和debug输出日志。
+
+====第36封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-05 10:59:52.334000+00:00
+邮件内容:
+Hi Youlin：
+继续分析新终端应用窗口切换问题，需要再次收集一些日志，具体的收集工具、收集信息和详细操作如下：
+所需的收集工具可以通过以下链接下载：
+https://cduc.cmgos.com/download.php?id=214&token=lqdhasromWx4o7SdT4l23mizfObt9pcE
+其中包含sftp客户端filezilla、spy++ 和 Windbg Preview。
+1、窗口操作视频和debug输出日志。
+a)       从应用程序开始录制清晰的视频。
+b)      使用相同的问题复现步骤输出debug日志，使得录制的视频窗口操作和debug输出日志条目相关联。
+需要在V0-H和V2020-L上采用相同的问题复现步骤操作并录制视频。
+2、收集TTT日志和对应的spy++显示窗口信息，方便从TTT日志中与窗口信息相对应，也需要在V0-H和V2020-L上都抓取。
+TTT日志收集方法：
+a)       首先确认联网核查窗口和修改客户信息窗口是属于同一进程javaw.exe
+b)      在人脸识别窗口打开之前，请抓取“联网核查”和“修改客户信息”两个窗口的spy++信息截图，可以的话，一块试着抓取“修改客户信息”和“联网核查”的蒙版的spy++信息截图。
+c)       关闭spy++
+d)      用WinDbg Preview开始抓取javaw.exe的TTT日志。
+e)       Repro bug，这一步请尽量保持在一个比较短的时间内完成，否则trace会过大并且含过多干扰信息
+f)        停止抓取，share the trace 和步骤2里的窗口信息
+WinDbg preview抓取进程TTT日志：
+Windbg Preview在目标机器上以管理员方式运行DxgX.Shell.exe 
+附加到进程并记录 TTD 跟踪，请执行以下步骤。
+a)       在 WinDbg Preview 中，选择 "文件" " > 启动调试 > 附加到进程"。
+b)      选择要跟踪的用户模式进程。 
+c)       勾选“Record with Time Travel Debugging”，以便在启动可执行文件时创建跟踪。
+d)      选择 " Configure and Record " 设置跟踪日志存储位置后，开始录制。
+e)       此时将显示 "记录" 对话框，指示正在记录跟踪。
+Sftp用户名和密码：
+l  登陆地址：sftp://ocean.cmgos.com 
+l  用户名为：ICBC（区分大小写） 
+l  密码：2qfs52ninbFB 
+l  端口：22222
+登陆之后，您可以在sftp服务器创建一个新的文件夹上传日志。
+
+====第37封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-07 11:24:52.304000+00:00
+邮件内容:
+Hi Youlin：
+根据刚才的电话沟通，您会先提供不包含“联网核查”和“人脸识别”业务逻辑的应用窗口操作视频和debug输出日志。
+关于TTT日志，以及通过spy++获取窗口和蒙版的信息截图，您可以按照上一封邮件的操作步骤收取。
+在每次打开新窗口之前使用spy++抓取上一个窗口和蒙版的信息。
+通过spy++获取窗口信息的操作如下：
+a)       启动spy++，选择“search”-“find window”或者点击“搜索”图标。
+b)      在弹出的如下窗口中，勾选“Hide Spy++”，把查找图标拖动到对应的窗口上，在spy++的“find window”页会显示对应的窗口handle等信息。
+
+====第38封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-20 17:16:04.948000+00:00
+邮件内容:
+Hi Youlin & 吴先生：
+@'chenyl02@sdc.icbc.com.cn' <mailto:chenyl02@sdc.icbc.com.cn>  Youlin，请您按照以下步骤分别收取V0-H和V2020-L上的TTT日志、debug输出日志和具体操作录像。
+在未修改的应用版本上收集TTT日志。
+1)       开启debug日志输出，启动应用程序。
+2)       继续进行操作，直到预查询页面的前一个窗口。（再点一个键就打开预查询页面的时候）
+3)       使用spy ++捕获主窗口的信息截图，然后关闭spy ++。
+4)       开始收集javaw.exe的TTT日志。（根据上次的邮件收集TTT日志步骤操作）
+5)       单击按钮打开“预查询页面”，并一直进行到错误再次出现的位置。
+6)       停止收集TTT日志并保存debug输出日志。
+注意：
+1)       请录制以上整个过程的画面。
+2)       在V0-H和V2020-L上进行上述所有操作。
+@'win10升级支持' <mailto:win10sup@sdc.icbc.com.cn>  吴先生，我们在分析TTT日志过程中，发现了 一些错误信息指向Java模块，由于没有java private symbol，希望您这边可以找Oracle专家对广研提供的日志进行分析。
+注：
+TTT日志具体分析如下：
+非法访问错误
+此非法访问错误调用堆栈中不涉及操作系统组件。在没有JAVA private symbol的条件下仅能看到调用堆栈中涉及JVM模块，无法进一步分析。打印JVM模块详细信息显示此模块来源于JAVA厂商。
+以下为WINDBG输出：
+(1e8.928): Access violation - code c0000005 (first/second chance not available)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+Time Travel Position: 26FE8:0
+eax=00000ffc ebx=29293d20 ecx=00000b00 edx=007a0000 esi=29a15800 edi=3282ea88
+eip=6d8bb1fc esp=3282e400 ebp=3282e404 iopl=0         nv up ei pl nz na pe nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000206
+jvm+0xb1fc:
+6d8bb1fc c7041101000000  mov     dword ptr [ecx+edx],1 ds:002b:007a0b00=00000001
+0:013> k
+ # ChildEBP RetAddr      
+WARNING: Stack unwind information not available. Following frames may be wrong.
+00 3282e404 6d998b18     jvm+0xb1fc
+01 3282e424 025b04a0     jvm!AsyncGetCallTrace+0x3b648
+02 3282e460 025a2da1     0x25b04a0
+03 3282e494 025a2da1     0x25a2da1
+04 3282e4c8 025a2da1     0x25a2da1
+05 3282e508 025a2f07     0x25a2da1
+06 3282e53c 025a2f07     0x25a2f07
+07 3282e56c 025a2f07     0x25a2f07
+08 3282e598 025a2f07     0x25a2f07
+09 3282e5d8 025a33e3     0x25a2f07
+0a 3282e610 025a33e3     0x25a33e3
+0b 3282e64c 025a2f07     0x25a33e3
+0c 3282e67c 025a2f07     0x25a2f07
+0d 3282e6b4 025a2f07     0x25a2f07
+0e 3282e6e8 025a2f07     0x25a2f07
+0f 3282e818 029caf8c     0x25a2f07
+10 3282e878 029c6410     0x29caf8c
+11 3282e8fc 6d909a42     0x29c6410
+12 3282e900 00000000     jvm!JVM_EnqueueOperation+0x3dbe2
+0:013> lmvm jvm
+Browse full module list
+start    end        module name
+6d8b0000 6db3b000   jvm        (export symbols)       jvm.dll
+    Loaded symbol image file: jvm.dll
+    Image path: C:\CTIE\jdk1.6.0_16\jdk1.6.0_16\jre\bin\client\jvm.dll
+    Image name: jvm.dll
+    Browse all global symbols  functions  data
+    Timestamp:        Sat Aug  1 07:22:55 2009 (4A737CCF)
+    CheckSum:         00281E6A
+    ImageSize:        0028B000
+    File version:     14.2.0.1
+    Product version:  6.0.160.1
+    File flags:       0 (Mask 3F)
+    File OS:          4 Unknown Win32
+    File type:        2.0 Dll
+    File date:        00000000.00000000
+    Translations:     0000.04b0
+    Information from resource tables:
+        CompanyName:      Sun Microsystems, Inc.
+        ProductName:      Java(TM) Platform SE 6u16
+        InternalName:     jvm
+        OriginalFilename: jvm.dll
+        ProductVersion:   6.0.160.1
+        FileVersion:      14.2.0.01
+        FileDescription:  Java HotSpot(TM) Client VM
+        LegalCopyright:   Copyright 2009
+AWT组件断点：awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow
+设置awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow断点后逐步调试发现awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow有多处不可用内存调用。
+判断此处为Null Pointer Exception。在报错出打印调用堆栈发现没有操作系统相关组件调用，在没有JAVA private symbol的条件下仅能看到调用堆栈中涉及AWT模块，无法进一步分析。
+以下为WINDBG输出：
+0:024> g
+Breakpoint 2 hit
+Time Travel Position: 514D9:D2C
+eax=6d14fba0 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fba0 esp=2f63f3dc ebp=2f63f418 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow:
+6d14fba0 55              push    ebp
+0:025> kv
+ # ChildEBP RetAddr      Args to Child              
+WARNING: Stack unwind information not available. Following frames may be wrong.
+00 2f63f3d8 025a9e37     294e8910 2f63f42c 00000001 awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow
+01 2f63f418 025a2da1     00000000 025a8269 00000001 0x25a9e37
+02 2f63f450 025a2da1     1098f420 2f63f45c 25d81eb1 0x25a2da1
+03 2f63f47c 025a327d     1098f420 2f63f488 250614b4 0x25a2da1
+04 2f63f4a8 025a2da1     1098f420 1098f258 2f63f4b8 0x25a327d
+05 2f63f4d8 025a2da1     1098f258 2f63f4e4 26108eb4 0x25a2da1
+06 2f63f504 025a2da1     1098f258 2f63f510 26a94f6c 0x25a2da1
+07 2f63f530 025a327d     04d3e2d0 1099e970 2f63f540 0x25a2da1
+08 2f63f560 025a327d     04d3e2d0 10998cf0 2f63f570 0x25a327d
+09 2f63f590 025a2da1     10998cf0 04d3e2d0 1098f258 0x25a327d
+0a 2f63f5c4 025a2da1     04d3e2d0 1098f258 2f63f5d4 0x25a2da1
+0b 2f63f5f4 025a2da1     00000000 00000000 00000000 0x25a2da1
+0c 2f63f708 02bbea7c     00000000 00000000 00000000 0x25a2da1
+0d 2f63f738 02d426e4     00000001 070acdd0 2f63f768 0x2bbea7c
+0e 2f63f7a8 027b5014     294e8800 2a489b4c 2a489f24 0x2d426e4
+0f 2f63f868 02a4e948     294e8800 294e8800 2f63f898 0x27b5014
+10 00000000 00000000     00000000 00000000 00000000 0x2a4e948
+0:025> p
+Time Travel Position: 514D9:D2D
+eax=6d14fba0 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fba1 esp=2f63f3d8 ebp=2f63f418 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x1:
+6d14fba1 8bec            mov     ebp,esp
+0:025> 
+Time Travel Position: 514D9:D2E
+eax=6d14fba0 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fba3 esp=2f63f3d8 ebp=2f63f3d8 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x3:
+6d14fba3 6aff            push    0FFFFFFFFh
+0:025> 
+Time Travel Position: 514D9:D2F
+eax=6d14fba0 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fba5 esp=2f63f3d4 ebp=2f63f3d8 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x5:
+6d14fba5 68f0f5166d      push    offset awt!Java_sun_awt_DefaultMouseInfoPeer_fillPointWithCoords+0x3d80 (6d16f5f0)
+0:025> 
+Time Travel Position: 514D9:D30
+eax=6d14fba0 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fbaa esp=2f63f3d0 ebp=2f63f3d8 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0xa:
+6d14fbaa 64a100000000    mov     eax,dword ptr fs:[00000000h] fs:0053:00000000=????????
+0:025> 
+Time Travel Position: 514D9:D31
+eax=2f63fc94 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fbb0 esp=2f63f3d0 ebp=2f63f3d8 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x10:
+6d14fbb0 50              push    eax
+0:025> 
+Time Travel Position: 514D9:D32
+eax=2f63fc94 ebx=25d82218 ecx=294e8910 edx=25d88940 esi=25d82218 edi=294e8800
+eip=6d14fbb1 esp=2f63f3cc ebp=2f63f3d8 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x11:
+6d14fbb1 64892500000000  mov     dword ptr fs:[0],esp fs:0053:00000000=????????
+0:025> k
+ # ChildEBP RetAddr      
+WARNING: Stack unwind information not available. Following frames may be wrong.
+00 2f63f3d8 025a9e37     awt!Java_sun_awt_windows_WWindowPeer_setFocusableWindow+0x11
+01 2f63f418 025a2da1     0x25a9e37
+02 2f63f450 025a2da1     0x25a2da1
+03 2f63f47c 025a327d     0x25a2da1
+04 2f63f4a8 025a2da1     0x25a327d
+05 2f63f4d8 025a2da1     0x25a2da1
+06 2f63f504 025a2da1     0x25a2da1
+07 2f63f530 025a327d     0x25a2da1
+08 2f63f560 025a327d     0x25a327d
+09 2f63f590 025a2da1     0x25a327d
+0a 2f63f5c4 025a2da1     0x25a2da1
+0b 2f63f5f4 025a2da1     0x25a2da1
+0c 2f63f708 02bbea7c     0x25a2da1
+0d 2f63f738 02d426e4     0x2bbea7c
+0e 2f63f7a8 027b5014     0x2d426e4
+0f 2f63f868 02a4e948     0x27b5014
+10 00000000 00000000     0x2a4e948
+AWT组件断点：awt!Java_sun_awt_windows_WWindowPeer__1toFront
+设置awt!Java_sun_awt_windows_WWindowPeer__1toFront断点后逐步调试发现awt!Java_sun_awt_windows_WWindowPeer__1toFront有多处不可用内存调用。
+判断此处为Null Pointer Exception。在报错出打印调用堆栈发现没有操作系统相关组件调用，在没有JAVA private symbol的条件下仅能看到调用堆栈中涉及AWT模块，无法进一步分析。
+以下为WINDBG输出：
+0:025> g
+Breakpoint 0 hit
+Time Travel Position: 51B7A:E4
+eax=6d14f1c0 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1c0 esp=2f63f40c ebp=2f63f448 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront:
+6d14f1c0 55              push    ebp
+0:025> k
+ # ChildEBP RetAddr      
+WARNING: Stack unwind information not available. Following frames may be wrong.
+00 2f63f408 025a9e37     awt!Java_sun_awt_windows_WWindowPeer__1toFront
+01 2f63f448 025a2da1     0x25a9e37
+02 2f63f47c 025a327d     0x25a2da1
+03 2f63f4a8 025a2da1     0x25a327d
+04 2f63f4d8 025a2da1     0x25a2da1
+05 2f63f504 025a2da1     0x25a2da1
+06 2f63f530 025a327d     0x25a2da1
+07 2f63f560 025a327d     0x25a327d
+08 2f63f590 025a2da1     0x25a327d
+09 2f63f5c4 025a2da1     0x25a2da1
+0a 2f63f5f4 025a2da1     0x25a2da1
+0b 2f63f708 02bbea7c     0x25a2da1
+0c 2f63f738 02d426e4     0x2bbea7c
+0d 2f63f7a8 027b5014     0x2d426e4
+0e 2f63f868 02a4e948     0x27b5014
+0f 00000000 00000000     0x2a4e948
+0:025> p
+Time Travel Position: 51B7A:E5
+eax=6d14f1c0 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1c1 esp=2f63f408 ebp=2f63f448 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x1:
+6d14f1c1 8bec            mov     ebp,esp
+0:025> p
+Time Travel Position: 51B7A:E6
+eax=6d14f1c0 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1c3 esp=2f63f408 ebp=2f63f408 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x3:
+6d14f1c3 6aff            push    0FFFFFFFFh
+0:025> p
+Time Travel Position: 51B7A:E7
+eax=6d14f1c0 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1c5 esp=2f63f404 ebp=2f63f408 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x5:
+6d14f1c5 68d0f4166d      push    offset awt!Java_sun_awt_DefaultMouseInfoPeer_fillPointWithCoords+0x3c60 (6d16f4d0)
+0:025> p
+Time Travel Position: 51B7A:E8
+eax=6d14f1c0 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1ca esp=2f63f400 ebp=2f63f408 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0xa:
+6d14f1ca 64a100000000    mov     eax,dword ptr fs:[00000000h] fs:0053:00000000=????????
+0:025> p
+Time Travel Position: 51B7A:E9
+eax=2f63fc94 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1d0 esp=2f63f400 ebp=2f63f408 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x10:
+6d14f1d0 50              push    eax
+0:025> p
+Time Travel Position: 51B7A:EA
+eax=2f63fc94 ebx=25d81f40 ecx=294e8910 edx=25d88940 esi=25d81f40 edi=294e8800
+eip=6d14f1d1 esp=2f63f3fc ebp=2f63f408 iopl=0         nv up ei ng nz na pe cy
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000287
+awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x11:
+6d14f1d1 64892500000000  mov     dword ptr fs:[0],esp fs:0053:00000000=????????
+0:025> k
+ # ChildEBP RetAddr      
+WARNING: Stack unwind information not available. Following frames may be wrong.
+00 2f63f408 025a9e37     awt!Java_sun_awt_windows_WWindowPeer__1toFront+0x11
+01 2f63f448 025a2da1     0x25a9e37
+02 2f63f47c 025a327d     0x25a2da1
+03 2f63f4a8 025a2da1     0x25a327d
+04 2f63f4d8 025a2da1     0x25a2da1
+05 2f63f504 025a2da1     0x25a2da1
+06 2f63f530 025a327d     0x25a2da1
+07 2f63f560 025a327d     0x25a327d
+08 2f63f590 025a2da1     0x25a327d
+09 2f63f5c4 025a2da1     0x25a2da1
+0a 2f63f5f4 025a2da1     0x25a2da1
+0b 2f63f708 02bbea7c     0x25a2da1
+0c 2f63f738 02d426e4     0x2bbea7c
+0d 2f63f7a8 027b5014     0x2d426e4
+0e 2f63f868 02a4e948     0x27b5014
+0f 00000000 00000000     0x2a4e948
+AWT组件信息：
+0:025> lmvm awt
+Browse full module list
+start    end        module name
+6d0b0000 6d1fa000   awt        (export symbols)       awt.dll
+    Loaded symbol image file: awt.dll
+    Image path: C:\CTIE\jdk1.6.0_16\jdk1.6.0_16\jre\bin\awt.dll
+    Image name: awt.dll
+    Browse all global symbols  functions  data
+    Timestamp:        Sat Aug  1 07:22:52 2009 (4A737CCC)
+    CheckSum:         00132CEA
+    ImageSize:        0014A000
+    File version:     6.0.160.1
+    Product version:  6.0.160.1
+    File flags:       0 (Mask 3F)
+    File OS:          4 Unknown Win32
+    File type:        2.0 Dll
+    File date:        00000000.00000000
+    Translations:     0409.04b0
+    Information from resource tables:
+        CompanyName:      Sun Microsystems, Inc.
+        ProductName:      Java(TM) Platform SE 6 U16
+        InternalName:     awt
+        OriginalFilename: awt.dll
+        ProductVersion:   6.0.160.1
+        FileVersion:      6.0.160.1
+        FileDescription:  Java(TM) Platform SE binary
+        LegalCopyright:   Copyright © 2004
+
+====第39封邮件====
+
+发件人：Wei Liang
+发送时间：2021-02-23 18:06:48.851000+00:00
+邮件内容:
+Hi Youlin:
+如微信中的沟通，我们计划是下周或下下周去现场进行实时调试，需要前期准备并确认测试环境和要求，明天上午九点半就以下内容和您沟通。
+1.       需要6台使用有线网卡的物理机搭建测试环境。其中两台作为debug host；4台作为debug target，需要其中2台安装1803，2台安装1809（具体的镜像版本我们提供）。
+2.       提供服务器开启Hyper-V虚拟化环境，创建6台虚拟机，用途同上。
+3.       提供的测试环境机器通过有线网络连接互相访问。
+4.       在debug target的计算机上安装新终端应用app，并构建好测试数据，可以复现问题。
+5.       工程师需要访问应用出问题的页面的源代码，需要应用开发人员协助解释一些代码设计、处理逻辑。
+6.       工程师携带的软件工具需要通过U盘复制到debug host计算机上。
+7.       工程师会携带自己的电脑去测试现场，会使用个人热点连接internet。
+针对Java应用出现问题，您这边是否可以尝试使用第三方的JDK进行测试，如可以自行编译并生成symbol文件的OpenJDK。
+
+====第40封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-04 14:28:55.648000+00:00
+邮件内容:
+吴先生 您好：
+如微信中的沟通，在搭建好测试环境，配置应用环境，可以复现问题后，需要您帮忙验证在KDNET调试模式下是否复现问题。
+操作所需的工具您可以通过以下链接下载。
+https://cduc.cmgos.com/download.php?id=226&token=VKSlAx68TV4lRkiQ6iFYti8QVcyKHKnu
+具体的操作如下：
+1)       选择一台1809系统的计算机作为Debug host，复制Microsoft.Windbg工具到Debug host ，并确认、记录Debug host的IP地址。
+2)       选择一台能复现应用问题的计算机作为Debug target，重启Debug target计算机，进入UEFI界面，关闭Secureboot安全启动功能。
+3)       启动Debug target计算机，复制kdnet文件夹到Debug target计算机C盘根目录。
+4)       以管理员身份启动cmd命令行，在命令行中切换到c:\kdnet\目录下。
+5)       运行命令行kdnet.exe  <debughostIPAddress> <DebugPort>  (例：kdnet.exe 10.0.9.98 50060   <DebugPort>端口建议使用50000以上，并且需要防火墙允许通过此端口进行访问)  设置哪个ip通过端口可以连接此Debug target，并生成连接密钥。如图所示：
+6)       记录并复制port和key，在Debug host计算机上，打开Microsoft.Windbg文件夹，以管理员身份运行Dbgx.shell.exe，选择“文件“-”Start debugging“-”Attach to kernel“，选择”Net“，输入上一步操作显示的port和key。如图所示：
+7)       点击“ok“后，会提示“Waiting to reconnect...”，如图所示：
+8)       回到Debug target计算机的命令行，按照提示使用shutdown -r -t 0 重启计算机。
+9)       Debug target启动后，Debug host上的Microsoft.Windbg会自动连接。
+至此，开启了KDNET调试模式。
+Debug target计算机进入系统后，需要您在开启KDNET调试模式下，验证应用是否能够复现问题。
+
+====第41封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-08 19:18:33.604000+00:00
+邮件内容:
+吴先生 您好：
+今天在广研测试环境下的工作处理进程如下：
+1.       与广研工程师沟通协调排查测试事宜；
+2.       熟悉应用架构和程序；
+3.       熟悉应用问题复现操作步骤；
+4.       OS层面：使用WinDBG进行本地调试，在用户模式调试应用的窗口切换逻辑，通过修改窗口之间的父子关系找出问题蒙版； 
+5.       应用层面：分析应用debug输出日志，结合应用代码和API Monitor工具，分析窗口处理逻辑。
+下一步计划：
+1.       若用户模式本地调试不能发现问题蒙版，明天或后天会使用内核模式进行调试。
+a)       需要先配置测试环境的KDNET内核调试模式；
+b)      在启用内核模式下，应用复现问题才可以进行调试。
+2.       进一步在应用层面获取更多信息。
+
+====第42封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-09 21:42:43.847000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+OS层面：
+1.       未找到引起问题的蒙版，在本地调试分析中认为与应用钩子有关，排查出问题是由AWT.dll调用应用钩子（WH_CBT）有关。
+a)       AWT.dll调用Windows的SetWindowsHookEx函数设置应用钩子（WH_CBT）以进行Windows窗口消息处理；
+b)      通过工具移除应用钩子（WH_CBT），不会复现问题，但是应用的一些输入框填写有些问题，有些信息无法输入，影响业务；
+c)       配置DELL一体机内核调试模式，调试环境可以复现问题，正在进行调试以找出发生问题的原因；
+应用层面：
+1.       分析、对比应用在两个系统上运行的debug输出日志，结合应用代码，去查找应用不同表现的原因。
+下一步计划：
+1.       继续内核模式调试，查找问题原因。
+2.       继续通过debug输出日志和应用代码去排查问题。
+
+====第43封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-10 19:21:17.172000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+OS层面：
+1.       经过测试分析，应用在关闭相关的窗口时，同步或时序处理上有不完整的地方，正在编写工具调整窗口同步和时序，在测试环境中测试工具运行情况，看能否规避问题。
+2.       在测试过程中发现，在应用等待一段时间后，javaw.exe进程中某些线程退出后，再点关闭窗口就不复现问题。需要进一步验证，找出稳定不复现问题的操作步骤。
+3.       使用USB调试线进行kernel debug调试，分析应用在复现问题时的窗口处理情况。
+应用层面：
+1.       增加日志输出详细窗口信息，为OS层面调试提供辅助。
+下一步计划：
+1.       排查java线程等待退出时间情况，验证是否与窗口切换问题相关。
+2.       测试编写的工具运行情况，验证能否规避问题。
+3.       继续kernel debug调试分析。
+
+====第44封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-11 21:07:25.053000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+*   与广研就目前进展进行沟通，广研同意下周继续配合分析测试。
+OS层面：
+1.       在测试环境中验证编写的工具的运行处理，当前效果不理想，需要重新编写工具的处理流程。
+2.       在验证线程退出时，无法稳定不复现问题，需要再做分析。
+3.       发现JVM虚拟机在回收无用内存（Garbage collection）后，再关闭人脸识别窗口，不会复现问题，需要再进行多次验证确认。
+4.       使用USB调试线进行kernel debug调试，在销毁窗体方面有一些发现，需要在测试环境下多次验证，排查找到的点与问题是否有关。
+应用层面：
+1.       分析应用debug日志，为OS层面调试提供辅助。
+下一步计划：
+1.       排查kernel debug中的发现是否与问题相关。
+2.       根据新的发现编写工具，测试工具运行情况，验证能否规避问题。
+3.       继续kernel debug调试分析。
+
+====第45封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-12 18:51:30.258000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+OS层面：
+经过一周的调试和测试，现场找到两种可以不复现问题的方法，但未形成解决方案。
+1.       在测试环境中验证通过spy++查询人脸识别窗口后，再关闭人脸识别窗口可以不复现问题。
+a)       目前原因未知，下周将尝试通过编写代码去模拟spy++行为测试能否规避问题。
+2.       根据kernel debug调试发现的问题点，编写测试代码，验证可以不复现问题。
+下一步计划：
+1.       根据发现的问题点确定解决方案和修复方法，在测试现场验证方案的运行情况。
+
+====第46封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-15 19:12:01.780000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+OS层面：
+*   在测试现场编写程序代码，尝试写一个工具模拟spy++去查找应用对应窗口的操作流程。
+*   验证编写的工具能否实现功能并规避应用问题，当前编写的工具还未达到要求，正在调试修改。
+下一步计划：
+讨论解决方案和修复方法，在测试现场验证方案的运行情况。
+
+====第47封邮件====
+
+发件人：Wei Liang
+发送时间：2021-03-16 18:17:44.326000+00:00
+邮件内容:
+吴先生 您好：
+当前案例的处理进程如下：
+OS层面：
+测试重新编写的工具的运行情况，验证能否规避应用问题。
+下一步计划：
+确定解决方案和修复方法，并在测试环境下验证方案的运行情况。
+
+====第48封邮件====
+
+发件人：Wei Liang
+发送时间：2021-04-26 17:16:00.132000+00:00
+邮件内容:
+吴先生 您好：
+关于“在V2020-L系统上，新生产终端应用出现窗口切换”的问题，经上次现场排查，确认了问题原因以及后续解决方案。
+系统更新补丁KB5001384已经解决了此问题，请问经过您的测试此更新是否解决了新生产终端应用窗口切换问题？
+如果针对当前案件还有需要我们帮助的地方, 欢迎随时联系我们。
+期待您的回复。
+
+====第49封邮件====
+
+发件人：Wei Liang
+发送时间：2021-04-28 11:32:13.711000+00:00
+邮件内容:
+吴先生 您好：
+经过您的确认，已经解决新生产终端应用窗口切换问题，我将归档此案例。
+工单的归档并不会影响我们为您提供技术支持服务，如您有其他问题，您可以致电技术支持热线4008180055。
+案例总结：
+----
+问题定义：
+使用生产终端应用操作“修改客户信息”选项，点击“确定”提交时，系统一直出现以下两种情况：一是画面持续跳动，无法处理，二是光标持续旋转，无法提交。
+问题总结：
+经过现场排查分析，确认是应用与操作系统存在兼容性问题导致的窗口切换现象。
+经过工行测试确认，系统更新补丁KB5001384解决了新生产终端窗口切换问题。

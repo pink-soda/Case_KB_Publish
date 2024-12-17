@@ -1,0 +1,111 @@
+邮件主题：回复: [案例号: CAS-03093-J1Y2M9 ] % |普通事件| Dell | 反馈安装360天擎软件出现蓝屏 % 初次响应 CMIT:0001480
+
+====第1封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-14 17:52:01.896000+00:00
+邮件内容:
+阙先生 您好，
+如之前电话中沟通请您提供以下信息以供问题排查：
+1-    用户计算机快速服务编号
+2-    360天擎软件版本
+3-    请确认用户是否在CMGE V0-H系统安装后直接安装360天擎软件即触发蓝屏，并未安装其它三方软件。
+4-    系统日志：
+系统日志可通过下载附件工具下载至桌面后以管理员权限运行然后按照下图勾选选项后点击收集。
+5-    蓝屏转储文件。（需要使用U盘）：
+使用CMGE系统安装盘引导启动计算机后点击修复计算机-》在下一屏幕点击疑难解答-》然后点击命令提示符。在命令行中输入diskpart然后list volume查看系统盘符以及U盘最后输入 copy c:\windows\memory.dmp e:\ (替换c盘符至实际系统盘符，替换e盘符至实际U盘盘符)
+6-    将日志收集工具收集的日志和蓝屏转储文件一并上传至上传空间。建议将蓝屏转储文件MEMORY.dmp文件压缩后再上传。
+日志上传空间相关信息将在下一封邮件中发送。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第2封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-14 17:58:10.767000+00:00
+邮件内容:
+阙先生 您好，
+根据之前的讨论, 我谨在此阐述我们双方针对这个问题所涉及范围界定:
+问题定义: 计算机在安装CMGE V0-H系统后安装360天擎软件出现蓝屏问题。
+问题范围: 协助分析蓝屏日志定位问题原因。
+接下来,我们将开始合作解决这个问题.如果您对以上的问题范围界定有任何异议,请尽快告知.如果您有其他任何疑问,也欢迎随时与我联系.
+顺颂商祺!
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第3封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-15 11:27:14.377000+00:00
+邮件内容:
+阙先生您好，
+如昨天邮件中沟通，以下是日志上传空间配置信息。服务器为SFTP服务器，建议您使用Filezilla工具配置连接上传日志文件。
+连接地址：sftp://ocean.cmgos.com  端口：22222
+用户名：dellservicecase
+密码： cge2FXD9j#
+日志上传目录：upload目录
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第4封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-15 11:56:55.515000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+好的，我这边先找客户获取信息，有信息Update 给你，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第5封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-19 09:49:40.710000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Chengxiao
+刚没有接到你电话，抱歉.
+目前客户还未提供信息，今天会再次确定，有信息Update给你，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753
+
+====第6封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-19 09:51:14.944000+00:00
+邮件内容:
+阙先生 您好，
+感谢您的及时回复。如果在日志收集过程中遇到问题请随时与我联系。
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第7封邮件====
+
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-10-22 10:13:55.893000+00:00
+邮件内容:
+阙先生您好，
+如之前电话中沟通，目前用户在出差中无法进行日志收集而且出差时间安排未确定。
+请您帮助确定用户出差结束日期以便我们及时提供服务。
+再次感谢您对我们服务的支持，
+电子邮箱： baicx@cmgos.com
+===========================
+
+====第8封邮件====
+
+发件人：Que, Lianbin
+发送时间：2020-10-22 10:18:56.988000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+Hi Cheng xiao
+昨天下午联系上客户同事，表示客户出差了，具体回来时间不确定，所以近期没有时间操作，同意先关案子。
+如果后面客户还有进一步需要帮忙的我再联系你，谢谢！
+Lianbin_Que
+CTE, Great China Client Technical Support
+Pro Support | Pro Support Plus
+office +86-592-818-8753

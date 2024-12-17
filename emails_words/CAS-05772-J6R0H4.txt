@@ -1,0 +1,159 @@
+邮件主题：回复: [案例号: CAS-05772-J6R0H4 ] % 广东省第三强制隔离戒毒所用户来电反馈V2020-L中Print Spooler服务无法启动无法打印问题 % 初次响应 CMIT:0001607
+
+====第1封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-01 16:08:40.733000+00:00
+邮件内容:
+钟先生，您好：
+如刚才电话沟通，我将于明天上午与您联系，请您按下方步骤收取系统日志供接下来的问题排查。当前谨以此邮件阐述我们双方针对这个问题所涉及范围界定。 
+问题定义: 
+用户来电反馈V2020-L中Print Spooler服务无法启动，报错代码为0x80070057，目前有5台电脑涉及此问题。
+问题范围: 
+我们将协助您分析处理上述问题，并对定义的问题给予最大的技术支持。 
+如果能及时解决问题，或问题属于产品设计的行为，或问题涉及到三方，我们将考虑关闭案例。如果存在多个问题，则我们考虑拆分案例进行分析。 
+接下来，我们将开始合作解决这个问题。如果您对以上的问题范围界定有任何异议，请尽快告知。如果您有其他任何疑问。也欢迎随时与我联系。 
+下一步动作，收集系统日志：
+CMGE系统日志：
+请下载附件CMGELogCollector.zip，解压并运行exe文件，同意后，按照下图勾选，点击收集。 
+收集完毕后将在当前用户桌面生产CMGE_Log。点击确定，将直接打开文件夹并保存为压缩文件。 
+请将保存的压缩文件上传至日志上传系统，谢谢。
+登陆https://cduc.cmgos.com <https://cduc.cmgos.com/> ，通过数据上传系统上传您所收集的日志信息
+用户名：dsqzjds001
+密码：dsqzjds001
+--------------
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-02 16:11:29.452000+00:00
+邮件内容:
+钟先生，您好：
+       请您将附件工具保存至问题电脑本地。稍后远程使用，谢谢。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-02 17:31:59.353000+00:00
+邮件内容:
+钟先生，您好：
+       感谢您的配合与支持，烦请至以下页面下载更新补丁包，以供后续使用，谢谢
+https://support.cmgos.com/kb/5010351
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-04 14:01:48.660000+00:00
+邮件内容:
+Hi，钟先生：
+如上午电话沟通，接下来需要针对winsock修复收集相关日志分析，主要步骤如下：
+ttt + procmon+ etl trace
+==============
+1.	管理员身份运行cmd，执行如下指令
+cd /d <path of TTTracer>
+tttracer.exe -initialize
+logman create trace "printscan_print" -ow -o c:\printscan_print.etl -p "Microsoft-Windows-PrintService" 0xffffffffffffffff 0xff -nb 16 16 -bs 1024 -mode Circular -f bincirc -max 4096 -ets
+logman update trace "printscan_print" -p {C9BF4A03-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A9F-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A9E-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A05-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A01-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+2. 启动 TTTracer，执行如下指令
+md c:\temp\
+tttracer -onlaunch spoolsv.exe -parent services.exe -out c:\temp\
+3. 同步抓取procmon
+4. 复现问题 (启动spooler服务)
+5. 停止trace，取消勾选 “tracing on” 即可，然后 tttrace 就会自动停止，并执行如下命令确认tttracer已停止，同时停止etl trace
+tttracer.exe -stop all tttracer.exe -delete all
+logman stop "printscan_print" –ets
+6. 停止procmon日志
+
+====第5封邮件====
+
+发件人：Shi Guannan
+发送时间：2022-03-04 14:37:06.581000+00:00
+邮件内容:
+﻿ 
+﻿ 
+Thank you for your email, I am OOF due to annual leave on 3/4
+In case of emergency, feel free to reach out me via cell :+86-15901008883.
+Guannan Shi
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-15 09:57:27.744000+00:00
+邮件内容:
+钟先生，您好：
+请参见如下的下一步方案：
+============================
+1、请把如下注册表导出上传。
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip
+2、请在问题发生的时候，收集如下的日志：
+1）printing etl
+以管理权限运行以下命令开启：
+logman create trace "printscan_print" -ow -o c:\printscan_print.etl -p "Microsoft-Windows-PrintService" 0xffffffffffffffff 0xff -nb 16 16 -bs 1024 -mode Circular -f bincirc -max 4096 -ets
+logman update trace "printscan_print" -p {C9BF4A03-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A9F-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A9E-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A05-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+logman update trace "printscan_print" -p {C9BF4A01-D547-4D11-8242-E03A18B5BE01} 0xffffffffffffffff 0xff -ets
+运行以下命令停止ETL:
+logman stop "printscan_print" –ets
+2）winsock etl
+以管理权限运行以下命令开启TCP/IP ETL。
+netsh trace start overwrite=yes maxsize=2048 tracefile=c:\minio_sockets.etl provider="Microsoft-Windows-Winsock-AFD" keywords=0x800000000000003f level=0x5 provider={EB004A05-9B1A-11D4-9123-0050047759BC} keywords=0x3ffff level=0x5 provider="Microsoft-Windows-TCPIP" keywords=0x80007fff000000ff level=0x5 provider={B40AEF77-892A-46F9-9109-438E399BB894} keywords=0xffffffffffffffff level=0xff provider="Microsoft-Windows-WFP" keywords=0xffffffffffffffff level=0xff provider={106B464A-8043-46B1-8CB8-E92A0CD7A560} keywords=0xffffffffffffffff level=0xff
+运行以下命令停止ETL:
+netsh trace stop
+3）rpc etl
+Start tracing:
+logman create trace "base_screg" -ow -o c:\base_screg.etl -p "Service Control Manager" 0xffffffffffffffff 0xff -nb 16 16 -bs 1024 -mode Circular -f bincirc -max 4096 -ets
+logman update trace "base_screg" -p "Microsoft-Windows-Services" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p {EBCCA1C2-AB46-4A1D-8C2A-906C2FF25F39} 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPC-Proxy-LBS" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPC-Proxy" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPC-LBS" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPC" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPC-Events" 0xffffffffffffffff 0xff -ets
+logman update trace "base_screg" -p "Microsoft-Windows-RPCSS" 0xffffffffffffffff 0xff -ets
+Stop tracing:
+logman stop "base_screg" -ets
+4）同一时间的spooler的ttd
+4个日志同时开启，复现问题后，分别停止。然后上传，ttd trace、c:\base_screg.etl、 c:\minio_sockets.etl、c:\printscan_print.etl。
+3、如果可以p2v，请按照如下的步骤收集p2v日志。
+a.	下载disk2vhd工具保存这台机器上。附件密码为1234
+b.	复现问题的电脑，进入命令行。
+c.	从命令行运行如下命令：
+disk2vhd.exe
+d.	取消Use Volume Shadow Copy勾选，选择C盘，然后生成VHDX文件。我们需要一个除C盘之外的盘保存这个文件。
+
+====第7封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-21 14:02:21.626000+00:00
+邮件内容:
+钟先生，您好：
+       刚才电话未联系到您，经分析，该问题应为RPC的连接出现问题导致，请尝试删除如下注册表键值查看：
+1.	按Win+R，在运行窗口输入“regedit”，打开注册表编辑器，导航至如下位置：
+HKEY_LOCAL_MACHINE\Software\Microsoft\Rpc\Internet，删除该键值
+2.	尝试启动print spooler服务，看是否可以正常启动
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2022-03-22 16:37:19.926000+00:00
+邮件内容:
+钟先生，您好：
+       如刚才电话沟通，经您的确认，该问题目前已解决，case将做关闭处理，感谢您这段时间的大力配合，以下为案例总结，请您知悉：
+Case No：CAS-05772-J6R0H4
+问题描述：
+=====================
+用户来电反馈V2020-L中Print Spooler服务无法启动，报错代码为0x80070057，目前有5台电脑涉及此问题
+问题分析：
+=====================
+经问题排查，由于RPC连接失败导致print spooler服务无法启动，删除如下位置的注册表键值（建议提前导出备份），可以解决RPC连接失败的问题，print spooler服务可以正常开启。
+HKEY_LOCAL_MACHINE\Software\Microsoft\Rpc\Internet 
+问题总结：
+=====================
+经用户确认，问题得到解决，此案例可以关闭。
+以上，如您后续有任何问题，可随时与我们联系，谢谢。
