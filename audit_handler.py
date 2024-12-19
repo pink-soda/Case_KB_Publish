@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:43:14
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-13 15:41:26
+LastEditTime: 2024-12-19 10:07:48
 FilePath: \Case_KB\audit_handler.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -10,6 +10,9 @@ from mongo_handler import MongoHandler
 from datetime import datetime
 import logging
 import math
+import json
+
+logger = logging.getLogger(__name__)
 
 class AuditHandler:
     def __init__(self):
@@ -70,11 +73,33 @@ class AuditHandler:
             logging.exception("详细错误信息：")
             return []
     
+    def get_completed_audits(self):
+        """获取已审核案例"""
+        try:
+            query = {
+                'case_review': 'completed'
+            }
+            completed_cases = list(self.mongo.cases.find(query))
+            
+            # 处理数据
+            for case in completed_cases:
+                if '_id' in case:
+                    case['_id'] = str(case['_id'])
+                case['case_id'] = case.get('case_id', str(case['_id']))
+                case['category'] = case.get('category', [])
+                case['audit_comment'] = case.get('case_comment', '')
+                
+            return completed_cases
+        except Exception as e:
+            logger.error(f"获取已审核案例失败: {str(e)}")
+            return []
+    
     def audit_case(self, case_id, audit_result):
         """审核案例分类结果"""
         try:
+            # 1. 更新 MongoDB
             update_data = {
-                'audit_status': 'completed',
+                'case_review': 'completed',
                 'audit_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'category': audit_result['category'],
                 'case_comment': audit_result.get('comment', ''),
@@ -85,7 +110,60 @@ class AuditHandler:
                 {'case_id': case_id},
                 {'$set': update_data}
             )
-            return result.modified_count > 0
+
+            if result.modified_count == 0:
+                return False
+
+            # 2. 更新 classified_cases.json
+            try:
+                with open('classified_cases.json', 'r', encoding='utf-8') as f:
+                    cases = json.load(f)
+                
+                for case in cases:
+                    if case.get('file_path', '').endswith(f'{case_id}.pdf'):
+                        case['classification'] = {
+                            'level1': audit_result['category'][0],
+                            'level2': audit_result['category'][1],
+                            'level3': audit_result['category'][2]
+                        }
+                        break
+                
+                with open('classified_cases.json', 'w', encoding='utf-8') as f:
+                    json.dump(cases, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                logger.error(f"更新 classified_cases.json 失败: {str(e)}")
+                return False
+
+            # 3. 更新 category_hierarchy.json
+            if audit_result.get('has_new_category'):
+                try:
+                    with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+                        hierarchy = json.load(f)
+                    
+                    level1, level2, level3 = audit_result['category']
+                    
+                    if level1 not in hierarchy:
+                        hierarchy[level1] = {}
+                    if level2 not in hierarchy[level1]:
+                        hierarchy[level1][level2] = []
+                    if level3 not in hierarchy[level1][level2]:
+                        hierarchy[level1][level2].append(level3)
+                    
+                    with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+                        json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+                except Exception as e:
+                    logger.error(f"更新 category_hierarchy.json 失败: {str(e)}")
+                    return False
+
+            # 4. 更新 Neo4j 图谱
+            from knowledge_graph import KnowledgeGraph
+            kg = KnowledgeGraph()
+            if not kg.ensure_category_hierarchy(audit_result['category']):
+                logger.error("更新 Neo4j 图谱失败")
+                return False
+
+            return True
+            
         except Exception as e:
-            logging.error(f"审核案例失败: {str(e)}")
+            logger.error(f"审核案例失败: {str(e)}")
             return False 

@@ -1314,13 +1314,18 @@ def audit_manager():
     """案例审核管理页面"""
     try:
         audit_handler = AuditHandler()
-        cases = audit_handler.get_pending_audits()
-        app.logger.info(f"获取到 {len(cases)} 个待审核案例")
+        pending_cases = audit_handler.get_pending_audits()
+        completed_cases = audit_handler.get_completed_audits()
         
-        return render_template('audit_manager.html', cases=cases)
+        return render_template('audit_manager.html', 
+                             cases=pending_cases,
+                             completed_cases=completed_cases)
     except Exception as e:
         app.logger.error(f"加载审核管理页面失败: {str(e)}")
-        return render_template('audit_manager.html', cases=[], error=str(e))
+        return render_template('audit_manager.html', 
+                             cases=[], 
+                             completed_cases=[],
+                             error=str(e))
 
 @app.route('/test-audit-data')
 def test_audit_data():

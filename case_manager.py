@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-05 14:49:25
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-17 16:56:12
+LastEditTime: 2024-12-19 10:54:49
 FilePath: \test\case_manager.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -14,6 +14,7 @@ from mongo_handler import MongoHandler
 from knowledge_graph import KnowledgeGraph
 import logging
 from case_sync import build_case_library, update_case_library
+import traceback
 
 logger = logging.getLogger(__name__)
 case_manager = Blueprint('case_manager', __name__, url_prefix='/case_manager')
@@ -31,53 +32,77 @@ def get_completed_cases_from_csv():
     try:
         csv_path = 'e:\\Case_KB\\cases.csv'
         
-        # 尝试不同的编码方式读取文件
-        try:
-            df = pd.read_csv(csv_path, encoding='utf-8')
-        except UnicodeDecodeError:
-            try:
-                df = pd.read_csv(csv_path, encoding='gbk')
-            except UnicodeDecodeError:
-                # 尝试检测编码
-                import chardet
-                with open(csv_path, 'rb') as f:
-                    result = chardet.detect(f.read())
-                df = pd.read_csv(csv_path, encoding=result['encoding'])
+        # 尝试不同的编码方式读取CSV文件
+        encodings = ['utf-8', 'utf-8-sig', 'gbk', 'gb18030', 'latin1']
+        df = None
         
-        df['案例进度'] = df['案例进度'].str.strip()
+        for encoding in encodings:
+            try:
+                logger.info(f"尝试使用 {encoding} 编码读取CSV文件")
+                df = pd.read_csv(csv_path, encoding=encoding)
+                logger.info(f"成功使用 {encoding} 编码读取CSV文件")
+                break
+            except UnicodeDecodeError:
+                continue
+        
+        if df is None:
+            raise Exception("无法使用任何已知编码读取CSV文件")
+
+        # 打印CSV文件的列名，用于调试
+        logger.info(f"CSV文件列名: {df.columns.tolist()}")
+        
+        # 确保'案例进度'列存在且为字符串类型
+        if '案例进度' not in df.columns:
+            raise Exception("CSV文件中缺少'案例进度'列")
+            
+        df['案例进度'] = df['案例进度'].astype(str).str.strip()
         completed_cases = df[df['案例进度'].str.contains('已完结', na=False)]
         
-        # 准备返回的数据，保存所有列
+        # 打印一个样本案例，用于调试
+        if not completed_cases.empty:
+            logger.info(f"样本案例数据: {completed_cases.iloc[0].to_dict()}")
+        
         result = []
         for _, row in completed_cases.iterrows():
             case_data = row.to_dict()
-            case_data = {k: int(v) if isinstance(v, pd.Int64Dtype) or isinstance(v, np.int64)
-                        else float(v) if isinstance(v, np.float64)
-                        else str(v) if pd.isna(v)
-                        else v 
-                        for k, v in case_data.items()}
             
+            # 处理数值类型
+            case_data = {k: (
+                int(v) if isinstance(v, (pd.Int64Dtype, np.int64))
+                else float(v) if isinstance(v, np.float64) and not pd.isna(v)
+                else '' if pd.isna(v)
+                else str(v)
+            ) for k, v in case_data.items()}
+            
+            # 转换为标准格式，确保字段名称匹配
             case = {
                 'case_id': case_data['案例编号'],
-                'title': str(case_data.get('案例标题', '')),
-                'category': [cat.strip().strip("'") for cat in str(case_data.get('所属类别', '[]')).strip('[]').split(',') if cat.strip()],
-                'contact': str(case_data.get('联系人', '')),
-                'phone': str(case_data.get('联系电话', '')),
-                'case_owner': str(case_data.get('case_owner', '')),
-                'system_version': str(case_data.get('系统版本', '')),
-                'case_definition': str(case_data.get('案例定义', '')),
-                'case_status': str(case_data.get('案例进度', '')),
-                'case_log': str(case_data.get('有无上传日志', '')),
-                'case_evaluation': str(case_data.get('案例总结', '')),
-                'case_email': str(case_data.get('案例详情', '')),
-                'case_review': str(case_data.get('案例评审', '')),
-                'case_score': str(case_data.get('案例置信度评分', '')),
+                'title': case_data.get('案例标题', ''),
+                'category': [cat.strip() for cat in str(case_data.get('所属类别', '')).split(',') if cat.strip()],
+                'contact': case_data.get('联系人', ''),
+                'phone': case_data.get('联系电话', ''),
+                'case_owner': case_data.get('case_owner', ''),
+                'system_version': case_data.get('系统版本', ''),
+                'case_definition': case_data.get('案例定义', ''),
+                'case_status': case_data.get('案例进度', ''),
+                'case_log': case_data.get('有无上传日志', ''),
+                'case_evaluation': case_data.get('案例总结', ''),
+                'case_email': case_data.get('案例详情', ''),
+                'case_review': case_data.get('案例评审', ''),
+                'case_score': case_data.get('案例置信度评分', '')
             }
+            
+            # 打印转换后的案例数据，用于调试
+            logger.debug(f"转换后的案例数据: {case}")
+            
+            # 清理空字符串和'nan'值
+            case = {k: ('' if v == 'nan' else v) for k, v in case.items()}
             result.append(case)
         
         return result
     except Exception as e:
-        logger.error(f"Error reading CSV file: {str(e)}")
+        logger.error(f"读取CSV文件失败: {str(e)}")
+        logger.error(traceback.format_exc())
         return []
 
 @case_manager.route('/')
@@ -114,7 +139,7 @@ def build_library():
         inserted_count = mongo_handler.bulk_insert_cases(completed_cases)
         return jsonify({
             'success': True,
-            'message': f'���功导入 {inserted_count} 个案例'
+            'message': f'成功导入 {inserted_count} 个案例'
         })
     except Exception as e:
         logger.error(f"Error building library: {str(e)}")
@@ -135,34 +160,93 @@ def update_library():
             })
             
         completed_cases = get_completed_cases_from_csv()
-        current_count = mongo_handler.get_cases_count()
-        
-        if len(completed_cases) <= current_count:
+        if not completed_cases:
+            logger.error("没有找到已完结的案例")
             return jsonify({
-                'success': True,
-                'message': '案例库已是最新状态'
+                'success': False,
+                'message': '没有找到已完结的案例'
             })
+
+        # 记录处理前的案例数和数据示例
+        before_count = mongo_handler.get_cases_count()
+        logger.info(f"更新前案例数: {before_count}")
+        if before_count > 0:
+            sample_case = mongo_handler.cases.find_one()
+            logger.info(f"更新前样本案例: {sample_case}")
         
-        # 获取现有案例的ID列表
-        existing_cases = mongo_handler.get_all_cases()
-        existing_ids = set(case['case_id'] for case in existing_cases)
+        updated_count = 0
+        inserted_count = 0
         
-        # 找出需要新增的案例
-        new_cases = [case for case in completed_cases 
-                    if case['case_id'] not in existing_ids]
+        for case in completed_cases:
+            try:
+                # 检查案例是否存在
+                existing_case = mongo_handler.cases.find_one({'case_id': case['case_id']})
+                logger.info(f"处理案例 {case['case_id']}, 当前数据: {case}")
+                
+                if existing_case:
+                    # 更新现有案例
+                    update_data = {
+                        'title': case['title'],
+                        'category': case['category'],
+                        'contact': case['contact'],
+                        'phone': case['phone'],
+                        'case_owner': case['case_owner'],  # 确保这个字段被包含在更新中
+                        'system_version': case['system_version'],
+                        'case_definition': case['case_definition'],
+                        'case_status': case['case_status'],
+                        'case_log': case['case_log'],
+                        'case_evaluation': case['case_evaluation'],
+                        'case_email': case['case_email'],
+                        'case_review': case['case_review'],
+                        'case_score': case['case_score']
+                    }
+                    
+                    # 记录更新数据
+                    logger.info(f"更新数据: {update_data}")
+                    
+                    # 过滤有效数据
+                    filtered_data = {}
+                    for k, v in update_data.items():
+                        if isinstance(v, str):
+                            if v and v != 'nan' and v.strip():
+                                filtered_data[k] = v
+                        elif v:
+                            filtered_data[k] = v
+                    
+                    logger.info(f"过滤后的更新数据: {filtered_data}")
+
+                    if filtered_data:
+                        if mongo_handler.update_case(case['case_id'], filtered_data):
+                            updated_count += 1
+                            logger.info(f"成功更新案例: {case['case_id']}")
+                else:
+                    # 新增案例
+                    mongo_handler.bulk_insert_cases([case])
+                    inserted_count += 1
+                    logger.info(f"新增案例: {case['case_id']}")
+                    
+            except Exception as e:
+                logger.error(f"处理案例 {case['case_id']} 时出错: {str(e)}")
+                continue
         
-        if new_cases:
-            inserted_count = mongo_handler.bulk_insert_cases(new_cases)
-            return jsonify({
-                'success': True,
-                'message': f'成功新增 {inserted_count} 个案例'
-            })
+        # 记录处理后的案例数和数据示例
+        after_count = mongo_handler.get_cases_count()
+        logger.info(f"更新前案例数: {before_count}, 更新后案例数: {after_count}")
+        logger.info(f"更新数: {updated_count}, 新增数: {inserted_count}")
+        
+        if after_count > 0:
+            sample_case = mongo_handler.cases.find_one()
+            logger.info(f"更新后样本案例: {sample_case}")
+        
+        message = f'更新完成: {updated_count} 个案例已更新, {inserted_count} 个案例新增'
         return jsonify({
             'success': True,
-            'message': '没有新的案例需要添加'
+            'message': message
         })
+        
     except Exception as e:
-        logger.error(f"Error updating library: {str(e)}")
+        logger.error(f"更新案例库失败: {str(e)}")
+        logger.error(traceback.format_exc())
         return jsonify({
             'success': False,
             'message': f'更新案例库失败: {str(e)}'

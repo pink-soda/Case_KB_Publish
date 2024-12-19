@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-11-28 14:55:34
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-17 17:01:27
+ * @LastEditTime: 2024-12-18 14:56:54
  * @FilePath: \test\show.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -689,8 +689,18 @@
             const { categories, confidence_scores, explanations } = window.currentRecognitionResult || 
                 { categories: [], confidence_scores: [], explanations: [] };
             
-            // 清除现有的工具提示
-            $('.tag[data-toggle="tooltip"]').tooltip('dispose');
+            // 修改这里的 tooltip 处理方式
+            try {
+                // 如果元素上已经有 tooltip，先尝试销毁
+                const existingTags = container.querySelectorAll('.tag[data-toggle="tooltip"]');
+                existingTags.forEach(tag => {
+                    if ($(tag).data('ui-tooltip')) {
+                        $(tag).tooltip('destroy');
+                    }
+                });
+            } catch (e) {
+                console.log('No existing tooltips to dispose');
+            }
             
             container.innerHTML = categories.map((category, index) => {
                 const confidence = confidence_scores[index];

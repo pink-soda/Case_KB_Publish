@@ -1,4 +1,4 @@
-from openai import AzureOpenAI
+from openai import AzureOpenAI, OpenAI
 import json
 import os
 from dotenv import load_dotenv
@@ -6,14 +6,65 @@ import logging
 from azure.core.credentials import AzureKeyCredential
 #from azure.ai.textanalytics import TextAnalyticsClient
 import traceback
+import time
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
 
-class LLMHandler:
+# 加载环境变量
+load_dotenv()
+
+class KimiHandler:
     def __init__(self):
-        # 加载环境变量
-        load_dotenv()
-        
+        # 初始化 Kimi API 客户端
+        self.client = OpenAI(
+            api_key=os.getenv("KIMI_API_KEY"),
+            base_url=os.getenv("KIMI_BASE_URL"),
+        )
+        self.model = os.getenv("KIMI_MODEL_NAME")
+
+    def analyze_text(self, description: str, category_hierarchy: str) -> dict:
+        """使用 Kimi 分析文本并返回分类结果"""
+        try:
+            prompt = f"""
+            请分析以下技术支持描述，并从给定的类别层级中选择最合适的最小子类别进行分类。
+            请只返回一个最具体的子类别（最深层级的类别）。
+
+            描述文本：
+            {description}
+
+            可选的类别层级：
+            {category_hierarchy}
+
+            请以JSON格式返回结果，包含以下字段：
+            1. categories: 包含一个元素的列表，表示最合适的最小子类别
+            2. confidence_scores: 对应的置信度（0-1之间的浮点数）
+            3. explanation: 选择该类别的理由说明
+            """
+
+            messages = [
+                {"role": "system", "content": "你是一个专业的技术支持分类专家，擅长分析技术问题并进行准确分类。"},
+                {"role": "user", "content": prompt}
+            ]
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages
+            )
+
+            result = response.choices[0].message.content
+            return json.loads(result)
+
+        except Exception as e:
+            logger.error(f"Kimi分析失败: {str(e)}")
+            return {
+                "categories": ["未分类"],
+                "confidence_scores": [0.5],
+                "explanation": "Kimi分析服务暂时不可用"
+            }
+
+class LLMHandler:
+    def __init__(self):        
         # 初始化Azure OpenAI客户端
         self.client = AzureOpenAI(
             api_key=os.getenv("AZURE_OPENAI_API_KEY_2"),
@@ -22,15 +73,20 @@ class LLMHandler:
         )
         
         # 部署名称
-        self.deployment_name = os.getenv("MODEL_NAME")        
+        self.deployment_name = os.getenv("MODEL_NAME")
+        
+        # 初始化 Kimi 处理器作为备用
+        self.kimi_handler = KimiHandler()
 
     def analyze_description_with_categories(self, description: str, category_hierarchy: dict) -> dict:
         """
         使用Azure LLM分析描述文本，并根据知识图谱中的类别进行分类
         返回格式：只返回最小子类别及其置信度和解释
+        如果失败则使用Kimi作为备选方案
         """
         try:
             # 格式化类别层级结构
+            # 首先尝试使用 Azure OpenAI
             formatted_hierarchy = self._format_category_hierarchy(category_hierarchy)
             
             # 构建prompt
@@ -57,32 +113,40 @@ class LLMHandler:
             }}
             """
 
-            # 获取LLM的分析结果
-            response = self._call_azure_llm(prompt)
-            result = self._parse_llm_response(response)
-            logger.info(f"LLM原始分析结果: {result}")
-
-            # 确保只返回一个类别
-            if result.get('categories'):
-                category = result['categories'][0]
-                if " - " in category:
-                    # 如果返回的是完整路径，只取最后一个类别
-                    category = category.split(" - ")[-1].strip()
-                    result['categories'] = [category]
-
-            return {
-                'categories': result.get('categories', ['未分类']),
-                'confidence_scores': result.get('confidence_scores', [0.5]),
-                'explanation': result.get('explanation', '')
-            }
+            try:
+                # 尝试使用 Azure OpenAI
+                response = self._call_azure_llm(prompt)
+                result = self._parse_llm_response(response)
+                logger.info(f"Azure LLM分析成功: {result}")
+                return self._format_result(result)
+            except Exception as azure_error:
+                logger.warning(f"Azure LLM失败，切换到Kimi: {str(azure_error)}")
+                # 如果 Azure 失败，使用 Kimi
+                result = self.kimi_handler.analyze_text(description, formatted_hierarchy)
+                logger.info(f"Kimi分析结果: {result}")
+                return self._format_result(result)
 
         except Exception as e:
-            logger.error(f"分析失败: {str(e)}")
+            logger.error(f"所有分析方法都失败: {str(e)}")
             return {
                 'categories': ['未分类'],
                 'confidence_scores': [0.5],
                 'explanation': f'分析失败: {str(e)}'
             }
+
+    def _format_result(self, result: dict) -> dict:
+        """统一格式化结果"""
+        if result.get('categories'):
+            category = result['categories'][0]
+            if " - " in category:
+                category = category.split(" - ")[-1].strip()
+                result['categories'] = [category]
+
+        return {
+            'categories': result.get('categories', ['未分类']),
+            'confidence_scores': result.get('confidence_scores', [0.5]),
+            'explanation': result.get('explanation', '')
+        }
 
     def _format_category_hierarchy(self, hierarchy: dict, level: int = 0) -> str:
         """
@@ -149,7 +213,7 @@ class LLMHandler:
         logger.debug(f"当前层级收集到的类别: {categories}")
         return categories - {''}  # 移除空字符串
 
-    def _call_azure_llm(self, prompt: str) -> str:
+    def _call_azure_llm_basic(self, prompt: str) -> str:
         """
         调用Azure OpenAI API
         
@@ -158,6 +222,43 @@ class LLMHandler:
             
         Returns:
             str: LLM的响应内容
+        """
+        try:
+            # 添加日志记录
+            logger.info("开始调用Azure LLM")
+            logger.debug(f"发送的prompt: {prompt[:200]}...")  # 只记录前200个字符
+            
+            response = self.client.chat.completions.create(
+                model=self.deployment_name,
+                messages=[
+                    {"role": "system", "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=1000
+            )
+            
+            # 记录响应
+            result = response.choices[0].message.content
+            logger.info(f"Azure LLM响应成功，返回内容长度: {len(result)}")
+            logger.debug(f"返回内容预览: {result[:200]}...")
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"调用Azure LLM失败: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+
+    @retry(
+        stop=stop_after_attempt(3),  # 最多重试3次
+        wait=wait_exponential(multiplier=1, min=3, max=10),  # 指数退避，最少等待3秒
+        reraise=False  # 不重新抛出异常
+    )
+
+    def _call_azure_llm(self, prompt: str) -> str:
+        """
+        调用Azure OpenAI API，带有重试机制
         """
         try:
             response = self.client.chat.completions.create(
@@ -177,7 +278,21 @@ class LLMHandler:
             return response.choices[0].message.content.strip()
         except Exception as e:
             logger.error(f"调用Azure LLM失败: {str(e)}")
-            raise
+            if "429" in str(e):  # 如果是速率限制错误
+                logger.info("触发速率限制，等待后重试...")
+                time.sleep(3)  # 强制等待3秒
+                raise  # 重新抛出异常以触发重试
+            return self._get_default_response()  # 如果是其他错误，返回默认响应
+
+    def _get_default_response(self) -> str:
+        """
+        当LLM调用失败时返回的默认响应
+        """
+        return json.dumps({
+            "categories": ["未分类"],
+            "confidence_scores": [0.5],
+            "explanation": "由于系统限制，暂时无法进行分类分析。请稍后重试。"
+        })
 
     def _parse_llm_response(self, response: str) -> dict:
         """

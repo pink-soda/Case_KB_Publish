@@ -6,143 +6,203 @@
 <div class="container mt-4">
     <h2>案例审核管理</h2>
     
+    <!-- 待审核案例 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="card-title mb-0">待审核案例</h5>
         </div>
-        <div class="card-body">
-            <!-- 添加调试信息 -->
-            {% if debug %}
-            <div class="alert alert-info">
-                <p>Cases count: {{ cases|length if cases else 0 }}</p>
-                <p>First case: {{ cases[0]|tojson if cases and cases|length > 0 else 'None' }}</p>
-            </div>
-            {% endif %}
-
-            {% if error %}
-            <div class="alert alert-danger">
-                {{ error }}
-            </div>
-            {% endif %}
-
+        <div class="card-body" style="height: 400px; overflow-y: auto;">
             {% if cases and cases|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-hover" id="pendingCasesTable">
-                    <thead>
-                        <tr>
-                            <th>案例ID</th>
-                            <th>当前分类</th>
-                            <th>置信度</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for case in cases %}
-                        <tr>
-                            <td>{{ case.case_id }}</td>
-                            <td>
-                                <div class="categories">
-                                    {% if case.category %}
-                                        {% for cat in case.category %}
-                                        {% if cat and cat != "三级分类" %}
-                                        <div>{% if loop.index == 1 %}一{% elif loop.index == 2 %}二{% else %}三{% endif %}级分类：{{ cat }}</div>
-                                        {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <div>未分类</div>
-                                    {% endif %}
+                <!-- 按case_owner分组展示 -->
+                {% set owners = {} %}
+                {% for case in cases %}
+                    {% if case.case_owner not in owners %}
+                        {% set _ = owners.update({case.case_owner: []}) %}
+                    {% endif %}
+                    {% set _ = owners[case.case_owner].append(case) %}
+                {% endfor %}
+                
+                <div class="accordion" id="ownerAccordion">
+                    {% for owner, owner_cases in owners.items() %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ loop.index }}" 
+                                    aria-expanded="{{ 'true' if loop.first else 'false' }}" 
+                                    aria-controls="collapse{{ loop.index }}">
+                                {{ owner or '未分配' }} ({{ owner_cases|length }}个案例)
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" 
+                             class="accordion-collapse collapse {% if loop.first %}show{% endif %}" 
+                             aria-labelledby="heading{{ loop.index }}" 
+                             data-bs-parent="#ownerAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>案例ID</th>
+                                                <th>当前分类</th>
+                                                <th>置信度</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for case in owner_cases %}
+                                            <tr>
+                                                <td>{{ case.case_id }}</td>
+                                                <td>
+                                                    <div class="categories">
+                                                        {% if case.category %}
+                                                            {% for cat in case.category %}
+                                                            <div>{% if loop.index == 1 %}一{% elif loop.index == 2 %}二{% else %}三{% endif %}级分类：{{ cat }}</div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <div>未分类</div>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                                <td>N/A</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary audit-btn" 
+                                                            data-case-id="{{ case.case_id }}"
+                                                            data-current-category="{{ case.category|join('/') if case.category else '' }}">
+                                                        审核
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </td>
-                            <td>N/A</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary audit-btn" 
-                                        data-case-id="{{ case.case_id }}"
-                                        data-current-category="{{ case.category|join('/') if case.category else '' }}">
-                                    审核
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             {% else %}
             <p class="text-muted text-center my-5">暂无待审核案例</p>
             {% endif %}
         </div>
     </div>
 
-    <!-- 审核表单模态框 -->
-    <div class="modal fade" id="auditModal" tabindex="-1" aria-labelledby="auditModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="auditModalLabel">案例审核</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="auditForm">
-                        <input type="hidden" id="caseid" name="caseid">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">案例ID</label>
-                            <p id="displayCaseId" class="form-control-plaintext"></p>
-                        </div>
-                        
-                        <!-- 当前分类(三个只读输入框) -->
-                        <div class="mb-3">
-                            <label class="form-label">当前分类</label>
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" id="currentLevel1" readonly placeholder="一级分类">
+    <!-- 已审核案例 -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">已审核案例</h5>
+        </div>
+        <div class="card-body" style="height: 400px; overflow-y: auto;">
+            {% if completed_cases and completed_cases|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>案例ID</th>
+                            <th>分类</th>
+                            <th>审核意见</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for case in completed_cases %}
+                        <tr>
+                            <td>{{ case.case_id }}</td>
+                            <td>
+                                <div class="categories">
+                                    {% if case.category %}
+                                        {% for cat in case.category %}
+                                        <div>{% if loop.index == 1 %}一{% elif loop.index == 2 %}二{% else %}三{% endif %}级分类：{{ cat }}</div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>未分类</div>
+                                    {% endif %}
                                 </div>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" id="currentLevel2" readonly placeholder="二级分类">
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" id="currentLevel3" readonly placeholder="三级分类">
-                                </div>
+                            </td>
+                            <td>{{ case.audit_comment or '无' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center my-5">暂无已审核案例</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 审核表单模态框 -->
+<div class="modal fade" id="auditModal" tabindex="-1" aria-labelledby="auditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="auditModalLabel">案例审核</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="auditForm">
+                    <input type="hidden" id="caseid" name="caseid">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">案例ID</label>
+                        <p id="displayCaseId" class="form-control-plaintext"></p>
+                    </div>
+                    
+                    <!-- 当前分类(三个只读输入框) -->
+                    <div class="mb-3">
+                        <label class="form-label">当前分类</label>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="currentLevel1" readonly placeholder="一级分类">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="currentLevel2" readonly placeholder="二级分类">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="currentLevel3" readonly placeholder="三级分类">
                             </div>
                         </div>
-                        
-                        <!-- 修正分类(三个级联下拉框) -->
-                        <div class="mb-3">
-                            <label class="form-label">修正分类</label>
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <select class="form-select" id="newLevel1">
-                                        <option value="">选择一级分类</option>
-                                        <option value="new">+ 新增分类</option>
-                                    </select>
-                                    <input type="text" class="form-control mt-2 d-none" id="newLevel1Input" placeholder="输入新的一级分类">
-                                </div>
-                                <div class="col-md-4">
-                                    <select class="form-select" id="newLevel2" disabled>
-                                        <option value="">选择二级分类</option>
-                                        <option value="new">+ 新增分类</option>
-                                    </select>
-                                    <input type="text" class="form-control mt-2 d-none" id="newLevel2Input" placeholder="输入新的二级分类">
-                                </div>
-                                <div class="col-md-4">
-                                    <select class="form-select" id="newLevel3" disabled>
-                                        <option value="">选择三级分类</option>
-                                        <option value="new">+ 新增分类</option>
-                                    </select>
-                                    <input type="text" class="form-control mt-2 d-none" id="newLevel3Input" placeholder="输入新的三级分类">
-                                </div>
+                    </div>
+                    
+                    <!-- 修正分类(三个级联下拉框) -->
+                    <div class="mb-3">
+                        <label class="form-label">修正分类</label>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <select class="form-select" id="newLevel1">
+                                    <option value="">选择一级分类</option>
+                                    <option value="new">+ 新增分类</option>
+                                </select>
+                                <input type="text" class="form-control mt-2 d-none" id="newLevel1Input" placeholder="输入新的一级分类">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="newLevel2" disabled>
+                                    <option value="">选择二级分类</option>
+                                    <option value="new">+ 新增分类</option>
+                                </select>
+                                <input type="text" class="form-control mt-2 d-none" id="newLevel2Input" placeholder="输入新的二级分类">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="newLevel3" disabled>
+                                    <option value="">选择三级分类</option>
+                                    <option value="new">+ 新增分类</option>
+                                </select>
+                                <input type="text" class="form-control mt-2 d-none" id="newLevel3Input" placeholder="输入新的三级分类">
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="auditComment" class="form-label">审核意见</label>
-                            <textarea class="form-control" id="auditComment" name="auditComment" rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="submitAudit">提交审核</button>
-                </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="auditComment" class="form-label">审核意见</label>
+                        <textarea class="form-control" id="auditComment" name="auditComment" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="submitAudit">提交审核</button>
             </div>
         </div>
     </div>
@@ -413,6 +473,25 @@ document.addEventListener('DOMContentLoaded', function() {
     margin-bottom: 0;
     font-size: 1rem;
     line-height: 1.5;
+}
+
+/* 新增样式 */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0c63e4;
+}
+
+.accordion-body {
+    padding: 0;
+}
+
+.accordion-body .table {
+    margin-bottom: 0;
+}
+
+.accordion-body .table td,
+.accordion-body .table th {
+    padding: 0.75rem 1rem;
 }
 </style>
 {% endblock %} 

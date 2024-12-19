@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 14:27:30
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-05 14:51:38
+LastEditTime: 2024-12-19 11:00:58
 FilePath: \test\mongo_handler.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -115,3 +115,15 @@ class MongoHandler:
         except Exception as e:
             logger.error(f"批量插入案例失败: {str(e)}")
             return 0
+
+    def update_case(self, case_id, update_data):
+        """更新单个案例"""
+        try:
+            result = self.cases.update_one(
+                {'case_id': case_id},
+                {'$set': update_data}
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            logger.error(f"更新案例失败: {str(e)}")
+            return False
