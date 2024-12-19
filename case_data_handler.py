@@ -29,7 +29,7 @@ class CaseDataHandler:
     def __init__(self):
         try:
             # 使用完整路径
-            csv_path = 'e:\\Case_KB\\unfinished_cases.csv'
+            csv_path = 'unfinished_cases.csv'
             
             # 检查文件是否存在
             if not os.path.exists(csv_path):

@@ -29,7 +29,7 @@ def create_empty_csv():
     """创建空的CSV文件"""
     try:
         df = pd.DataFrame(columns=get_default_columns())
-        df.to_csv('e:\\Case_KB\\cases.csv', index=False, encoding='utf-8')
+        df.to_csv('cases.csv', index=False, encoding='utf-8')
         logger.info("成功创建空的cases.csv文件")
         return True
     except Exception as e:
@@ -123,7 +123,7 @@ def process_case_entry(case_data, df):
 def generate_case_summary(case_id):
     """生成案例总结"""
     try:
-        email_file_path = os.path.join('E:\\Case_KB\\emails_words', f'{case_id}.txt')
+        email_file_path = os.path.join('emails_words', f'{case_id}.txt')
         
         # 检查邮件文件是否存在
         if not os.path.exists(email_file_path):
@@ -217,7 +217,7 @@ def sync_cases(is_update=False):
     try:
         logger.info(f"开始{'更新' if is_update else '构建'}案例库")
         
-        csv_path = 'e:\\Case_KB\\cases.csv'
+        csv_path = 'cases.csv'
         json_path = 'classified_cases.json'
         
         # 检查JSON文件是否存在

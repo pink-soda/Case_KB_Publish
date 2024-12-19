@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 def copy_files():
     # 源目录和目标目录
     source_dir = r"\\10.0.37.113\共享文件\二线团队及流程资料\Python\2024-12-16_15-04-09"
-    pdf_target_dir = r"E:\Case_KB\emails"
-    txt_target_dir = r"E:\Case_KB\emails_words"
+    pdf_target_dir = "emails"
+    txt_target_dir = "emails_words"
     
     # 确保目标目录存在
     Path(pdf_target_dir).mkdir(parents=True, exist_ok=True)
@@ -69,8 +69,8 @@ def copy_files():
 
 def delete_null_files():
     # 目标目录
-    pdf_dir = r"E:\Case_KB\emails"
-    txt_dir = r"E:\Case_KB\emails_words"
+    pdf_dir = "emails"
+    txt_dir = "emails_words"
     
     # 计数器
     deleted_count = 0

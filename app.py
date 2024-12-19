@@ -147,7 +147,7 @@ def get_case_details():
             }), 400
             
         # PDF文件路径
-        pdf_path = os.path.join('E:\\Case_KB\\emails', f'{case_id}.pdf')
+        pdf_path = os.path.join('emails', f'{case_id}.pdf')
         
         if not os.path.exists(pdf_path):
             return jsonify({
@@ -904,7 +904,7 @@ def get_template_content():
 
 @app.route('/scan-local-pdfs')
 def scan_local_pdfs():
-    pdf_dir = 'E:\\Case_KB\\email_template'  # PDF文件目录
+    pdf_dir = 'email_template'  # PDF文件目录
     pdfs = []
     
     try:

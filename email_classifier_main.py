@@ -12,7 +12,7 @@ def main():
     try:
         # 初始化分类器
         logger.info("开始初始化邮件分类器...")
-        email_dir = r"E:\Case_KB\emails_words"
+        email_dir = "emails_words"
         classifier = EmailClassifier(email_dir)
         logger.info("邮件分类器初始化完成")
         

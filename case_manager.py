@@ -30,7 +30,7 @@ llm_handler = LLMHandler()
 
 def get_completed_cases_from_csv():
     try:
-        csv_path = 'e:\\Case_KB\\cases.csv'
+        csv_path = 'cases.csv'
         
         # 尝试不同的编码方式读取CSV文件
         encodings = ['utf-8', 'utf-8-sig', 'gbk', 'gb18030', 'latin1']
@@ -265,7 +265,7 @@ def get_categories():
             })
         
         # 从CSV文件中读取案例定义
-        df = pd.read_csv('e:\\Case_KB\\cases.csv', encoding='gbk')
+        df = pd.read_csv('cases.csv', encoding='gbk')
         case_row = df[df['案例编号'] == case_id]
         
         if case_row.empty:

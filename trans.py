@@ -2,8 +2,8 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-11-25 23:26:46
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-03 09:48:18
-FilePath: \undefinede:\test\trans.py
+LastEditTime: 2024-12-19 14:21:30
+FilePath: \undefinede:\Case_KB\trans.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
 import os
@@ -60,6 +60,6 @@ def replace_images_with_text(doc_path, output_path):
     doc.save(output_path)
 
 # 使用示例
-input_doc = r'E:\test\mail.docx'  # 输入文档的路径
-output_doc = r'E:\test\output.docx'  # 输出文档的路径
+input_doc = 'mail.docx'  # 输入文档的路径
+output_doc = 'output.docx'  # 输出文档的路径
 replace_images_with_text(input_doc, output_doc)
