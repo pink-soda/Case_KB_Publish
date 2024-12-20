@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:27:37
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-16 21:38:21
+ * @LastEditTime: 2024-12-20 13:24:09
  * @FilePath: \Case_KB\templates\email_classification.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -464,7 +464,7 @@
         // 处理分类编辑
         const categoryInputs = document.querySelectorAll('.category-input');
         categoryInputs.forEach(input => {
-            input.addEventListener('change', function() {
+            input.addEventListener('change', async function() {
                 const editor = this.closest('.category-editor');
                 const fileName = editor.dataset.file;
                 const level = this.dataset.level;
@@ -477,35 +477,145 @@
                     level3: editor.querySelector('[data-level="3"]').value
                 };
 
-                // 发送更新请求
-                fetch('{{ url_for("update_file_categories") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        file_name: fileName,
-                        categories: categories
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // 更新分类结果显示
-                        const hierarchyCode = document.getElementById('hierarchyCode');
-                        if (hierarchyCode) {
-                            hierarchyCode.textContent = JSON.stringify(data.hierarchy, null, 2);
+                try {
+                    // 获取案例内容用于重新计算置信度
+                    const response = await fetch('/get-case-details', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ case_id: fileName.replace('.pdf', '') })
+                    });
+                    const caseDetails = await response.json();
+                    
+                    // 调用后端重新计算置信度
+                    const confidenceResponse = await fetch('/recalculate-confidence', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            case_content: caseDetails.details,
+                            categories: categories,
+                            file_path: `./emails/${fileName}`
+                        })
+                    });
+                    const confidenceData = await confidenceResponse.json();
+                    
+                    // 添加调试日志
+                    console.log('Response from server:', confidenceData);
+                    
+                    if (confidenceData.success) {
+                        // 修改这里，直接使用 confidence_scores
+                        console.log('Updating with scores:', confidenceData.confidence_scores);
+                        updateConfidenceDisplay(fileName, confidenceData.confidence_scores);
+                        
+                        // 显示MongoDB更新提醒
+                        showMongoDBUpdateReminder();
+                        
+                        // 如果分类层级有更新，显示Neo4j更新提醒
+                        if (confidenceData.hierarchy_updated) {
+                            showNeo4jUpdateReminder();
                         }
+                        
                         showAlert('success', '分类更新成功');
                     } else {
-                        showAlert('danger', '更新失败: ' + data.message);
+                        showAlert('danger', confidenceData.message || '更新失败');
                     }
-                })
-                .catch(error => {
+                } catch (error) {
+                    console.error('更新分类失败:', error);
                     showAlert('danger', '更新过程中发生错误: ' + error.message);
-                });
+                }
             });
         });
+
+        // 修改 updateConfidenceDisplay 函数
+        function updateConfidenceDisplay(fileName, confidenceScores) {
+            console.log('Updating confidence display for:', fileName);
+            console.log('Confidence scores:', confidenceScores);
+            
+            const fileRow = document.querySelector(`[data-file="${fileName}"]`);
+            if (fileRow) {
+                console.log('Found file row:', fileRow);
+                // 修改这里，使用正确的选择器
+                ['level1', 'level2', 'level3'].forEach(level => {
+                    const score = confidenceScores[level];
+                    const badge = fileRow.querySelector(`[data-level="${level.slice(-1)}"] + .confidence-badge`);
+                    if (badge) {
+                        console.log(`Updating badge for ${level} with score ${score}`);
+                        badge.textContent = `${Math.round(score * 100)}%`;
+                        
+                        // 更新置信度样式
+                        badge.className = 'input-group-text confidence-badge';
+                        if (score >= 0.9) badge.classList.add('confidence-very-high');
+                        else if (score >= 0.7) badge.classList.add('confidence-high');
+                        else if (score >= 0.5) badge.classList.add('confidence-medium');
+                        else if (score >= 0.3) badge.classList.add('confidence-low');
+                        else if (score >= 0.1) badge.classList.add('confidence-very-low');
+                        else badge.classList.add('confidence-none');
+                    } else {
+                        console.error(`Badge not found for ${level}`);
+                    }
+                    
+                    // 更新输入框样式
+                    const input = fileRow.querySelector(`[data-level="${level.slice(-1)}"]`);
+                    if (input) {
+                        console.log(`Updating input for ${level} with score ${score}`);
+                        if (score >= 0.8) {
+                            input.disabled = true;
+                            input.style.backgroundColor = '#d4edda';
+                            input.style.borderColor = '#28a745';
+                        } else {
+                            input.disabled = false;
+                            if (score >= 0.7) input.style.backgroundColor = '#cce5ff';
+                            else if (score >= 0.5) input.style.backgroundColor = '#fff3cd';
+                            else if (score >= 0.3) input.style.backgroundColor = '#ffe5d0';
+                            else input.style.backgroundColor = '#f8d7da';
+                        }
+                    } else {
+                        console.error(`Input not found for ${level}`);
+                    }
+                });
+            } else {
+                console.error('File row not found for:', fileName);
+            }
+        }
+
+        // 修改 showMongoDBUpdateReminder 函数
+        function showMongoDBUpdateReminder() {
+            // 检查是否已经存在提醒
+            if (document.querySelector('.mongodb-reminder')) {
+                return; // 如果已存在，直接返回
+            }
+            
+            const reminder = document.createElement('div');
+            reminder.className = 'mongodb-reminder';
+            reminder.innerHTML = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>提醒：</strong> 分类已更新到本地文件。请记得更新MongoDB数据库以保持同步。
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            document.body.insertBefore(reminder, document.body.firstChild);
+        }
+
+        // 修改 showNeo4jUpdateReminder 函数
+        function showNeo4jUpdateReminder() {
+            // 检查是否已经存在提醒
+            if (document.querySelector('.neo4j-reminder')) {
+                return; // 如果已存在，直接返回
+            }
+            
+            const reminder = document.createElement('div');
+            reminder.className = 'neo4j-reminder';
+            reminder.innerHTML = `
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>提醒：</strong> 分类层级已更新。请记得将新的分类导入到Neo4j数据库以保持同步。
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            document.body.insertBefore(reminder, document.body.firstChild);
+        }
 
         // 初始化所有工具提示
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -683,6 +793,53 @@ pre code {
     white-space: pre-wrap;
     word-wrap: break-word;
     display: block;
+}
+
+.mongodb-reminder {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
+
+.low-confidence {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .75rem 1.25rem;
+}
+
+.neo4j-reminder {
+    position: fixed;
+    top: 80px;  /* 位于MongoDB提醒下方 */
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
 }
 </style>
 {% endblock %} 

@@ -1,0 +1,29 @@
+====第1封邮件====
+邮件主题：答复: [案例号: CAS-02251-M1T3N3 ] % |普通事件| Dell | FTP站点无法关联到文件夹 % 初次响应 CMIT:0001462
+====第2封邮件====
+发件人：Wang Binbin
+发送时间：2020-05-08 11:32:08.525000+00:00
+邮件内容:
+Hi Lianbin,
+
+根据您的描述，我谨在此阐述问题涉及的范围定义：
+
+问题范围：用户使用ie11连接ftp文件服务器，不会跳转到文件资源管理器打开，无法关联到文件夹。
+
+问题定义：协助用户分析此问题。
+
+如您对以上问题范围定义有任何疑问请直接与我联系。
+
+根据目前的问题现象，可能与系统设置有关，请用户按照以下步骤修改相关注册表键值，修改完成后重启系统，再验证问题现象是否消失：
+
+==================================================
+
+1.	键入Windows键+R键，调出运行栏，输入regedit，打开注册表编辑器；
+
+2.	找到对应键值：HKEY_CURRENT_USER\Software\Microsoft\FTP，双击右侧中的“Use PASV”项，将键值修改为“no”；
+
+3.	找到对应键值：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_INTERNET_SHELL_FOLDERS，双击右侧中的“iexplore.exe”项，将键值修改为“1”；（此项为之前提供的操作方法，如已完成请忽略）
+
+4.	找到对应键值：HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_INTERNET_SHELL_FOLDERS，双击右侧中的“iexplore.exe”项，将键值修改为“1”；
+
+热线电话：400-818-0055

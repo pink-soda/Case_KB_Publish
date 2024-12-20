@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:43:14
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-19 10:07:48
+LastEditTime: 2024-12-19 16:08:18
 FilePath: \Case_KB\audit_handler.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -97,13 +97,14 @@ class AuditHandler:
     def audit_case(self, case_id, audit_result):
         """审核案例分类结果"""
         try:
-            # 1. 更新 MongoDB
+            # 1. 更新 MongoDB - 添加100%的置信度得分
             update_data = {
                 'case_review': 'completed',
                 'audit_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'category': audit_result['category'],
                 'case_comment': audit_result.get('comment', ''),
-                'auditor': audit_result.get('auditor', 'unknown')
+                'auditor': audit_result.get('auditor', 'unknown'),
+                'case_score': '1.0'  # 修改为字符串格式
             }
             
             result = self.mongo.cases.update_one(
@@ -114,7 +115,7 @@ class AuditHandler:
             if result.modified_count == 0:
                 return False
 
-            # 2. 更新 classified_cases.json
+            # 2. 更新 classified_cases.json - 添加置信度得分
             try:
                 with open('classified_cases.json', 'r', encoding='utf-8') as f:
                     cases = json.load(f)
@@ -125,6 +126,11 @@ class AuditHandler:
                             'level1': audit_result['category'][0],
                             'level2': audit_result['category'][1],
                             'level3': audit_result['category'][2]
+                        }
+                        case['category_score'] = {  # JSON文件中保持对象格式
+                            'level1': 1.0,
+                            'level2': 1.0,
+                            'level3': 1.0
                         }
                         break
                 

@@ -1,0 +1,32 @@
+====第1封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-27 17:39:53.654000+00:00
+邮件内容:
+Hi Lei
+
+感谢support，驱动方面会让客户尝试确定.
+
+因目前我们还在家办公，无法进一步测试，那是否有条件帮忙测试下蓝牙连接方面信息？
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753
+====第2封邮件====
+发件人：Wei Liang
+发送时间：2020-05-27 17:46:52.610000+00:00
+邮件内容:
+Lianbin_Que 您好：
+
+针对硬件相关的问题，这边暂时没有合适的测试环境去复现，
+
+您这边能给出出现此情况的具体的蓝牙硬件型号吗？
+
+电子邮箱： weiliang@cmgos.com
+
+官方网站： www.cmgos.com
+
+________________________________

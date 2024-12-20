@@ -1,0 +1,77 @@
+====第1封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-08 11:34:34.917000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+
+Hi Binbin
+
+好的，我们先让客户尝试，有情况Update给你，谢谢！
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753
+====第2封邮件====
+发件人：Wang Binbin
+发送时间：2020-05-09 15:19:49.552000+00:00
+邮件内容:
+Hi Lianbin,
+
+感谢您的反馈，请让用户按照如下方式尝试操作：
+
+1， 按照附件“修改注册表键值”中的方法将另一个注册表键值进行更改，并验证问题是否依然存在。
+
+2， 如果问题依然存在，请按照附件“启动clean boot模式”中方法，将系统重启，重启之后再验证问题。以此方法来排除是否由于第三方应用所导致。（同时附上“退出clean boot模式”文档，验证完问题之后可以按照此文档恢复到正常模式）。
+
+3， 如果问题依然存在，请将系统恢复到正常模式，运行附件“CMGE-DataCollectionTool.zip”中的CMGE-DataCollectionTool.exe 文件，运行之后会在桌面生成一个log文件夹，请将这个文件夹压缩回传给我。以方便我们分析问题。
+
+热线电话：400-818-0055
+====第3封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-11 13:22:41.910000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+
+Hi Binbin
+
+有其他方案吗？
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753
+====第4封邮件====
+发件人：Wang Binbin
+发送时间：2020-05-11 14:18:10.687000+00:00
+邮件内容:
+Hi lianbin,
+
+5月9号15:20已将下一步方案发送给您， 可能由于邮件中带有附件，您那边被拦截了。我刚刚将上封邮件转到您的外网邮箱了307654849@qq.com，请您查收！
+
+热线电话：400-818-0055
+====第5封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-05-12 13:45:02.962000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+
+Hi Binbin
+
+今天上午有把客户测试的信息外部邮件给你。
+
+客户测试第二套方案还是不行.
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753

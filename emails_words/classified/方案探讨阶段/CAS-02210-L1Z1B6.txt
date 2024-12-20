@@ -1,0 +1,72 @@
+====第1封邮件====
+发件人：Chenguang CG5 Wang
+发送时间：2020-04-24 18:01:32.019000+00:00
+邮件内容:
+齐哥好，
+
+       根据神州网信提供手册，当更换了主板之后，则系统不可以被出厂序列号和产品密钥 重新激活，服务站上门已经更换了主板和提供了新的标签，现根据神州网信反馈，由于硬件信息缺失（主板号，制造商和设备型号字段均为空）导致用户无法激活；关于硬件信息缺失应该如何处理？
+
+用户：李先生
+
+单位：成都市第三人民医院
+
+电话：15282876830
+
+邮箱：1246867613@qq.com <mailto:1246867613@qq.com> 
+
+出厂编号：M70E5LFM
+
+CPSD CC 王晨光
+
+400-810-6666
+
+Commerical Product Services Delivery 
+
+	010-58859506
+
+Lenovo Wuxi
+
+lenovoka@lenovo.com <mailto:lenovoka@lenovo.com> 
+
+www.lenovo.com.cn
+
+Plan | Perfor | Prioritize | Practice | Pioneer
+====第2封邮件====
+发件人：Peter Qi
+发送时间：2020-04-24 18:33:11.674000+00:00
+邮件内容:
+重新申请硬件信息齐全的主板和key进行维修测试。
+
+发自：ZUK Z2
+
+在 2020年4月24日 18:01，Chenguang CG5 Wang <wangcg5@lenovo.com>写道：
+
+齐哥好，
+
+       根据神州网信提供手册，当更换了主板之后，则系统不可以被出厂序列号和产品密钥 重新激活，服务站上门已经更换了主板和提供了新的标签，现根据神州网信反馈，由于硬件信息缺失（主板号，制造商和设备型号字段均为空）导致用户无法激活；关于硬件信息缺失应该如何处理？
+
+用户：李先生
+
+单位：成都市第三人民医院
+
+电话：15282876830
+
+邮箱：1246867613@qq.com <mailto:1246867613@qq.com> 
+
+出厂编号：M70E5LFM
+
+CPSD CC 王晨光
+
+400-810-6666
+
+Commerical Product Services Delivery 
+
+	010-58859506
+
+Lenovo Wuxi
+
+lenovoka@lenovo.com <mailto:lenovoka@lenovo.com> 
+
+www.lenovo.com.cn
+
+Plan | Perfor | Prioritize | Practice | Pioneer

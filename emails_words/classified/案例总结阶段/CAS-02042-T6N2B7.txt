@@ -1,0 +1,15 @@
+====第1封邮件====
+发件人：Shi Guannan
+发送时间：2020-05-29 15:51:57.938000+00:00
+邮件内容:
+Hi Jian,
+
+CAS-02042-T6N2B7  | 普通事件 | Lenovo| 在进OS的登陆界面进入S4，唤醒后不显示 时间/期间及解锁提示，只有背景图
+
+3月16日  一线Case创建
+
+3月18日 二线升级研发，创建 Issue #9752
+
+3月20日 研发升级MS，创建Fiji bug 292124 <https://partner.microsoft.com/en-us/dashboard/collaborate/engagements/1208/feedback/wits/Bugs/292124> 
+
+Guannan

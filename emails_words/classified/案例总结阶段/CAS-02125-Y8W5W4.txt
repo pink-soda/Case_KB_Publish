@@ -1,0 +1,71 @@
+====第1封邮件====
+发件人：Xu Da
+发送时间：2020-04-13 10:05:06.820000+00:00
+邮件内容:
+Hi Chengxiao，Liujian，
+
+我理解Case可以先Close，如果客户后续还有问题，可以继续重启讨论，谢谢
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第2封邮件====
+发件人：Liu Jian
+发送时间：2020-04-13 10:37:16.414000+00:00
+邮件内容:
+可以close，不过徐达放心，没有处理的时候也不会扣时间的
+
+Thank you for your time!
+
+----------
+
+Best Regards,
+
+Carl Liu（刘健）
+
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+====第3封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-13 11:08:06.069000+00:00
+邮件内容:
+刘建，徐达 您好：
+
+收到您发来的邮件确认，现暂将此案例关闭归档。如果后期需要重启案例请及时通知。
+
+感谢您在案例处理过程中的积极配合和帮助，祝您生活愉快。
+
+电子邮箱： baicx@cmgos.com
+
+官方网站： www.cmgos.com <http://www.cmgos.com>
+====第4封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-27 10:24:50.633000+00:00
+邮件内容:
+刘健 您好，
+
+请您确认此案例是否可以关闭。
+
+谢谢，
+
+电子邮箱： baicx@cmgos.com
+
+官方网站： www.cmgos.com <http://www.cmgos.com>
+====第5封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-29 18:26:49.293000+00:00
+邮件内容:
+刘健 您好，
+
+经您确认现将此案例关闭归档。如有何疑问请及时联系。
+
+谢谢，
+
+电子邮箱： baicx@cmgos.com
+
+官方网站： www.cmgos.com <http://www.cmgos.com>

@@ -1,0 +1,19 @@
+====第1封邮件====
+发件人：Wang Binbin
+发送时间：2020-02-20 09:36:54.484000+00:00
+邮件内容:
+葛先生您好，
+
+请按照如下步骤尝试操作：
+
+1．点击开始图标—运行—输入regedit打开注册表；
+
+2．找到路径HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU，其中UseWUServer默认值为1，改成0；
+
+3．点击开始图标—运行—输入services.msc，找到Windows Update 服务，点击重启；
+
+4．以管理员身份再次运行powershell：执行dism.exe /online /enable-feature /featurename:NetFX3 /Source:c:\sxs；
+
+5．如果安装成功将第二步的修改还原，并重启Windows Update 服务。
+
+热线电话：400-818-0055

@@ -1,0 +1,29 @@
+====第1封邮件====
+发件人：Chen Lei
+发送时间：2020-03-26 14:16:02.834000+00:00
+邮件内容:
+范先生，您好：
+
+针对神州网信V2020-L系统版本，需要使用对应版本的.Net framework 3.5安装包进行安装。
+
+请您按照以下步骤操作，并验证问题现象：
+
+===========================
+
+1． 通过神州网信CDUC上传系统将新的.net压缩文件拷贝到本地，系统账户密码已通过邮件发送给您。
+
+文件下载地址：https://cduc.cmgos.com/download.php?id=85&token=peHnimBYcWIUS2Wsyzbz0FxMBIzx9KEV 
+
+2．在c盘根目录建立一个文件夹（如c:\sxs）；
+
+3．请解压.net压缩文件并将文件中的Microsoft-Windows-NetFx3-OnDemand-Package~31bf3856ad364e35~amd64~zh-CN~.cab\Microsoft-Windows-NetFx3-OnDemand-Package~31bf3856ad364e35~amd64~~.cab 放至新建的sxs文件夹内；
+
+4．以管理员身份运行CMD或powershell：执行dism.exe /online /enable-feature /featurename:NetFX3 /Source:c:\sxs
+
+5．请注意需将标黄处的命令替换为实际文件夹地址，并且请保留“/”符号前的空格。
+
+6．等待程序运行完成，提示“操作成功完成”即安装成功。
+
+请您在操作完成后通过邮件告知验证结果。
+
+谢谢。

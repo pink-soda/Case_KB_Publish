@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-17 22:47:52
+LastEditTime: 2024-12-20 11:18:39
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -967,7 +967,7 @@ def email_classification():
                                 'level2': '',
                                 'level3': ''
                             }),
-                            'confidence': case.get('category_score', {
+                            'confidence': case.get('category_score', {  # 从 category_score 字段读取置信度
                                 'level1': 0.0,
                                 'level2': 0.0,
                                 'level3': 0.0
@@ -1244,6 +1244,11 @@ def update_file_categories():
         data = request.get_json()
         file_name = data.get('file_name')
         categories = data.get('categories')
+        confidence_scores = data.get('confidence', {  # 添加置信度参数
+            'level1': 0.0,
+            'level2': 0.0,
+            'level3': 0.0
+        })
         
         if not file_name or not categories:
             return jsonify({
@@ -1258,11 +1263,12 @@ def update_file_categories():
         # 构建完整的文件路径
         full_path = os.path.join('./emails', file_name)
         
-        # 更新指定文件的分类
+        # 更新指定文件的分类和置信度
         case_updated = False
         for case in cases:
             if case.get('file_path', '').endswith(file_name):
                 case['classification'] = categories
+                case['category_score'] = confidence_scores  # 添加置信度更新
                 case_updated = True
                 break
         
@@ -1270,7 +1276,8 @@ def update_file_categories():
         if not case_updated:
             cases.append({
                 'file_path': full_path,
-                'classification': categories
+                'classification': categories,
+                'category_score': confidence_scores  # 添加置信度
             })
         
         # 保存更新后的数据
@@ -1381,6 +1388,112 @@ def test_cases():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/recalculate-confidence', methods=['POST'])
+def recalculate_confidence():
+    try:
+        data = request.get_json()
+        case_content = data.get('case_content')
+        categories = data.get('categories')
+        file_path = data.get('file_path')
+        
+        if not case_content or not categories or not file_path:
+            return jsonify({
+                'success': False,
+                'message': '缺少必要参数'
+            }), 400
+            
+        # 使用LLM重新计算置信度
+        llm_handler = LLMHandler()
+        confidence_scores = llm_handler.calculate_category_confidence(
+            case_content=case_content,
+            assigned_categories=categories
+        )
+        
+        # 只返回置信度分数，不包含解释和建议
+        confidence_scores_simple = {
+            'level1': confidence_scores['level1'],
+            'level2': confidence_scores['level2'],
+            'level3': confidence_scores['level3']
+        }
+        
+        hierarchy_updated = False
+        # 检查并更新分类层级
+        try:
+            with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+                hierarchy = json.load(f)
+            
+            # 检查每个级别的分类是否存在
+            level1 = categories.get('level1')
+            level2 = categories.get('level2')
+            level3 = categories.get('level3')
+            
+            if level1 not in hierarchy:
+                hierarchy[level1] = {}
+                hierarchy_updated = True
+            
+            if level2 and level2 not in hierarchy[level1]:
+                hierarchy[level1][level2] = []
+                hierarchy_updated = True
+            
+            if level3 and level3 not in hierarchy[level1].get(level2, []):
+                if not hierarchy[level1][level2]:
+                    hierarchy[level1][level2] = [level3]
+                else:
+                    hierarchy[level1][level2].append(level3)
+                hierarchy_updated = True
+            
+            if hierarchy_updated:
+                # 保存更新后的分类层级
+                with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+                    json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+        
+        except Exception as e:
+            logger.error(f"更新分类层级失败: {str(e)}")
+            return jsonify({
+                'success': False,
+                'message': f'更新分类层级失败: {str(e)}'
+            }), 500
+        
+        # 更新本地JSON文件中的置信度
+        try:
+            with open('classified_cases.json', 'r', encoding='utf-8') as f:
+                cases = json.load(f)
+                
+            # 查找并更新对应案例的置信度分数
+            for case in cases:
+                if case['file_path'] == file_path:
+                    case['category_score'] = {
+                        'level1': confidence_scores['level1'],
+                        'level2': confidence_scores['level2'],
+                        'level3': confidence_scores['level3']
+                    }
+                    break
+                    
+            # 保存更新后的JSON文件
+            with open('classified_cases.json', 'w', encoding='utf-8') as f:
+                json.dump(cases, f, ensure_ascii=False, indent=2)
+                
+            return jsonify({
+                'success': True,
+                'confidence_scores': confidence_scores_simple,  # 使用简化的置信度分数
+                'message': '置信度已更新到本地文件',
+                'hierarchy_updated': hierarchy_updated
+            })
+            
+        except Exception as e:
+            logger.error(f"更新JSON文件失败: {str(e)}")
+            return jsonify({
+                'success': False,
+                'message': f'更新本地文件失败: {str(e)}'
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"重新计算置信度失败: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     try:

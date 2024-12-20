@@ -1,0 +1,62 @@
+====第1封邮件====
+邮件主题：答复: 回复: 回复: 回复: [案例号: CAS-02283-Z3R5N8 ] % |P1|ICBC|工行用户反馈蓝屏问题 % 初次响应 CMIT:0001573
+====第2封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user7a071bfa
+发送时间：2020-05-14 18:07:15.363000+00:00
+邮件内容:
+Hi All,
+
+收到毓杰线下通知，Case降为P2级别处理。
+
+@win10sup@sdc.icbc.com.cn <mailto:win10sup@sdc.icbc.com.cn> ，如需再次提升为P1级别，请随时联系。谢谢
+
+Best Regards!
+
+王文磊
+
+________________________________
+
+www.cmgos.com <http://www.cmgos.com/> 
+
+Email: wangwl@cmgos.com <mailto:wangwl@cmgos.com> 
+
+Mobile: + 86 186 1036 8080
+====第3封邮件====
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-15 16:12:34.990000+00:00
+邮件内容:
+李工，你好 
+
+        最新的进展，前2次发的日志是由于使用该wifi配置，连上这个wifi后系统蓝屏的。
+====第4封邮件====
+发件人：Li Qi
+发送时间：2020-05-18 12:19:51.352000+00:00
+邮件内容:
+吴先生，您好：
+
+如之前所说，循例问一下，dump文件是否已成功上传。另有关vwifimf.sys的问题，我们之前有类似案例表明与TMS相关，需要TMS项目组分析。所以请帮忙联系TMS项目组人员，我们提供协助分析。谢谢
+====第5封邮件====
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-19 09:10:31.538000+00:00
+邮件内容:
+李工，你好 
+
+        日志已经上传空间。另外已经通知TMS公司拿日志同步分析。
+====第6封邮件====
+发件人：Li Qi
+发送时间：2020-05-25 18:06:07.583000+00:00
+邮件内容:
+吴先生，您好：
+
+循例问一下，此蓝屏问题用户是否有何反馈更新，盼复，谢谢
+====第7封邮件====
+发件人：Louis Han
+发送时间：2020-05-27 16:06:32.328000+00:00
+邮件内容:
+Hi LiQi,
+
+好的，多谢。
+
+Louis Han | Support Escalation Engineer | Customer Service & Support, Asia Pacific & Greater China Region
+
+P +86 (510) 66657646

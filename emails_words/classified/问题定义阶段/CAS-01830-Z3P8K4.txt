@@ -1,0 +1,45 @@
+====第1封邮件====
+邮件主题：回复: Re:回复: Re:回复: Re:回复: [案例号: CAS-01830-Z3P8K4 ] % 国网-中国电科院账户锁定问题 % 初次响应 CMIT:0001086
+====第2封邮件====
+发件人：Wang Binbin
+发送时间：2020-01-17 15:40:27.505000+00:00
+邮件内容:
+陈女士您好，
+
+根据与您的沟通，我谨在此阐述问题涉及的范围定义：
+
+问题定义: 在组策略中，将账户锁定时间改为0，之后账户锁定无法进入系统。
+
+问题范围: 协助您分析并处理上述问题
+
+如果您对以上的问题范围界定有任何异议，请尽快告知。
+
+请参考以下步骤：
+
+1.     从WinPE盘启动，进入WinPE命令提示符界面
+
+2.     确定神州网信系统安装在哪一个盘符下。下面的图片是实例，神州网信安装在C盘。您需要确认您的神州网信安装在哪个盘符（通常情况下是安装在C盘）
+
+3.     运行如下两条命令将C:\windows\system32\utilman.exe 备份，并将C:\windows\system32\cmd.exe拷贝覆盖C:\windows\system32\utilman.exe。
+
+命令1：move c:\windows\system32\utilman.exe c:\windows\system32\utilman.exe.bak
+
+命令2：copy c:\windows\system32\cmd.exe c:\windows\system32\utilman.exe
+
+4.     运行如下命令重启电脑。
+
+Wpeutil reboot
+
+5.     重启后，在登录界面，点击右下角的“轻松使用”按钮，会弹出一个命令行窗口。
+
+6.     在这个命令行窗口中，执行以下命令：
+
+net user <username> /active:yes
+
+其中，需要将<username>用您的被锁定的用户名替代。
+
+7.     关闭命令行窗口，重启机器，这时，之前被锁定的用户已经解锁，可以登录。
+
+8.     需要将将第3步备份的C:\windows\system32\utilman.exe恢复回来。您可以再进一次WinPE，执行以下命令。您也可以尝试直接在系统中将C:\Windows\System32\Utilman.exe.bak改名为Utilman.exe，但可能因权限问题无法更改。在PE模式下，是一定可以恢复的。
+
+热线电话：400-818-0055

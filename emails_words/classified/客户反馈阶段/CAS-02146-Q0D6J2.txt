@@ -1,0 +1,36 @@
+====第1封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-13 14:20:00.004000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+
+Hi Li Qi
+
+好的，我们会跟客户确定，谢谢！
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753
+====第2封邮件====
+发件人：Lianbin.Que@dell.com
+发送时间：2020-04-13 16:12:36.808000+00:00
+邮件内容:
+Dell Customer Communication - Confidential
+
+Hi Li Qi
+
+根据跟客户确定，目前应该是客户那边的情况导致，无需跟进了，谢谢！
+
+感谢支持，我通过客户再次沟通确认到，他们发生此问题，是因为这个普通账户是限制的C盘访问的，所以可能存放到桌面重启会消失图标，后面客户在测试放到其他磁盘是没有问题的，这么看来因该就是C盘受限导致，所以本案无需再跟进了。
+
+Lianbin_Que
+
+CTE, Great China Client Technical Support
+
+Pro Support | Pro Support Plus
+
+office +86-592-818-8753

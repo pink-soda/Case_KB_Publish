@@ -1,0 +1,44 @@
+====第1封邮件====
+发件人：Shi Guannan
+发送时间：2020-05-07 13:38:47.839000+00:00
+邮件内容:
+Hi Liuyuan，
+
+经过与产品和研发的沟通，V2020-L版本配置项修改工具已经制作完成，预计于本周内发布到support网站。
+
+请知悉。
+
+Guannan
+====第2封邮件====
+发件人：Shi Guannan
+发送时间：2020-05-07 16:25:00.168000+00:00
+邮件内容:
+Hi all，
+
+V2020-L版本配置项修改工具已经正式发布：
+
+https://support.cmgos.com/updatedownload/cmgetools/pei_zhi_xiang_xiu_gai_gong_ju/
+
+名称
+
+描述
+
+现象
+
+风险
+
+CleanVirtMemPageFile_V0-G <https://support.cmgos.com/download/CleanVirtMemPageFile.exe> 
+
+CleanVirtMemPageFile_V0-H <https://support.cmgos.com/download/CleanVirtMemPageFile_V0-H.exe> 
+
+CleanVirtMemPageFile_V2020-L <https://support.cmgos.com/download/CleanVirtMemPageFile_V2020-L.msi> 
+
+禁用“关机：清除虚拟内存页面文件”
+
+CMGE默认开启该选项，可能会影响用户关机及重启速度
+
+禁用该选项后，可能导致用户数据泄露
+
+如果用户有相关需求可以提供此链接到用户下载对应版本的配置项修改工具。
+
+Guannan

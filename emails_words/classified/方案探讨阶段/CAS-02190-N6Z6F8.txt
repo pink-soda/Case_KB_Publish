@@ -1,0 +1,30 @@
+====第1封邮件====
+发件人：Li Qi
+发送时间：2020-04-22 16:34:20.500000+00:00
+邮件内容:
+陈先生，您好：
+
+如刚才电话沟通，如果sfc /SCANNOW执行完成，仍然无法正常打开开始菜单。请使用powershell管理员身份依次执行以下命令：
+
+Dism /Online /Cleanup-Image /CheckHealth
+
+DISM /Online /Cleanup-image /RestoreHealth
+
+并将结果截图保存，我会在5点-5点半再次与您联系，谢谢
+====第2封邮件====
+发件人：Li Qi
+发送时间：2020-04-22 19:34:05.383000+00:00
+邮件内容:
+陈先生，您好：
+
+经过下午的远程连接和日志分析，目前针对ShellExperienceHost运行时报错“系统在此应用程序中检测到基于堆栈的缓冲区溢出。溢出可能允许恶意用户获得此应用程序的控制。”的问题，有如下几个操作可供尝试：
+
+1， 卸载KB4516077。该补丁并非神州网信系统推送的补丁内容。具体信息可查看微软的官方文档说明。怀疑可能在少数特定设备上出现类似问题。相关链接：https://support.microsoft.com/en-us/help/4516077/windows-10-update-kb4516077
+
+2， 从正常系统中拷贝ShellExperienceHost_cw5n1h2txyewy文件夹替换此电脑内容。具体路径：C:\windows\SystemApps
+
+3， 删除C:\Windows\SoftwareDistribution里的内容，如无法删除，禁用windows update服务及后台智能传输服务
+
+4， 禁用360天擎
+
+5， 查看C:\windows\SystemApps\ShellExperienceHost_cw5n1h2txyewy\ShellExperienceHost.exe的文件属性，更改为当前系统登录用户，并赋予完全权限，再次双击运行

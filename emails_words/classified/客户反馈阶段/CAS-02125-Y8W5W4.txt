@@ -1,0 +1,43 @@
+====第1封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-04-24 14:08:33.705000+00:00
+邮件内容:
+刘健 您好，
+
+温馨提示：此案例是否需要重新开启并升级研发？如果是的话，请帮忙补全上次邮件中附件表格。
+
+谢谢，
+
+电子邮箱： baicx@cmgos.com
+
+官方网站： www.cmgos.com <http://www.cmgos.com>
+====第2封邮件====
+发件人：Liu Jian
+发送时间：2020-04-26 16:18:23.538000+00:00
+邮件内容:
+收到，感谢支持
+
+Thank you for your time!
+
+----------
+
+Best Regards,
+
+Carl Liu（刘健）
+
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com
+====第3封邮件====
+发件人：Liu Jian
+发送时间：2020-04-27 10:30:28.995000+00:00
+邮件内容:
+微软那边是否有更多信息？
+
+Thank you for your time!
+
+----------
+
+Best Regards,
+
+Carl Liu（刘健）
+
+Mobile: + 86 13810968329 | Email: liujian@cmgos.com

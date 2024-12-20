@@ -1,0 +1,113 @@
+====第1封邮件====
+发件人：Xu Da
+发送时间：2020-03-03 18:09:26.767000+00:00
+邮件内容:
+Hi Liqi,
+
+是的，客户3月底需要准备招行投标的项目，希望CMIT可以尽快澄清。
+
+多谢
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第2封邮件====
+发件人：Xu Da
+发送时间：2020-03-04 13:14:45.162000+00:00
+邮件内容:
+Hi Liqi，
+
+售前会根据如下反馈同Lenovo先沟通，但是根据Lenovo 的测试是有这个问题的，Lenovo想要知道这个问题对CMGE的功能是否有影响？
+
+谢谢
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第3封邮件====
+发件人：Xu Da
+发送时间：2020-03-06 12:44:15.430000+00:00
+邮件内容:
+Hi Liqi，
+
+请问KB4523204，这个上传到CMIT 官网上了吗？
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第4封邮件====
+发件人：Xu Da
+发送时间：2020-03-12 09:31:57.158000+00:00
+邮件内容:
+Hi Liqi,
+
+收到，多谢！
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第5封邮件====
+发件人：Xu Da
+发送时间：2020-03-26 18:03:06.415000+00:00
+邮件内容:
+Hi Liqi，
+
+多谢回复，客户方面也关注“恢复”这个label描述，我先把目前的进展汇报给客户，建议继续看一下“恢复”这个Label的情况，看是否也有KB可以解决。Thanks
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第6封邮件====
+发件人：Xu Da
+发送时间：2020-03-27 11:39:51.120000+00:00
+邮件内容:
+Hi Liqi，
+
+客户目前还是关注为什么label的描述消失了，标准win10的1809有同样的现象吗？
+
+Best Regards
+
+Xu Da 徐达
+
+C&M Information Technology Co., Ltd. 
+
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com>
+====第7封邮件====
+发件人：Li Qi
+发送时间：2020-04-15 16:23:33.320000+00:00
+邮件内容:
+Hi，徐达：
+
+和您确认一下，鉴于目前微软并没有相关的解决方案及对应的已知问题，因此不需要微软再去进一步分析，用户对于此答复已经知晓，并且可以接受了是么？

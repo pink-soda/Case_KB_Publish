@@ -1,0 +1,35 @@
+====第1封邮件====
+发件人：Li Qi
+发送时间：2020-06-28 14:43:41.822000+00:00
+邮件内容:
+吴先生，您好：
+
+如刚才电话沟通，该问题由于目前开发团队尚未定位具体的错误模块及代码内容，经您的同意，此case将暂做归档处理，以下为案例总结，请您知悉：
+
+Case No：CAS-02407-B6X5Q8
+
+问题描述：
+
+=====================
+
+用户反馈分析GCMS系统故障时发现：在win7环境下，系统新增押品流程无异常报错，所有网页均能返回正常200状态的响应。 但在CMGE环境下，系统新增押品流程报错，网页返回异常404状态的响应。致使业务无法继续。
+
+问题分析：
+
+=====================
+
+依据报错信息从Fiddler中可以看到是在做如下请求时：http://gccm.gcms.icbc/icbc/gccm/plgutil/plg_choose_plg_kind.jsp?dse_sessionId=EQBKGGELCUEHEIFZCNISIQABDXDQBSIOEVCHJHHG&dse_pageId=0&_flow_context_string=&plg_area=0271000001&kind_type=001&judgeFlag=1&judge_type=3 <http://gccm.gcms.icbc/icbc/gccm/plgutil/plg_choose_plg_kind.jsp?dse_sessionId=EQBKGGELCUEHEIFZCNISIQABDXDQBSIOEVCHJHHG&dse_pageId=0&_flow_context_string=&plg_area=0271000001&kind_type=001&judgeFlag=1&judge_type=3>  
+
+其中引用的JS方法报错，从Response中可以看到引用如下：
+
+<script type="text/javascript" src="/icbc/gccm/js/ctp/all/jscommon.js;pve7988d4ea9529c0f">
+
+下一步请再出现此问题时点击报错，确定问题方法是什么，此外也请与开发确定此JS来源，是否可以升级。
+
+问题总结：
+
+=====================
+
+经与用户确认，由于目前尚不能确定jscommon.js的代码内容中，哪部分JS语句的问题，建议后期定位到具体问题后进行代码改造。用户同意将case暂做归档处理。
+
+以上，如您后续有任何问题，可随时与我们联系，谢谢

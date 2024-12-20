@@ -1,0 +1,69 @@
+====第1封邮件====
+发件人：win10sup@sdc.icbc.com.cn
+发送时间：2020-05-27 14:16:16.075000+00:00
+邮件内容:
+李工，你好 
+
+        用户在更新网卡驱动后，这几天暂时未复现问题。可以关闭case，待后续复现在与您联系。 
+
+谢谢
+====第2封邮件====
+发件人：Li Qi
+发送时间：2020-05-27 16:00:12.747000+00:00
+邮件内容:
+吴先生，您好：
+
+感谢您的回复，经您的确认，鉴于目前蓝屏问题不再复现，此case将暂做归档处理，以下为案例总结，请您知悉：
+
+Case No： CAS-02283-Z3R5N8
+
+问题描述：
+
+=====================
+
+用户反馈操作系统安装4月的系统更新补丁，重启计算机后频繁蓝屏
+
+问题分析：
+
+=====================
+
+根据用户收集dump内容，蓝屏问题指向\SystemRoot\System32\drivers\Netwbw02.sys
+
+通过查询sys文件版本信息，可以看到网卡驱动版本过低，建议用户升级后观察
+
+0: kd> lmvm Netwbw02
+
+Browse full module list
+
+start             end                 module name
+
+fffff803`42290000 fffff803`42612000   Netwbw02   (private pdb symbols)  c:\symbols\netwbw02.pdb\957856C99F1A4C8887E04F7C2E5C24BE1\netwbw02.pdb
+
+    Loaded symbol image file: Netwbw02.sys
+
+    Image path: \SystemRoot\System32\drivers\Netwbw02.sys
+
+    Image name: Netwbw02.sys
+
+    Browse all global symbols  functions  data
+
+    Timestamp:        Sun Feb 22 19:00:57 2015 (54E9B6E9)
+
+    CheckSum:         0035F5C6
+
+    ImageSize:        00382000
+
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+
+问题总结：
+
+=====================
+
+经用户升级网卡驱动后观察，蓝屏问题不再复现。此case将暂做归档处理，如您有其他问题，可随时与我们联系处理，最后感谢您这段时间对我工作的大力支持。
+====第3封邮件====
+发件人：Li Qi
+发送时间：2020-05-27 16:05:05.218000+00:00
+邮件内容:
+Hi，Louis：
+
+经用户确认，升级网卡驱动后观察一段时间，并未复现蓝屏问题，此case先关闭吧。如后续用户再反馈有相同问题，我再与您联系，谢谢

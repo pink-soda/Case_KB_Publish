@@ -1,0 +1,39 @@
+====第1封邮件====
+邮件主题：回复: [案例号: CAS-02507-T7D7Q1 ] % VDI-VDI服务器激活失败 % 初次响应 CMIT:0001100
+====第2封邮件====
+发件人：Shi Guannan
+发送时间：2020-06-29 14:56:31.656000+00:00
+邮件内容:
+Hi Dev，
+
+售前team部署的VDI激活服务器遇到激活失败问题，已创建Redmine Issue #9768 <https://cmit-pmit.chinanorth.cloudapp.chinacloudapi.cn/issues/9768>  。
+
+请协助处理，谢谢！
+
+系统版本：V2020-L
+
+CmitClient V3.1.0.3
+
+VDI portal： Beta Version
+
+VDI 服务器地址及登录账号：
+
+Windows Server 2016： 10.0.32.25 administrator/1qaz@WSX
+
+VDI Protal : http://10.0.32.25:9090 <http://10.0.32.25:9090/>  administrator / P@ssw0rd
+
+复现频率：固定复现，所有Hyper-v虚机配置到此服务器后都不能激活成功（没有试其他平台虚机）
+
+问题复现步骤：
+
+Hyper-v虚机客户端配置vdi mode及服务器地址后，3-5分钟未获得激活状态。
+
+查询portal无任何激活记录。
+
+查询hyper-v客户端事件管理器发现CmitClient事件有2个错误：
+
+1.”下载激活授权文件失败。Unexpected character encountered while parsing value:<.path", line 0, position 0."
+
+2.“使用内网激活服务器激活系统失败”
+
+Guannan

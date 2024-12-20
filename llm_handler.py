@@ -18,8 +18,8 @@ class KimiHandler:
     def __init__(self):
         # 初始化 Kimi API 客户端
         self.client = OpenAI(
-            api_key=os.getenv("KIMI_API_KEY"),
-            base_url=os.getenv("KIMI_BASE_URL"),
+            api_key=os.getenv("KIMI_API_KEY").rstrip(','),
+            base_url=os.getenv("KIMI_BASE_URL").rstrip(',')
         )
         self.model = os.getenv("KIMI_MODEL_NAME")
 
@@ -64,12 +64,22 @@ class KimiHandler:
             }
 
 class LLMHandler:
-    def __init__(self):        
+    def __init__(self):
+        load_dotenv()  # 加载.env文件
+        self.api_key = os.getenv("AZURE_OPENAI_API_KEY_2")
+        self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT").rstrip('/')
+        self.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+        
+        # 添加调试日志
+        logger.debug(f"API Key: {self.api_key[:5]}...")  # 只显示前5个字符
+        logger.debug(f"Endpoint: {self.endpoint}")
+        logger.debug(f"API Version: {self.api_version}")
+        
         # 初始化Azure OpenAI客户端
         self.client = AzureOpenAI(
-            api_key=os.getenv("AZURE_OPENAI_API_KEY_2"),
-            api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+            api_key=self.api_key,
+            api_version=self.api_version,
+            azure_endpoint=self.endpoint
         )
         
         # 部署名称
@@ -215,18 +225,12 @@ class LLMHandler:
 
     def _call_azure_llm_basic(self, prompt: str) -> str:
         """
-        调用Azure OpenAI API
-        
-        Args:
-            prompt: 要发送给LLM的提示文本
-            
-        Returns:
-            str: LLM的响应内容
+        调用Azure OpenAI API，如果失败则切换到Kimi
         """
         try:
-            # 添加日志记录
+            # 首先尝试使用Azure LLM
             logger.info("开始调用Azure LLM")
-            logger.debug(f"发送的prompt: {prompt[:200]}...")  # 只记录前200个字符
+            logger.debug(f"发送的prompt: {prompt[:200]}...")
             
             response = self.client.chat.completions.create(
                 model=self.deployment_name,
@@ -238,17 +242,32 @@ class LLMHandler:
                 max_tokens=1000
             )
             
-            # 记录响应
             result = response.choices[0].message.content
             logger.info(f"Azure LLM响应成功，返回内容长度: {len(result)}")
             logger.debug(f"返回内容预览: {result[:200]}...")
             
             return result
             
-        except Exception as e:
-            logger.error(f"调用Azure LLM失败: {str(e)}")
-            logger.error(traceback.format_exc())
-            raise
+        except Exception as azure_error:
+            logger.warning(f"Azure LLM调用失败，切换到Kimi: {str(azure_error)}")
+            try:
+                # 使用Kimi作为备选
+                response = self.kimi_handler.client.chat.completions.create(
+                    model=self.kimi_handler.model,
+                    messages=[
+                        {"role": "system", "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"},
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                result = response.choices[0].message.content
+                logger.info("Kimi响应成功")
+                logger.info(f"Kimi响应内容: {result}")
+                return result
+                
+            except Exception as kimi_error:
+                logger.error(f"Kimi调用也失败了: {str(kimi_error)}")
+                logger.error(traceback.format_exc())
+                raise Exception("Azure和Kimi都调用失败了") from kimi_error
 
     @retry(
         stop=stop_after_attempt(3),  # 最多重试3次
@@ -281,7 +300,10 @@ class LLMHandler:
             if "429" in str(e):  # 如果是速率限制错误
                 logger.info("触发速率限制，等待后重试...")
                 time.sleep(3)  # 强制等待3秒
-                raise  # 重新抛出异常以触发重试
+                raise Exception("Azure LLM调用失败") from e # 重新抛出异常以触发重试
+            elif "401" in str(e):  # 如果是认证错误
+                logger.info("认证失败，切换到Kimi...")
+                raise Exception("Azure LLM认证失败") from e # 抛出异常以触发切换到Kimi
             return self._get_default_response()  # 如果是其他错误，返回默认响应
 
     def _get_default_response(self) -> str:
@@ -422,7 +444,7 @@ class LLMHandler:
 
             email_content = response.choices[0].message.content.strip()
             
-            # 如果返回的内容包含多余的引号或格式标记，清理它们
+            # 如果返回的内容包含多余的引号或格式标，清理它们
             email_content = email_content.strip('`').strip('"')
             
             return email_content
@@ -498,3 +520,103 @@ class LLMHandler:
         
         logger.info(f"类别 '{category}' 的最终完整路径: {result}")
         return result
+
+    def calculate_category_confidence(self, case_content, assigned_categories):
+        """计算给定分类的置信度"""
+        try:
+            # 打印输入参数
+            logger.info(f"计算置信度 - 输入分类: {assigned_categories}")
+            
+            # 提取案例文本内容
+            text_content = '\n'.join([page.get('text', '') for page in case_content.get('pages', [])])
+            
+            # 构建提示
+            prompt = f"""
+            请分析以下案例内容，并评估其与给定分类的匹配程度。
+
+            案例内容：
+            {text_content}
+            
+            分类：
+            一级分类：{assigned_categories.get('level1', '')}
+            二级分类：{assigned_categories.get('level2', '')}
+            三级分类：{assigned_categories.get('level3', '')}
+            
+            请为每个级别的分类评分（0-1之间），评分标准：
+            1. 完全匹配：0.9-1.0
+            2. 高度相关：0.8-0.9
+            3. 中度相关：0.6-0.8
+            4. 低度相关：0.4-0.6
+            5. 基本不相关：0-0.4
+
+            请以JSON格式返回评分结果，必须包含以下字段：
+            1. category_scores: 包含每个级别分类的得分
+            2. explanations: 包含每个级别的评分理由
+            3. reasoning: 如果得分低于0.8，需要提供改进建议
+
+            示例返回格式：
+            {{
+                "category_scores": {{
+                    "level1": 0.95,
+                    "level2": 0.75,
+                    "level3": 0.85
+                }},
+                "explanations": {{
+                    "level1": "一级分类完全符合案例描述的问题性质",
+                    "level2": "二级分类与案例内容相关但不够精确",
+                    "level3": "三级分类准确匹配了具体错误类型"
+                }},
+                "reasoning": {{
+                    "level2": "建议考虑更精确的二级分类，因为当前分类过于宽泛"
+                }}
+            }}
+            """
+            
+            # 调用LLM获取评分
+            response = self._call_azure_llm_basic(prompt)
+            logger.info(f"LLM原始响应: {response}")
+            
+            # 解析响应
+            try:
+                result = json.loads(response)
+                logger.info(f"解析后的结果: {result}")
+                
+                # 确保所有必要的字段都存在
+                if not all(key in result.get('category_scores', {}) for key in ['level1', 'level2', 'level3']):
+                    raise ValueError("响应缺少必要的评分字段")
+                
+                # 返回标准化的置信度分数
+                confidence_scores = {
+                    'level1': float(result['category_scores'].get('level1', 0)),
+                    'level2': float(result['category_scores'].get('level2', 0)),
+                    'level3': float(result['category_scores'].get('level3', 0)),
+                    'explanations': result.get('explanations', {}),
+                    'reasoning': result.get('reasoning', {})
+                }
+                
+                logger.info(f"最终置信度分数: {confidence_scores}")
+                return confidence_scores
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON解析错误: {str(e)}")
+                logger.error(f"原始响应: {response}")
+                raise
+                
+        except Exception as e:
+            logger.error(f"计算置信度失败: {str(e)}")
+            return {
+                'level1': 0.0,
+                'level2': 0.0,
+                'level3': 0.0,
+                'explanations': {},
+                'reasoning': {}
+            }
+
+    def test_connection(self):
+        try:
+            response = self._call_azure_llm_basic("Hello")
+            print("连接测试成功!")
+            return True
+        except Exception as e:
+            print(f"连接测试失败: {str(e)}")
+            return False

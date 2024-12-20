@@ -1,0 +1,15 @@
+====第1封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=user79e88472
+发送时间：2020-05-15 10:03:01.721000+00:00
+邮件内容:
+白先生，您好：
+
+如之前电话沟通，请您按照附件步骤操作并截屏回复结果以便我们进行下一步排查。
+
+同时，您也可以下载联想官方应用“驱动管理”来确保所有硬件均正确安装驱动。下载连接：https://think.lenovo.com.cn/webdrivercd/One.aspx
+
+感谢您对我们服务的支持。
+
+电子邮箱： baicx@cmgos.com
+
+官方网站： www.cmgos.com <http://www.cmgos.com>

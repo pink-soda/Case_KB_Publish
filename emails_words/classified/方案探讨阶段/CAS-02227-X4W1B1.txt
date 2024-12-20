@@ -1,0 +1,539 @@
+====第1封邮件====
+发件人：Jia Wei
+发送时间：2020-04-28 18:04:27.113000+00:00
+邮件内容:
+Hi Xing Yang,
+
+请帮忙建立sftp服务器账号和密码
+
+用户：陕西省煤田地质集团有限公司
+
+用于传输蓝屏dump文件
+
+--------------
+
+服务电话： 400-818-0055
+====第2封邮件====
+发件人：/o=cmit/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=66c410893400499fad1eac4c5e411482
+发送时间：2020-04-28 18:13:59.383000+00:00
+邮件内容:
+HI Jia Wei
+
+账号已创建
+
+账号：sxmtdzjt
+
+密码：GwvQ7Z32
+====第3封邮件====
+发件人：huzuochen
+发送时间：2020-04-28 18:23:45.060000+00:00
+邮件内容:
+已有日志文件，明天请告知ftp
+
+---原始邮件---
+====第4封邮件====
+发件人：Jia Wei
+发送时间：2020-05-07 09:47:29.810000+00:00
+邮件内容:
+胡先生, 您好!
+
+在等待生产蓝屏dump期间，我们建议您运行附件的工具收集信息，尝试初步分析问题
+
+数据收集：
+
+1）        下载<CMGE-DataCollectionTool.zip>并解压到本地磁盘；
+
+2）        确保桌面无log文件夹；
+
+3）        双击运行<CMGE-DataCollectionToolV1-1.exe>文件；
+
+4）        弹框：你要允许此应用对你的设备进行更改吗，选择“是”；
+
+5）        阅读“”，按任意键继续；
+
+6）       等待1-3分钟，log文件夹创建在当前用户桌面。
+
+将log文件夹压缩后上传系统，具体方法如下：
+
+数据上传
+
+Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client
+
+   主机：sftp://ocean.cmgos.com
+
+   用户名为：sxmtdzjt
+
+   端口：22222
+
+   密码：GwvQ7Z32
+
+注意上传前确认点击跳转到/upload
+
+--------------
+
+服务电话： 400-818-0055
+====第5封邮件====
+发件人：Jia Wei
+发送时间：2020-05-07 12:56:04.646000+00:00
+邮件内容:
+胡先生, 您好!
+
+这个工具收集系统的基本信息、网络信息和补丁信息等内容，包括系统日志在内。我们可以尝试查看发生蓝屏或hangs时间点，是否存在对应的事件日志报错信息。
+
+--------------
+
+服务电话： 400-818-0055
+====第6封邮件====
+发件人：Jia Wei
+发送时间：2020-05-07 16:41:58.208000+00:00
+邮件内容:
+好的，下载dump文件之后我们马上开始案例升级流程。
+
+--------------
+
+服务电话： 400-818-0055
+====第7封邮件====
+发件人：Jia Wei
+发送时间：2020-05-07 17:38:18.469000+00:00
+邮件内容:
+Hi Li Xin
+
+最终用户：陕西省煤田地质集团有限公司
+
+案例描述：用户机器出现不定期蓝屏现象，无固定复现步骤，为随机出现，伴随出现卡死现象。
+
+系统版本：CMGE V2020-L (Windows 10 EnterpriseG 1809)
+
+案例进展：现已收集到Full dump和kernel dump，但由于symbol无法解析，暂无法查看dump内容，需要升级处理
+
+案例分析：
+
+目前只能看到full dump报错代码为：0x1e
+
+KMODE_EXCEPTION_NOT_HANDLED This indicates that a kernel-mode program generated an exception that the error handler did not catch
+
+KMODE_EXCEPTION_NOT_HANDLED (1e)
+
+This is a very common bugcheck.  Usually the exception address pinpoints
+
+the driver/function that caused the problem.  Always note this address
+
+as well as the link date of the driver/image that contains this address.
+
+Arguments:
+
+Arg1: ffffffffc0000005, The exception code that was not handled
+
+Arg2: ffffd1ba599fb11e, The address that the exception occurred at
+
+Arg3: 0000000000000001, Parameter 0 of the exception
+
+Arg4: 000000000000c004, Parameter 1 of the exception
+
+Dump文件
+
+Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client
+
+   主机：sftp://ocean.cmgos.com
+
+   用户名为：sxmtdzjt
+
+   端口：22222
+
+   密码：GwvQ7Z32
+
+--------------
+
+服务电话： 400-818-0055
+====第8封邮件====
+发件人：Jia Wei
+发送时间：2020-05-09 11:36:13.367000+00:00
+邮件内容:
+胡先生, 您好!
+
+案例进展：
+
+1.	Full dump打开异常，出现大量“GetContextState failed, 0xD0000147”报错信息
+
+2.	第一次上传的dump文件问题报错为
+
+KERNEL_SECURITY_CHECK_FAILURE (139) A kernel component has corrupted a critical data structure. 
+
+*  由于不是full dump文件，所以暂时无法进行深入分析
+
+*  报错参数显示
+
+Arg1: 0000000000000003, A LIST_ENTRY has been corrupted (i.e. double remove).
+
+*  数据链表崩溃，根据之前同样报错信息的案例信息来看，此报错大概率与三方软件的驱动有关系，比如.sys文件。
+
+建议操作：
+
+1）继续收集full dump文件。由于新生成的dump文件会覆盖掉之前的，所以如果出现蓝屏现象，压缩并上传最新的full dump文件
+
+2）同时按下Windows+R键，运行appwiz.cpl
+
+3）将安装的软件列表截图例如下面所示，务必截全名称和版本信息
+
+数据上传
+
+Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client
+
+   主机：sftp://ocean.cmgos.com
+
+   用户名为：sxmtdzjt
+
+   端口：22222
+
+   密码：GwvQ7Z32
+
+--------------
+
+服务电话： 400-818-0055
+====第9封邮件====
+发件人：Jia Wei
+发送时间：2020-05-12 14:43:57.834000+00:00
+邮件内容:
+胡先生, 您好!
+
+您可以按照上封邮件“建议操作”的步骤进行数据收集，如果完成可回复此邮件通知我即可。
+
+--------------
+
+服务电话： 400-818-0055
+====第10封邮件====
+发件人：Jia Wei
+发送时间：2020-05-19 09:40:19.630000+00:00
+邮件内容:
+胡先生，您好
+
+如果此案例数据收集有进展，您可以回复此邮件，谢谢。
+
+建议操作：
+
+1.  继续收集full dump文件。由于新生成的dump文件会覆盖掉之前的，所以如果出现蓝屏现象，压缩并上传最新的full dump文件
+
+2.  同时按下Windows+R键，运行appwiz.cpl
+
+3.  将安装的软件列表截图例如下面所示，务必截全名称和版本信息
+
+数据上传
+
+Filezilla client端下载URL：https://filezilla-project.org/download.php?type=client
+
+   主机：sftp://ocean.cmgos.com
+
+   用户名为：sxmtdzjt
+
+   端口：22222
+
+   密码：GwvQ7Z32
+
+--------------
+
+服务电话： 400-818-0055
+====第11封邮件====
+发件人：?胡佐臣
+发送时间：2020-05-19 10:05:14.752000+00:00
+邮件内容:
+已将采集的appwiz.cpl信息上传FTP，客户那边提供的是拍照，非截图，不好意思，辛苦了。
+
+日志方面目前没有进展，之前说的采集工具因涉及隐私客户不同意使用。
+
+原始邮件
+====第12封邮件====
+发件人：Jia Wei
+发送时间：2020-05-27 13:55:20.221000+00:00
+邮件内容:
+胡先生，您好
+
+根据我们之前的电话沟通结果，如果有新的蓝屏Full Dump产生，可以随时压缩后上传sftp服务器。我将继续观察此案例1周时间。
+
+--------------
+
+服务电话： 400-818-0055
+====第13封邮件====
+发件人：Jia Wei
+发送时间：2020-06-01 10:03:08.604000+00:00
+邮件内容:
+胡先生，您好
+
+根据您所反馈的dump文件，查看对应引用bad memory的地址，发现对应的是Ntfs.sys驱动程序。
+
+此驱动为系统出厂自带驱动，建议操作如下：
+
+进行系统更新，将ntfs,sys升级至10.0.17763.1098
+
+1.	点击“开始”按钮 -> 设置。打开设置界
+
+2.	面，选择“更新和安全”。
+
+2.在“Windows更新”页面，选择“检查更新”，查看是否存在可供更新的版本。
+
+3.重启后在如下路径查看ntfs.sys属性，确认详细信息是否升级至对应版本。
+
+由于涉及到驱动，要再查看bad memory是哪个驱动引起的，必须要开启special pool了。您可以和用户商量是否要开启，但务必提示用户开启后的风险。
+
+Important:  
+
+1. 开启special pool可能会引起系统性能下降，导致蓝屏问题更容易触发。
+
+1、开special pool
+
+请按照如下方法开启special pool:
+
+a.  右键单击开始按钮-> 选择“运行”, 输入 verifier 点击确认. 
+
+b.  选择 "创建自定义设置" 再点击下一步. 
+
+c.  勾选 "特殊池" 再点击下一步. 
+
+d.  选择“从一个列表选择驱动程序名”
+
+e.  点击“全选”，再点击完成
+
+f.  重启计算机生效
+
+2. 关闭special pool
+
+a.     右键单击开始按钮-> 选择“运行”, 输入 verifier 点击确认. 
+
+b.     选择“删除现有设置”，点击完成，再重启生效
+
+Dump分析：
+
+3: kd> !address fffff807376ef014
+
+Mapping user range ...
+
+Mapping system range ...
+
+Mapping non addressable range ...
+
+Mapping page tables...
+
+Mapping hyperspace...
+
+Mapping HAL reserved range...
+
+Mapping User Probe Area...
+
+Mapping system shared page...
+
+Mapping system cache working set...
+
+Mapping loader mappings...
+
+Mapping system PTEs...
+
+Mapping system paged pool...
+
+Mapping session space...
+
+Mapping dynamic system space...
+
+Mapping PFN database...
+
+Mapping non paged pool...
+
+Mapping VAD regions...
+
+Mapping module regions...
+
+Mapping process, thread, and stack regions...
+
+Mapping system cache regions...
+
+Usage:                  Module
+
+Base Address:           fffff807`375f0000
+
+End Address:            fffff807`3787d000
+
+Region Size:            00000000`0028d000
+
+VA Type:                BootLoaded
+
+Module name:            Ntfs.sys
+
+Module path:            [\SystemRoot\System32\Drivers\Ntfs.sys]
+
+3: kd> lmDvm ntfs*
+
+Browse full module list
+
+start             end                 module name
+
+fffff807`375f0000 fffff807`3787d000   Ntfs     # (no symbols)           
+
+    Loaded symbol image file: Ntfs.sys
+
+    Mapped memory image file: C:\ProgramData\Dbg\sym\Ntfs.sys\3885B4CF28d000\Ntfs.sys
+
+    Image path: \SystemRoot\System32\Drivers\Ntfs.sys
+
+    Image name: Ntfs.sys
+
+    Browse all global symbols  functions  data
+
+    Image was built with /Brepro flag.
+
+    Timestamp:        3885B4CF (This is a reproducible build file hash, not a timestamp)
+
+    CheckSum:         0028A9FA
+
+    ImageSize:        0028D000
+
+    File version:     10.0.17763.592
+
+    Product version:  10.0.17763.592
+
+    File flags:       0 (Mask 3F)
+
+    File OS:          40004 NT Win32
+
+    File type:        3.7 Driver
+
+    File date:        00000000.00000000
+
+    Translations:     0409.04b0
+
+    Information from resource tables:
+
+        CompanyName:      Microsoft Corporation
+
+        ProductName:      Microsoft® Windows® Operating System
+
+        InternalName:     ntfs.sys
+
+        OriginalFilename: ntfs.sys
+
+        ProductVersion:   10.0.17763.592
+
+        FileVersion:      10.0.17763.592 (WinBuild.160101.0800)
+
+        FileDescription:  NT File System Driver
+
+        LegalCopyright:   © Microsoft Corporation. All rights reserved.
+
+--------------
+
+服务电话： 400-818-0055
+====第14封邮件====
+发件人：?胡佐臣
+发送时间：2020-06-01 14:42:24.862000+00:00
+邮件内容:
+已收到。
+
+1.请问能否直接复制ntfs.sys文件进行替换。
+
+2.开启special pool ，是还需要继续收集蓝屏日志吗
+
+原始邮件
+====第15封邮件====
+发件人：Jia Wei
+发送时间：2020-06-01 15:31:17.135000+00:00
+邮件内容:
+胡先生，您好
+
+查看您的截图看起来是网络问题。先检查能否连接到更新服务器：
+
+1. 同时按下“Windows键+X”，按下“A”，选择”是“以管理员身份运行PowerShell；
+
+2. 运行Test-NetConnection -computerName wu.cmgos.com -port 80（可复制此段内容）命令，查看结果TcpTestSucceeded是否未True；
+
+以下截图分别为“成功”、“失败”示例：
+
+如果网络不行，建议排查网络，本地网络监控软件，或使用其他方式，例如手机热点方式连接网络
+
+二、重置SoftwareDistribution文件夹
+
+1. 键入Windows键+R键，调出运行栏，输入services.msc，调出服务框，找到并停止Windows update 服务；
+
+2. 导航至C:\Windows，找到SoftwareDistribution文件夹。将此文件夹重命名，如SoftwareDistribution_old；
+
+3. 同时按下Windows键+R键，调出运行栏，输入services.msc，调出服务框，找到并启用Windows update 服务；
+
+4. 再到设置 -> 更新和安全 -> 点击Windows 更新-重试
+
+1.	请问能否直接复制ntfs.sys文件进行替换。
+
+理论上可以复制并替换此文件，但必须时同一版本的文件。但我们仍建议先升级更新。
+
+2.开启special pool ，是还需要继续收集蓝屏日志吗
+
+   是的，开启special pool之后，如果有驱动程序读/写越界会抓取当时的内存信息。
+
+--------------
+
+服务电话： 400-818-0055
+====第16封邮件====
+发件人：huzuochen
+发送时间：2020-06-01 15:59:40.539000+00:00
+邮件内容:
+你好，运行命令结果为True。
+
+第二个方法已试过不行，刚在网上找的办法。
+
+包括对比了
+
+windows update，开启
+
+app readiness，停止
+
+Cryptographic Services，启动
+
+Background Intelligent Transfer Service，停止
+
+Windows Installer停止
+
+---原始邮件---
+====第17封邮件====
+发件人：Jia Wei
+发送时间：2020-06-01 16:46:38.999000+00:00
+邮件内容:
+胡先生，您好
+
+我这边又查找了相关文档，如果尝试仍失败，只能收集数据进行分析
+
+1.查看更新客户端状态，如果状态不对，可以重启此服务。
+
+2.清除当前的BITS队列；
+
+以管理员身份运行CMD，输入：bitsadmin.exe /reset /allusers，再手动点击Windows更新进行下载
+
+3.收集CBS Log、Windowsupdate.Log、Windows更新事件日志
+
+日志路径：
+
+*  C:\Windows\Logs\CBS；
+
+*  以管理员运行Powershell，运行命令：get-windowsupdatelog，在桌面会生成Windowsupdate日志，
+
+*  C:\Windows\System32\winevt\logs文件夹，找到Microsoft-Windows-WindowsUpdateClient
+
+临时解决方案：到如下网站手动下载并双击安装补丁包，首先建议下载KB4551853累计更新，其他为截图对应的其他补丁包
+
+https://support.cmgos.com/v2020lupdatesummary
+
+--------------
+
+服务电话： 400-818-0055
+====第18封邮件====
+发件人：huzuochen
+发送时间：2020-06-01 17:54:02.547000+00:00
+邮件内容:
+镜像问题，我先解决下镜像问题。
+
+---原始邮件---
+====第19封邮件====
+发件人：Jia Wei
+发送时间：2020-06-03 10:36:22.677000+00:00
+邮件内容:
+胡先生，您好
+
+收到，您可以使用纯净版镜像安装后测试Windows更新，再观察蓝屏现象是否还会复现，如果有问题请回复此邮件，
+
+--------------
+
+服务电话： 400-818-0055

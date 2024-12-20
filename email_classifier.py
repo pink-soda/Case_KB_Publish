@@ -18,6 +18,9 @@ class EmailClassifier:
         self.similarity_threshold = similarity_threshold
         self.categories = {}  # 存储已有的分类及其示例
         self.llm = LLMHandler()
+        self.output_base_dir = os.path.join(email_dir, "classified")  # 添加输出基础目录
+        if not os.path.exists(self.output_base_dir):
+            os.makedirs(self.output_base_dir)
         
     def _parse_email_file(self, file_path: str) -> List[str]:
         """解析邮件文件，返回邮件内容列表"""
@@ -70,7 +73,7 @@ class EmailClassifier:
                 prompt = f"""
                 请分析以下技术支持邮件内容，判断它属于哪个处理阶段。请严格按照以下JSON格式返回结果。
 
-                可选的处理阶段：
+                可选的处理阶段(不限于以下阶段)：
                 1. 问题定义阶段：明确问题症状、影响范围、紧急程度等
                 2. 方案探讨阶段：讨论可能的解决方案、评估可行性
                 3. 方案确认与测试阶段：确定解决方案并进行测试验证
@@ -93,7 +96,8 @@ class EmailClassifier:
                                            for cat, examples in self.categories.items()])
                 prompt = f"""
                 请分析以下技术支持邮件内容，判断它是否属于已有的处理阶段分类。请严格按照JSON格式返回结果。
-                如果不属于任何已有分类（相似度低于80%），请创建新的阶段分类。
+                如果不属于任何已有分类（相似度低于80%），请根据邮件内容定义新的阶段分类。
+                新的阶段分类命名要符合技术支持案例的处理阶段命名规范，不要使用"新"、"其他"、"未知"等模糊词汇。
 
                 已有的阶段分类及示例：
                 {categories_desc}
@@ -148,15 +152,71 @@ class EmailClassifier:
             logger.error(f"错误详情: ", exc_info=True)
             return (None, 0.0)
     
+    def _save_email_to_category(self, category: str, case_id: str, email_content: str):
+        """保存邮件到对应分类目录"""
+        try:
+            # 创建分类目录
+            category_dir = os.path.join(self.output_base_dir, category)
+            if not os.path.exists(category_dir):
+                os.makedirs(category_dir)
+            
+            # 构建输出文件路径
+            output_file = os.path.join(category_dir, f"{case_id}.txt")
+            
+            # 如果文件已存在，追加内容；否则创建新文件
+            mode = 'a' if os.path.exists(output_file) else 'w'
+            with open(output_file, 'a', encoding='utf-8') as f:
+                if mode == 'a':
+                    f.write(f"\n====第{self._get_email_count(output_file) + 1}封邮件====\n")
+                else:
+                    f.write(f"====第1封邮件====\n")
+                f.write(email_content)
+                
+            logger.info(f"已保存邮件到 {output_file}")
+            
+        except Exception as e:
+            logger.error(f"保存邮件到分类目录时出错: {str(e)}")
+
+    def _get_email_count(self, file_path: str) -> int:
+        """获取文件中已有的邮件数量"""
+        try:
+            if not os.path.exists(file_path):
+                return 0
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return len(re.findall(r'====第\d+封邮件====', content))
+        except Exception:
+            return 0
+
+    def _is_case_processed(self, case_id: str) -> bool:
+        """检查案例是否已经处理过"""
+        # 检查是否在任何分类目录下存在该案例的文件
+        if os.path.exists(self.output_base_dir):
+            for category in os.listdir(self.output_base_dir):
+                category_path = os.path.join(self.output_base_dir, category)
+                if os.path.isdir(category_path):
+                    case_file = os.path.join(category_path, f"{case_id}.txt")
+                    if os.path.exists(case_file):
+                        logger.info(f"案例 {case_id} 已在 {category} 分类中存在")
+                        return True
+        return False
+
     def classify_emails(self) -> Dict:
         """对所有邮件进行分类"""
         results = {}
         logger.info(f"开始扫描目录: {self.email_dir}")
         
-        # 按文件名排序处理文件
         files = sorted(os.listdir(self.email_dir))
         for filename in files:
             if not filename.endswith('.txt'):
+                continue
+                
+            # 从文件名中提取案例编号
+            case_id = os.path.splitext(filename)[0]
+            
+            # 检查案例是否已处理
+            if self._is_case_processed(case_id):
+                logger.info(f"跳过已处理的案例: {case_id}")
                 continue
                 
             logger.info(f"处理文件: {filename}")
@@ -180,6 +240,9 @@ class EmailClassifier:
                             if category not in self.categories:
                                 self.categories[category] = []
                             self.categories[category].append(email)
+                            
+                            # 保存邮件到对应的分类目录
+                            self._save_email_to_category(category, case_id, email)
                             
                             file_results.append({
                                 'content': email,

@@ -125,7 +125,7 @@ class CategoryHierarchyBuilder:
             }},
             "matched_path_level1": "",  // 匹配到的现有一级分类路径，如果是新分类则为空字符串
             "matched_path_level2": "",  // 匹配到的现有二级分类路径，如果是新分类则为空字符串
-            "matched_path_level3": "",  // 匹配到的现有三级分���路径，如果是新分类则为空字符串
+            "matched_path_level3": "",  // 匹配到的现有三级分类路径，如果是新分类则为空字符串
             "reasoning": "分类理由说明"  // 必须提供分类理由
         }}
         所有字段都是必需的，不能省略任字段。如果某个字段没有值，使用空字符串""，不要使用null或省略该字段。
