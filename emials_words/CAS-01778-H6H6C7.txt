@@ -1,0 +1,349 @@
+邮件主题：回复: [案例号: CAS-01778-H6H6C7 ] % | P2 | Lenovo | 客户测试AMD平台导入V2020-L，开关机出现内存报错弹窗 % 初次响应 CMIT:0001705
+
+====第1封邮件====
+
+发件人：Shi Guannan
+发送时间：2020-01-03 15:54:22.093000+00:00
+邮件内容:
+Hi Liqi，
+请处理一下Lenovo 的产线P2 case。
+Guannan
+
+====第2封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-03 16:23:43.941000+00:00
+邮件内容:
+Hi，徐达：
+根据您的需求，我谨在此阐述问题涉及的范围定义：
+问题范围：客户测试AMD平台导入V2020-L，出现内存报错弹窗
+问题定义：协助用户处理此问题
+如您对以上问题范围定义有任何疑问请直接与我联系。
+
+====第3封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-03 17:03:09.559000+00:00
+邮件内容:
+Hi，徐达：
+如刚才沟通，目前可以尝试如下方法：
+1.	使用clean boot的方式测试是否有此问题复现，方法如下：
+在运行栏内输入msconfig，调出系统配置，在“常规”下选择“有选择的启动”，勾选加载系统服务，取消勾选加载启动项
+在“服务”选项下，勾选“隐藏所有Microsoft服务”，再点击“全部禁用”-确定，重启进入Clean boot，确认问题是否存在
+2.	从错误截图来看，与显卡有关，atieclxx.exe是ATI显卡催化剂的程序，检查c:\windows\system32下的atieclxx.exe文件的版本信息，并截图给我。同时更新显卡驱动
+3.	收取procmon日志，解压附件文件至本地，运行procmon.exe,点击文件-backing file，并做如下图设置，
+打开CMD命令行窗口，跳转至procmon.exe路径，执行如下命令：Procmon /BackingFile C:\Test.PML /AcceptEula /Quiet /Minimized，复现问题，将生成日志文件发送给我，谢谢
+另外，请帮忙收集如下信息：
+1.	事件查看器日志：C:\Windows\System32\winevt\Logs地址下的application.evtx和System.evtx
+2.	系统信息截图：右键“开始”菜单，“系统”和“设备管理器”（重点显卡部分）的截图
+
+====第4封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-07 09:14:10.343000+00:00
+邮件内容:
+Hi，徐达：
+循例问下该case客户是否有任何反馈，方便时请告知，谢谢
+
+====第5封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-07 09:19:56.796000+00:00
+邮件内容:
+Liqi，
+客户目前未提供可复现问题的主机，谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第6封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-09 17:11:12.476000+00:00
+邮件内容:
+Hi，徐达：
+循例问下该case客户是否有任何反馈，方便时请告知，谢谢
+
+====第7封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-09 17:16:37.641000+00:00
+邮件内容:
+客户已经邮寄主机，估计明天可以到CMIT。
+谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第8封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-09 17:18:05.067000+00:00
+邮件内容:
+Hi,徐达：
+感谢反馈，不知之前说的操作步骤用户是否尝试并回复，谢谢
+
+====第9封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-09 17:25:40.023000+00:00
+邮件内容:
+Hi Liqi，
+客户提到提供的主机桌面有些日志，没有具体说明日志情况，可以等收到主机后查看。
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第10封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-09 17:27:04.419000+00:00
+邮件内容:
+Hi，徐达：
+好的，谢谢
+
+====第11封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-10 11:03:54.119000+00:00
+邮件内容:
+Hi Liqi，
+已经在xi线下提供Lenovo主机，开解密码如下，如需什么support还请联系
+开机密码Lzx!@#12
+谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第12封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-10 11:17:16.850000+00:00
+邮件内容:
+Hi，徐达：
+使用Lzx!@#12这个密码无法登陆，提示密码错误
+
+====第13封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-10 11:20:37.460000+00:00
+邮件内容:
+Hi Liqi，
+收到，我会同客户沟通
+
+====第14封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-10 11:23:29.846000+00:00
+邮件内容:
+Hi Liqi，
+请试一下，Lzx!@#123
+Thanks
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第15封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-10 16:09:52.188000+00:00
+邮件内容:
+Hi,徐达：
+我这边还未复现出开关机出现报错弹窗的情况，请问用户的具体复现步骤是什么？
+我看用户电脑上有个rebooter的测试软件，具体的使用方法是怎样的？请帮忙询问下用户，谢谢
+
+====第16封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-13 16:04:59.038000+00:00
+邮件内容:
+Hi Liqi，
+如之前描述，Lenovo是做手动开关机就可以复现问题。
+Xu Da 徐达
+C&M Information Technology Co., Ltd.
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326
+Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第17封邮件====
+
+发件人：Li Qi
+发送时间：2020-01-13 17:40:56.735000+00:00
+邮件内容:
+Hi，徐达：
+我这边刚刚手动开关机10次，均未发现报错信息，我查看了用户之前的报错信息，如下，由于本地账户权限原因出现的报错，因此在对应组策略添加账户权限，但目前尚无法验证结果
+这两个服务应为系统诊断服务的依赖服务，用于分析系统故障使用。
+目前由于并没有具体复现问题，所以不知下一步用户的意见是怎样的。请帮忙反馈，谢谢
+
+====第18封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-14 09:36:02.792000+00:00
+邮件内容:
+Hi Liqi，
+收到，昨天同客户沟通未有反馈，CMIT方面可以先按照目前客户提出的仅开关机就可以复现问题的方向复现问题。
+谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第19封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-14 11:46:33.474000+00:00
+邮件内容:
+Hi Liqi，
+客户反馈可以打开设备管理器然后再测试关机。
+“复现的时候可以开机打开设备管理器检查是否有黄叹号，然后直接关机，不要关闭设备管理器，这样复现看看，”
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第20封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-15 13:36:28.764000+00:00
+邮件内容:
+Hi Liqi，
+同客户沟通，客户建议可以先开机按F2，调起Lenovo OKR，做初始备份恢复后再进行问题复现，谢谢
+“如果还是复现不了，可以通过F2调用OKR，然后做初始备份恢复后再使用打开设备管理器的方式看看”
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第21封邮件====
+
+发件人：Xu Da
+发送时间：2020-01-20 09:05:02.131000+00:00
+邮件内容:
+Hi Liqi，
+客户需求今天邮寄回主机，此Case可以暂时关闭，同客户协商后续客户如果在北京复现到此问题，CMIT可以去现场收集Log看现象，谢谢
+Best Regards
+Xu Da 徐达
+C&M Information Technology Co., Ltd. 
+北京市海淀区科学院南路2号融科资讯中心C座北楼11层    100190
+Mobile: +86 18310801326 Email: xuda@cmgos.com <mailto:xuda@cmgos.com> 
+
+====第22封邮件====
+
+发件人：CRM Case Email
+发送时间：2020-01-20 11:27:55.992000+00:00
+邮件内容:
+Hi，徐达：
+感谢您的回复，由于未复现到用户所述问题，经您的同意，此case将暂做归档处理，以下为案例总结，请知悉，谢谢
+Case No：CAS-01778-H6H6C7
+问题描述：
+=====================
+客户测试AMD平台导入V2020-L，出现内存报错弹窗。
+问题分析：
+=====================
+根据用户所述问题，需要进行如下排错分析：
+1.	使用clean boot的方式测试是否有此问题复现，方法如下：
+在运行栏内输入msconfig，调出系统配置，在“常规”下选择“有选择的启动”，勾选加载系统服务，取消勾选加载启动项
+在“服务”选项下，勾选“隐藏所有Microsoft服务”，再点击“全部禁用”-确定，重启进入Clean boot，确认问题是否存在
+2.	从错误截图来看，与显卡有关，atieclxx.exe是ATI显卡催化剂的程序，检查c:\windows\system32下的atieclxx.exe文件的版本信息，并截图给我。同时更新显卡驱动
+3.	收取procmon日志，解压附件文件至本地，运行procmon.exe,点击文件-backing file，并做如下图设置，
+打开CMD命令行窗口，跳转至procmon.exe路径，执行如下命令：Procmon /BackingFile C:\Test.PML /AcceptEula /Quiet /Minimized
+问题总结：
+=====================
+目前并未发现用户所述问题现象，经用户确认，此case暂时归档，如您后续有任何问题，可随时与我们联系，谢谢
+
+====第23封邮件====
+
+发件人：Li Qi
+发送时间：2020-02-10 23:59:18.650000+00:00
+邮件内容:
+Hi，徐达：
+目前已完成对dump文件的分析，以下是分析结果：
+1．有关0x3B，系统访问无效的内存地址导致的问题。
+SYSTEM_SERVICE_EXCEPTION (3b)
+An exception happened while executing a system service routine.
+Arguments:
+Arg1: 00000000c0000005, Exception code that caused the bugcheck
+Arg2: fffff80111624f6f, Address of the instruction which caused the bugcheck
+Arg3: fffff88f785dea80, Address of the context record for the exception that caused the bugcheck
+Arg4: 0000000000000000, zero.
+2．crash的call stack如下，可以看到问题发生的时候，正在做wlan相关的操作。直接原因是sid的值不对。
+7: kd> !mex.t
+Process                                                       Thread           CID       UserTime KernelTime ContextSwitches Wait Reason Time State
+svchost.exe (LocalSystemNetworkRestricted) (ffffca0c884f6240) ffffca0c88525080 c84.ca8       16ms         0s             138 Executive     0s Running on CPU 7
+# Child-SP         Return           Call Site                                                
+ 0 fffff88f785de148 fffff801111dd8e9 nt!KeBugCheckEx+0x0                                              
+ 1 fffff88f785de150 fffff801111dcd3c nt!KiBugCheckDispatch+0x69                                       
+ 2 fffff88f785de290 fffff801111d4b5f nt!KiSystemServiceHandler+0x7c                                   
+ 3 fffff88f785de2d0 fffff8011112d450 nt!RtlpExecuteHandlerForException+0xf                            
+ 4 fffff88f785de300 fffff8011103ac24 nt!RtlDispatchException+0x430                                    
+ 5 fffff88f785dea50 fffff801111dd9c2 nt!KiDispatchException+0x144                                     
+ 6 fffff88f785df100 fffff801111d984b nt!KiExceptionDispatch+0xc2                                      
+ 7 fffff88f785df2e0 fffff80111624f6f nt!KiGeneralProtectionFault+0x30b    
+ 8 fffff88f785df478 fffff801116206ea nt!RtlValidSid+0xf                                               
+ 9 fffff88f785df480 fffff8011187b23a nt!RtlValidSecurityDescriptor+0x8a                               
+ a fffff88f785df4b0 fffff801117b7a3f nt!ObpSetObjectAuditInfo+0x2a            
+……………………………………………………………………………………………..
+17 000000b0b51fec30 00007fff4b992f4f WLANMSM!Dot11MsmAdaptInit+0xb7                                   
+18 000000b0b51fec70 00007fff4ba8d758 WLANMSM!Dot11MsmInitAdapter+0x8f                                 
+19 000000b0b51fecc0 00007fff4ba6a36c wlansvc!IntfInitContext+0x35c                                    
+1a 000000b0b51ff470 00007fff4ba6b53e wlansvc!WimAddInterface+0x3b8                                    
+1b 000000b0b51ff5d0 00007fff4ba6b728 wlansvc!WimRnwfDeviceEventHandler+0x376                          
+1c 000000b0b51ff670 00007fff4ba70488 wlansvc!WimNotificationHandler+0x120                             
+1d 000000b0b51ff6e0 00007fff618e21c5 wlansvc!NhWrkDeviceNotificationHandler+0x108                     
+1e 000000b0b51ff750 00007fff618c05c4 ntdll!RtlpTpWorkCallback+0x165                                   
+1f 000000b0b51ff830 00007fff60677974 ntdll!TppWorkerThread+0x644                                      
+20 000000b0b51ffb20 00007fff618da271 KERNEL32!BaseThreadInitThunk+0x14                                
+21 000000b0b51ffb50 0000000000000000 ntdll!RtlUserThreadStart+0x21    
+7: kd> .frame /r 0x8; !mex.x
+08 fffff88f`785df478 fffff801`116206ea nt!RtlValidSid+0xf [minkernel\ntos\rtl\sertl.c @ 1135] 
+rax=00007fffffff0000 rbx=ffffda8fc4553c70 rcx=005c006500630069
+rdx=fffff88f785df608 rsi=fffff88f785df608 rdi=0000000000000736
+rip=fffff80111624f6f rsp=fffff88f785df478 rbp=ffffca0c89302d10
+r8=0000000000000000  r9=000000000000000f r10=ffffca0c7d466b20
+r11=fffff88f785df410 r12=ca0c89302d100001 r13=ffffca0c89302d10
+r14=ffffca0c894ea000 r15=ffffda8fc4553c70
+iopl=0         nv up ei ng nz na po nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000286
+nt!RtlValidSid+0xf:
+fffff801`11624f6f 0fb601          movzx   eax,byte ptr [rcx] ds:002b:005c0065`00630069=??
+@rcx              Sid = 0x005c0065`00630069
+7: kd> !pte 0x005c0065`00630069
+                                           VA 005c006500630069
+PXE at FFFF95CAE572B000    PPE at FFFF95CAE5600CA0    PDE at FFFF95CAC0194018    PTE at FFFF958032803180
+contains 0A0000013DBAB867  contains 0000000000000000
+pfn 13dbab    ---DA--UWEV  contains 0000000000000000
+not valid
+WARNING: noncanonical VA, accesses will fault !
+由于NT当时访问了无效的内存地址, 抛出access violation 的异常, 触发蓝屏. 
+关于SID地址异常的情况,发现是由于代码问题导致该数据没有被正确的初始化. 因而导致后面在valid SID地址的时候出现访问违规问题导致蓝屏 
+3．当前使用的wifi驱动如下：
+7: kd> dx -r1 ((WLANMSM!_DOT11_ADAPTER *)0xb0b51ff060)
+((WLANMSM!_DOT11_ADAPTER *)0xb0b51ff060)                 : 0xb0b51ff060 [Type: _DOT11_ADAPTER *]
+    [+0x000] gAdapterId       : {6A7CF4CD-AC11-4CC2-8317-C877EF15FF5D} [Type: _GUID]
+    [+0x010] pszDescription   : 0x239746750c0 : "Microsoft Wi-Fi Direct Virtual Adapter" [Type: wchar_t *]
+    [+0x018] Dot11CurrentOpMode [Type: _DOT11_CURRENT_OPERATION_MODE]
+4．检查当前系统的系统补丁，安装到KB4516077
+* 10.0.17763.771 | ntoskrnl.exe | 4516077 | 2019/09/24      | 2019.09 C - Cumulative Non-Security (Update) for Windows 10 1809
+5．针对此问题，目前可以确认，需要修复系统组件nwifi，因此请安装KB4520062
+以上，请用户在进行测试之前先安装KB4520062，然后再对问题进行复现，看是否可以解决此问题。谢谢
+
+====第24封邮件====
+
+发件人：Xu Da
+发送时间：2020-02-11 09:22:11.856000+00:00
+邮件内容:
+Hi Liqi，
+AMD平台内存弹框报错问题之前暂时close了，之前提的蓝屏问题，是否是回复的那个BSOD问题？
