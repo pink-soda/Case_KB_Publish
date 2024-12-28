@@ -1,0 +1,42 @@
+<!--
+ * @Author: pink-soda luckyli0127@gmail.com
+ * @Date: 2024-12-28 14:15:41
+ * @LastEditors: pink-soda luckyli0127@gmail.com
+ * @LastEditTime: 2024-12-28 15:57:52
+ * @FilePath: \Case_KB\templates\classification_result.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+{% macro render_hierarchy(hierarchy) %}
+    <div class="view-controls mb-3">
+        <button class="btn btn-sm btn-outline-primary active" id="treeViewBtn">树形视图</button>
+        <button class="btn btn-sm btn-outline-secondary" id="jsonViewBtn">JSON视图</button>
+    </div>
+
+    <div id="treeView" class="hierarchy-tree" style="display: block;">
+        {% for level1, level2_dict in hierarchy.items() %}
+            <div class="level1-item">
+                <span class="folder">{{ level1 }}</span>
+                <ul>
+                    {% for level2, level3_list in level2_dict.items() %}
+                        <li>
+                            <span class="folder">{{ level2 }}</span>
+                            {% if level3_list %}
+                                <ul>
+                                    {% for level3 in level3_list %}
+                                        <li><span class="file">{{ level3 }}</span></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="jsonView" class="json-view" style="display: none;">
+        <pre class="bg-light p-3 rounded"><code id="hierarchyCode">{{ hierarchy | tojson(indent=2) }}</code></pre>
+    </div>
+{% endmacro %}
+
+{{ render_hierarchy(hierarchy) }} 

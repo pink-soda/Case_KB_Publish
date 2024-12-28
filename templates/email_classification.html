@@ -2,7 +2,7 @@
  * @Author: pink-soda luckyli0127@gmail.com
  * @Date: 2024-12-12 13:27:37
  * @LastEditors: pink-soda luckyli0127@gmail.com
- * @LastEditTime: 2024-12-20 13:24:09
+ * @LastEditTime: 2024-12-28 14:51:54
  * @FilePath: \Case_KB\templates\email_classification.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -11,6 +11,15 @@
 {% block content %}
 <!-- Toast 容器移到最外层 -->
 <div class="toast-container"></div>
+
+<div class="progress-status-container" style="display: none;">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+             role="progressbar" style="width: 0%" 
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+    </div>
+    <div class="progress-text mt-2">处理中...</div>
+</div>
 
 <div class="container mt-4">
     <h2>Case分类管理</h2>
@@ -71,18 +80,26 @@
                                 <div class="d-flex flex-column">
                                     <div class="d-flex align-items-center mb-2">
                                         <span class="me-3">{{ file.name.replace('.pdf', '') }}</span>
-                                        <span class="badge {% if file.processed %}
-                                            {% if file.classification.level1 == '受LLM内容过滤限制' %}bg-danger
-                                            {% else %}bg-success{% endif %}
-                                        {% else %}bg-warning{% endif %}">
+                                        <div class="d-flex align-items-center">
                                             {% if file.processed %}
-                                                {% if file.classification.level1 == '受LLM内容过滤限制' %}
-                                                    已处理，受LLM内容过滤限制无法分析
+                                                {% if "受LLM内容过滤限制" in file.classification.level1 %}
+                                                    <span class="status-badge status-filtered" 
+                                                          data-bs-toggle="tooltip" 
+                                                          data-bs-placement="top" 
+                                                          title="受LLM内容过滤限制无法分析">
+                                                        <i class="fas fa-exclamation-triangle"></i> 已处理
+                                                    </span>
                                                 {% else %}
-                                                    已处理
+                                                    <span class="status-badge status-processed">
+                                                        <i class="fas fa-check"></i> 已处理
+                                                    </span>
                                                 {% endif %}
-                                            {% else %}未处理{% endif %}
-                                        </span>
+                                            {% else %}
+                                                <span class="status-badge status-unprocessed">
+                                                    <i class="fas fa-clock"></i> 未处理
+                                                </span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                     {% if file.processed %}
                                     <div class="category-editor" data-file="{{ file.name }}">
@@ -235,33 +252,14 @@
             </div>
 
             <!-- 分类结果 -->
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">分类结果</h5>
                 </div>
-                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
-                    {% if hierarchy %}
-                        <pre class="bg-light p-3 rounded"><code id="hierarchyCode"></code></pre>
-                        <script>
-                        (function() {  // 使用立即执行函数来避免全局变量污染
-                            const initialHierarchy = JSON.parse('{{ hierarchy | tojson | safe }}');
-                            
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const formattedJson = JSON.stringify(initialHierarchy, null, 2)
-                                    .replace(/\\u[\da-f]{4}/gi, (match) => {
-                                        try {
-                                            return decodeURIComponent(JSON.parse('"' + match + '"'));
-                                        } catch (e) {
-                                            return match;
-                                        }
-                                    });
-                                document.getElementById('hierarchyCode').textContent = formattedJson;
-                            });
-                        })();
-                        </script>
-                    {% else %}
-                        <p class="text-muted">暂无分类数据</p>
-                    {% endif %}
+                <div class="card-body">
+                    <div class="classification-result">
+                        <!-- 这里将通过 AJAX 更新分类结果 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -295,6 +293,9 @@
     console.log('脚本已加载');
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM加载完成');
+        
+        // 添加这一行来初始化分类结果
+        updateClassificationResult();
         
         const form = document.querySelector('form');
         if (!form) {
@@ -475,43 +476,101 @@
         // 修改导入按钮的处理代码
         const importButton = document.getElementById('importToNeo4j');
         if (importButton) {
-            importButton.addEventListener('click', function() {
-                const hierarchyCode = document.getElementById('hierarchyCode');
-                if (!hierarchyCode || !hierarchyCode.textContent) {
-                    showToast('没有可导入的分类数据', 'error');
-                    return;
-                }
+            importButton.addEventListener('click', async function() {
+                try {
+                    // 显示进度条
+                    const progressContainer = document.querySelector('.progress-status-container');
+                    const progressBar = progressContainer.querySelector('.progress-bar');
+                    const progressText = progressContainer.querySelector('.progress-text');
+                    
+                    progressContainer.style.display = 'block';
+                    progressBar.style.width = '30%';
+                    progressBar.textContent = '30%';
+                    progressText.textContent = '检查Neo4j数据状态';
 
-                importButton.disabled = true;
-                importButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>导入中...';
+                    const response = await fetch('/check-neo4j-status');
+                    const data = await response.json();
+                    
+                    if (data.exists) {
+                        // 更新进度条为完成状态
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        progressBar.classList.add('bg-warning');
+                        progressText.textContent = '数据已存在';
 
-                fetch('{{ url_for("import_to_neo4j") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: hierarchyCode.textContent
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('分类数据已成功导入到Neo4j');
+                        // 显示警告
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-warning alert-dismissible fade show neo4j-status-alert';
+                        alert.innerHTML = `
+                            <strong>警告：</strong> 分类数据已存在于Neo4j中，无需重复导入
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        document.querySelector('.container').insertBefore(alert, document.querySelector('.container').firstChild);
                     } else {
-                        // 如果是已存的提示，使用warning类型
-                        if (data.message.includes('已存在')) {
-                            showToast(data.message, 'warning');
+                        // 更新进度条
+                        progressBar.style.width = '60%';
+                        progressBar.textContent = '60%';
+                        progressText.textContent = '导入数据到Neo4j';
+
+                        // 执行导入
+                        const importResponse = await fetch('/import-to-neo4j', {
+                            method: 'POST'
+                        });
+                        const importData = await importResponse.json();
+                        
+                        // 更新最终状态
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        
+                        if (importData.success) {
+                            progressBar.classList.add('bg-success');
+                            progressText.textContent = '导入成功';
+                            
+                            // 显示导入结果
+                            const resultAlert = document.createElement('div');
+                            resultAlert.className = 'alert alert-success alert-dismissible fade show neo4j-status-alert';
+                            resultAlert.innerHTML = `
+                                <strong>成功：</strong> ${importData.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            `;
+                            document.querySelector('.container').insertBefore(resultAlert, document.querySelector('.container').firstChild);
                         } else {
-                            showToast('导入失败: ' + data.message, 'error');
+                            progressBar.classList.add('bg-danger');
+                            progressText.textContent = '导入失败';
+                            
+                            // 显示错误信息
+                            const errorAlert = document.createElement('div');
+                            errorAlert.className = 'alert alert-danger alert-dismissible fade show neo4j-status-alert';
+                            errorAlert.innerHTML = `
+                                <strong>错误：</strong> ${importData.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            `;
+                            document.querySelector('.container').insertBefore(errorAlert, document.querySelector('.container').firstChild);
                         }
                     }
-                })
-                .catch(error => {
-                    showToast('导入过程中发生错误: ' + error.message, 'error');
-                })
-                .finally(() => {
-                    importButton.disabled = false;
-                    importButton.innerHTML = '<i class="fas fa-database me-1"></i>导入Neo4j';
-                });
+                } catch (error) {
+                    // 错误处理
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    progressBar.classList.add('bg-danger');
+                    progressText.textContent = '处理出错';
+                    
+                    console.error('Error:', error);
+                    showAlert('danger', '检查Neo4j状态时出错');
+                } finally {
+                    // 2秒后隐藏进度条
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        progressBar.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+                    }, 2000);
+                    
+                    // 5秒后移除状态提示
+                    setTimeout(() => {
+                        document.querySelectorAll('.neo4j-status-alert').forEach(alert => {
+                            alert.remove();
+                        });
+                    }, 5000);
+                }
             });
         }
 
@@ -521,67 +580,163 @@
             input.addEventListener('change', async function() {
                 const editor = this.closest('.category-editor');
                 const fileName = editor.dataset.file;
-                const level = this.dataset.level;
-                const value = this.value;
-
-                // 收集当前文件的所有分类值
+                
                 const categories = {
                     level1: editor.querySelector('[data-level="1"]').value,
                     level2: editor.querySelector('[data-level="2"]').value,
                     level3: editor.querySelector('[data-level="3"]').value
                 };
 
+                // 显示进度条
+                const progressContainer = document.querySelector('.progress-status-container');
+                const progressBar = progressContainer.querySelector('.progress-bar');
+                const progressText = progressContainer.querySelector('.progress-text');
+                
+                progressContainer.style.display = 'block';
+                
                 try {
-                    // 获取案例内容用于重新计算置信度
-                    const response = await fetch('/get-case-details', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ case_id: fileName.replace('.pdf', '') })
-                    });
-                    const caseDetails = await response.json();
+                    // 步骤1: 获取案例详情 (20%)
+                    progressBar.style.width = '20%';
+                    progressBar.textContent = '20%';
+                    progressText.textContent = '获取案例详情';
+                    const caseDetails = await getCaseDetails(fileName);
                     
-                    // 调用后端重新计算置信度
-                    const confidenceResponse = await fetch('/recalculate-confidence', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            case_content: caseDetails.details,
-                            categories: categories,
-                            file_path: `./emails/${fileName}`
-                        })
-                    });
-                    const confidenceData = await confidenceResponse.json();
-                    
-                    // 添加调试日志
-                    console.log('Response from server:', confidenceData);
+                    // 步骤2: 重新计算置信度 (40%)
+                    progressBar.style.width = '40%';
+                    progressBar.textContent = '40%';
+                    progressText.textContent = '计算分类置信度';
+                    const confidenceData = await recalculateConfidence(caseDetails, categories, fileName);
                     
                     if (confidenceData.success) {
-                        // 修改这里，直接使用 confidence_scores
-                        console.log('Updating with scores:', confidenceData.confidence_scores);
+                        // 步骤3: 更新显示 (60%)
+                        progressBar.style.width = '60%';
+                        progressBar.textContent = '60%';
+                        progressText.textContent = '更新显示';
                         updateConfidenceDisplay(fileName, confidenceData.confidence_scores);
                         
-                        // 显示MongoDB更新提醒
-                        showMongoDBUpdateReminder();
+                        // 步骤4: 更新文件 (80%)
+                        progressBar.style.width = '80%';
+                        progressBar.textContent = '80%';
+                        progressText.textContent = '更新分类文件';
+                        await updateClassificationFiles({
+                            file_name: fileName,
+                            categories: categories,
+                            confidence_scores: confidenceData.confidence_scores
+                        });
+
+                        // 步骤5: 更新界面 (100%)
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        progressText.textContent = '更新界面';
+                        updateEmailList(fileName, categories);
+                        updateClassificationResult();
                         
-                        // 如果分类层级有更新，显示Neo4j更新提醒
-                        if (confidenceData.hierarchy_updated) {
+                        // 显示成功
+                        progressBar.classList.add('bg-success');
+                        progressText.textContent = '更新成功';
+
+                        // 添加提醒
+                        showMongoDBUpdateReminder();  // 显示MongoDB更新提醒
+                        if (confidenceData.hierarchy_updated) {  // 检查是否需要更新Neo4j
                             showNeo4jUpdateReminder();
                         }
-                        
-                        showAlert('success', '分类更新成功');
                     } else {
-                        showAlert('danger', confidenceData.message || '更新失败');
+                        throw new Error(confidenceData.message || '更新失败');
                     }
                 } catch (error) {
-                    console.error('更新分类失败:', error);
-                    showAlert('danger', '更新过程中发生错误: ' + error.message);
+                    // 显示失败
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    progressBar.classList.add('bg-danger');
+                    progressText.textContent = '更新失败';
+                } finally {
+                    // 2秒后隐藏进度条
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        progressBar.classList.remove('bg-success', 'bg-danger');
+                    }, 2000);
                 }
             });
         });
+
+        // 添加实时更新函数
+        function updateEmailList(fileName, categories) {
+            const fileRow = document.querySelector(`[data-file="${fileName}"]`);
+            if (fileRow) {
+                // 更新分类显示
+                ['level1', 'level2', 'level3'].forEach(level => {
+                    const input = fileRow.querySelector(`[data-level="${level.slice(-1)}"]`);
+                    if (input) {
+                        input.value = categories[level];
+                    }
+                });
+            }
+        }
+
+        function updateClassificationResult() {
+            fetch('/get-classification-result')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const resultContainer = document.querySelector('.classification-result');
+                        if (resultContainer) {
+                            resultContainer.innerHTML = data.html;
+                            console.log('分类结果已更新，重新初始化视图控件');
+                            
+                            // 延迟初始化视图控件
+                            setTimeout(() => {
+                                if (typeof window.initializeViewControls === 'function') {
+                                    window.initializeViewControls();
+                                } else {
+                                    console.error('initializeViewControls is not defined');
+                                }
+                            }, 100);
+                        } else {
+                            console.error('未找到分类结果容器');
+                        }
+                    } else {
+                        console.error('获取分类结果失败:', data.message);
+                        showAlert('danger', '更新分类结果失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating classification result:', error);
+                    showAlert('danger', '更新分类结果失败');
+                });
+        }
+
+        // 修改 updateProgress 函数
+        function updateProgress(percentage, message) {
+            const progressContainer = document.querySelector('.progress-status-container');
+            const progressBar = progressContainer.querySelector('.progress-bar');
+            const progressText = progressContainer.querySelector('.progress-text');
+            
+            // 确保进度条容器可见
+            progressContainer.style.display = 'block';
+            
+            // 更新进度条
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage}%`;
+            progressBar.setAttribute('aria-valuenow', percentage);
+            
+            // 更新进度文本
+            progressText.textContent = message;
+            
+            // 如果是100%，设置完成状态
+            if (percentage === 100) {
+                progressBar.classList.remove('progress-bar-animated');
+                if (message === '分类更新完成') {
+                    progressBar.classList.remove('bg-danger');
+                    progressBar.classList.add('bg-success');
+                } else if (message === '处理出错') {
+                    progressBar.classList.remove('bg-success');
+                    progressBar.classList.add('bg-danger');
+                }
+            } else {
+                progressBar.classList.add('progress-bar-animated');
+                progressBar.classList.remove('bg-success', 'bg-danger');
+            }
+        }
 
         // 修改 updateConfidenceDisplay 函数
         function updateConfidenceDisplay(fileName, confidenceScores) {
@@ -591,7 +746,7 @@
             const fileRow = document.querySelector(`[data-file="${fileName}"]`);
             if (fileRow) {
                 console.log('Found file row:', fileRow);
-                // 修改这里，使用正确的选择器
+                
                 ['level1', 'level2', 'level3'].forEach(level => {
                     const score = confidenceScores[level];
                     const badge = fileRow.querySelector(`[data-level="${level.slice(-1)}"] + .confidence-badge`);
@@ -599,7 +754,7 @@
                         console.log(`Updating badge for ${level} with score ${score}`);
                         badge.textContent = `${Math.round(score * 100)}%`;
                         
-                        // 更新置信度样式
+                        // 更新置信度标签样式
                         badge.className = 'input-group-text confidence-badge';
                         if (score >= 0.9) badge.classList.add('confidence-very-high');
                         else if (score >= 0.7) badge.classList.add('confidence-high');
@@ -607,31 +762,35 @@
                         else if (score >= 0.3) badge.classList.add('confidence-low');
                         else if (score >= 0.1) badge.classList.add('confidence-very-low');
                         else badge.classList.add('confidence-none');
-                    } else {
-                        console.error(`Badge not found for ${level}`);
                     }
                     
                     // 更新输入框样式
                     const input = fileRow.querySelector(`[data-level="${level.slice(-1)}"]`);
                     if (input) {
-                        console.log(`Updating input for ${level} with score ${score}`);
+                        // 重置所有样式
+                        input.style.backgroundColor = '';
+                        input.style.borderColor = '';
+                        input.disabled = false;
+
+                        // 根据置信度设置样式
                         if (score >= 0.8) {
-                            input.disabled = true;
-                            input.style.backgroundColor = '#d4edda';
+                            input.style.backgroundColor = '#d4edda';  // 浅绿色
                             input.style.borderColor = '#28a745';
+                        } else if (score >= 0.6) {
+                            input.style.backgroundColor = '#cce5ff';  // 浅蓝色
+                            input.style.borderColor = '#0d6efd';
+                        } else if (score >= 0.4) {
+                            input.style.backgroundColor = '#fff3cd';  // 浅黄色
+                            input.style.borderColor = '#ffc107';
+                        } else if (score >= 0.2) {
+                            input.style.backgroundColor = '#ffe5d0';  // 浅橙色
+                            input.style.borderColor = '#fd7e14';
                         } else {
-                            input.disabled = false;
-                            if (score >= 0.7) input.style.backgroundColor = '#cce5ff';
-                            else if (score >= 0.5) input.style.backgroundColor = '#fff3cd';
-                            else if (score >= 0.3) input.style.backgroundColor = '#ffe5d0';
-                            else input.style.backgroundColor = '#f8d7da';
+                            input.style.backgroundColor = '#f8f9fa';  // 浅灰色
+                            input.style.borderColor = '#ced4da';
                         }
-                    } else {
-                        console.error(`Input not found for ${level}`);
                     }
                 });
-            } else {
-                console.error('File row not found for:', fileName);
             }
         }
 
@@ -671,11 +830,70 @@
             document.body.insertBefore(reminder, document.body.firstChild);
         }
 
-        // 初始化所有工具提示
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
+        // 初始化所有tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
+
+        async function getCaseDetails(fileName) {
+            const response = await fetch('/get-case-details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ case_id: fileName.replace('.pdf', '') })
+            });
+            return await response.json();
+        }
+
+        async function recalculateConfidence(caseDetails, categories, fileName) {
+            const response = await fetch('/recalculate-confidence', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    case_content: caseDetails.details,
+                    categories: categories,
+                    file_path: `./emails/${fileName}`
+                })
+            });
+            return await response.json();
+        }
+
+        async function updateClassificationFiles(data) {
+            const response = await fetch('/update-classification-files', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        }
+
+        function toggleView(viewType) {
+            const treeView = document.getElementById('treeView');
+            const jsonView = document.getElementById('jsonView');
+            
+            if (viewType === 'tree') {
+                treeView.style.display = 'block';
+                jsonView.style.display = 'none';
+            } else {
+                treeView.style.display = 'none';
+                jsonView.style.display = 'block';
+                
+                // 更新JSON视图
+                const hierarchyCode = document.getElementById('hierarchyCode');
+                fetch('/get-classification-result')
+                    .then(response => response.json())
+                    .then(data => {
+                        const formattedJson = JSON.stringify(data.hierarchy, null, 2);
+                        hierarchyCode.textContent = formattedJson;
+                    });
+            }
+        }
     });
 </script>
 {% endblock %}
@@ -689,12 +907,12 @@
 }
 
 .hierarchy-tree ul {
+    list-style: none;
     margin: 0;
     padding-left: 20px;
 }
 
 .hierarchy-tree li {
-    list-style: none;
     margin: 5px 0;
 }
 
@@ -705,6 +923,15 @@
 
 .hierarchy-tree .file {
     color: #34495e;
+}
+
+.level1-item {
+    margin-bottom: 15px;
+}
+
+.level1-item > .folder {
+    font-size: 1.1em;
+    color: #1a73e8;
 }
 
 pre code {
@@ -927,6 +1154,131 @@ pre code {
 }
 .status-unprocessed {
     color: #6c757d;  /* 灰色 */
+}
+
+.progress-status-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1060;
+}
+
+.progress {
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}
+
+.view-controls {
+    margin-bottom: 1rem;
+}
+
+.view-controls .btn {
+    margin-right: 0.5rem;
+}
+
+.view-controls .btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.json-view {
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+}
+
+.json-view pre {
+    margin: 0;
+    padding: 1rem;
+}
+
+.json-view code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge i {
+    margin-right: 0.25rem;
+}
+
+.status-processed {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-unprocessed {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status-filtered {
+    background-color: #ffc107;
+    color: #000;
+    cursor: help;
+}
+
+.status-filtered i {
+    color: #dc3545;
+}
+
+/* 添加悬停效果 */
+.status-filtered:hover {
+    background-color: #ffca2c;
+}
+
+/* 确保tooltip样式正确 */
+.tooltip {
+    font-size: 0.875rem;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.neo4j-status-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.neo4j-status-alert.fade.show {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 </style>
 {% endblock %} 

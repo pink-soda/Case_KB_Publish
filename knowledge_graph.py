@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 15:41:12
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-17 16:16:18
+LastEditTime: 2024-12-28 15:23:16
 FilePath: \test\knowledge_graph.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -10,6 +10,10 @@ from py2neo import Graph, Node, Relationship
 import json
 from neo4j import GraphDatabase
 import logging
+import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 class KnowledgeGraph:
     def __init__(self):
@@ -79,23 +83,15 @@ class KnowledgeGraph:
             return {}
 
     def import_categories_from_json(self):
+        """从JSON文件导入分类到Neo4j，采用增量导入策略"""
         try:
-             # 首先检查是否已有数据
-            with self.driver.session() as session:
-                result = session.run("""
-                    MATCH (n:Category) 
-                    RETURN count(n) as count
-                """)
-                count = result.single()['count']
-                if count > 0:
-                    return False, "分类数据已存在于Neo4j中，无需重复导入"
             # 读取JSON文件
             with open('category_hierarchy.json', 'r', encoding='utf-8') as file:
                 categories = json.load(file)
             
             with self.driver.session() as session:
-                # 清除现有数据
-                session.run("MATCH (n) DETACH DELETE n")
+                # 获取导入前的节点数
+                before_count = session.run("MATCH (n:Category) RETURN count(n) as count").single()['count']
                 
                 # 遍历层级结构并创建节点和关系
                 for level1, level2_dict in categories.items():
@@ -122,11 +118,21 @@ class KnowledgeGraph:
                                 MERGE (parent)-[:HAS_SUBCATEGORY]->(child)
                             """, parent_name=level2, child_name=level3)
                 
-                return True, "分类导入成功"
+                # 获取导入后的节点数
+                after_count = session.run("MATCH (n:Category) RETURN count(n) as count").single()['count']
+                new_nodes = after_count - before_count
+                
+                if new_nodes > 0:
+                    logger.info(f"新增了 {new_nodes} 个分类节点，当前共有 {after_count} 个节点")
+                    return True, f"成功导入 {new_nodes} 个新分类节点"
+                else:
+                    logger.info("没有新的分类节点需要导入")
+                    return True, "所有分类节点已存在，无需导入"
             
         except Exception as e:
-            logging.error(f"导入分类失败: {str(e)}")
-            return False, str(e)
+            error_msg = f"导入分类失败: {str(e)}\n{traceback.format_exc()}"
+            logger.error(error_msg)
+            return False, error_msg
 
     def verify_data(self):
         try:
@@ -160,4 +166,59 @@ class KnowledgeGraph:
             return True
         except Exception as e:
             logging.error(f"确保分类层级关系失败: {str(e)}")
+            return False
+
+    def check_categories_exist(self):
+        """检查Neo4j中是否已存在分类数据，通过比较分类层级结构"""
+        try:
+            # 获取本地最新的分类层级
+            with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+                local_hierarchy = json.load(f)
+
+            # 获取Neo4j中的分类层级
+            neo4j_hierarchy = {}
+            
+            # 使用 driver.session() 而不是直接使用 session
+            with self.driver.session() as session:
+                # 查询所有分类关系
+                query = """
+                MATCH (l1:Category)-[r1:HAS_SUBCATEGORY]->(l2:Category)-[r2:HAS_SUBCATEGORY]->(l3:Category)
+                RETURN l1.name as level1, l2.name as level2, l3.name as level3
+                """
+                result = session.run(query)
+                
+                # 构建Neo4j中的层级结构
+                for record in result:
+                    level1 = record['level1']
+                    level2 = record['level2']
+                    level3 = record['level3']
+                    
+                    if level1 not in neo4j_hierarchy:
+                        neo4j_hierarchy[level1] = {}
+                    if level2 not in neo4j_hierarchy[level1]:
+                        neo4j_hierarchy[level1][level2] = []
+                    if level3 not in neo4j_hierarchy[level1][level2]:
+                        neo4j_hierarchy[level1][level2].append(level3)
+
+                # 比较两个层级结构
+                for level1, level2_dict in local_hierarchy.items():
+                    # 检查一级分类
+                    if level1 not in neo4j_hierarchy:
+                        return False
+                    
+                    for level2, level3_list in level2_dict.items():
+                        # 检查二级分类
+                        if level2 not in neo4j_hierarchy[level1]:
+                            return False
+                        
+                        # 检查三级分类
+                        for level3 in level3_list:
+                            if level3 not in neo4j_hierarchy[level1][level2]:
+                                return False
+
+                # 如果所有检查都通过，说明Neo4j中包含了所有本地分类
+                return True
+
+        except Exception as e:
+            logger.error(f"检查Neo4j分类数据时出错: {str(e)}\n{traceback.format_exc()}")
             return False

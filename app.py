@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-03 10:00:49
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-25 17:24:54
+LastEditTime: 2024-12-28 14:31:37
 FilePath: \test\app.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -1221,24 +1221,29 @@ def is_file_processed(filename):
 @app.route('/import-to-neo4j', methods=['POST'])
 def import_to_neo4j():
     try:
-        # 获取请求中的类数据
-        hierarchy_data = request.get_json()
+        # 创建KnowledgeGraph实例
+        knowledge_graph = KnowledgeGraph()
         
-        # 将数据保存到临时文件
-        with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
-            json.dump(hierarchy_data, f, ensure_ascii=False, indent=2)
-        
-        # 初始化KnowledgeGraph并导入数据
-        kg = KnowledgeGraph()
-        success, message = kg.import_categories_from_json()
+        # 调用导入方法
+        success, message = knowledge_graph.import_categories_from_json()
         
         if success:
-            return jsonify({'success': True, 'message': '导入成功'})
+            return jsonify({
+                'success': True,
+                'message': message
+            })
         else:
-            return jsonify({'success': False, 'message': message})
+            return jsonify({
+                'success': False,
+                'message': message
+            })
             
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)})
+        logger.error(f"导入到Neo4j失败: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({
+            'success': False,
+            'message': f'导入失败: {str(e)}'
+        }), 500
 
 @app.route('/update-file-categories', methods=['POST'])
 def update_file_categories():
@@ -1367,7 +1372,7 @@ def test_audit_data():
 
 @app.route('/test-cases')
 def test_cases():
-    """测试路由，用于检查案例数据"""
+    """测试路由，用于检查案例例数据"""
     try:
         mongo_handler = MongoHandler()
         
@@ -1411,87 +1416,150 @@ def recalculate_confidence():
             case_content=case_content,
             assigned_categories=categories
         )
-        
-        # 只返回置信度分数，不包含解释和建议
-        confidence_scores_simple = {
-            'level1': confidence_scores['level1'],
-            'level2': confidence_scores['level2'],
-            'level3': confidence_scores['level3']
-        }
-        
+
+        # 检查是否需要更新分类层级
         hierarchy_updated = False
-        # 检查并更新分类层级
         try:
             with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
                 hierarchy = json.load(f)
             
-            # 检查每个级别的分类是否存在
             level1 = categories.get('level1')
             level2 = categories.get('level2')
             level3 = categories.get('level3')
             
-            if level1 not in hierarchy:
-                hierarchy[level1] = {}
-                hierarchy_updated = True
-            
-            if level2 and level2 not in hierarchy[level1]:
-                hierarchy[level1][level2] = []
-                hierarchy_updated = True
-            
-            if level3 and level3 not in hierarchy[level1].get(level2, []):
-                if not hierarchy[level1][level2]:
-                    hierarchy[level1][level2] = [level3]
-                else:
-                    hierarchy[level1][level2].append(level3)
-                hierarchy_updated = True
-            
-            if hierarchy_updated:
-                # 保存更新后的分类层级
-                with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
-                    json.dump(hierarchy, f, ensure_ascii=False, indent=2)
-        
+            # 检查分类层级是否需要更新
+            if level1 and level2 and level3:  # 确保所有层级都有值
+                if level1 not in hierarchy:
+                    hierarchy_updated = True
+                elif level2 not in hierarchy.get(level1, {}):
+                    hierarchy_updated = True
+                elif level3 not in hierarchy.get(level1, {}).get(level2, []):
+                    hierarchy_updated = True
+                    
         except Exception as e:
-            logger.error(f"更新分类层级失败: {str(e)}")
+            logger.error(f"检查分类层级时出错: {str(e)}")
+            
+        return jsonify({
+            'success': True,
+            'confidence_scores': confidence_scores,
+            'hierarchy_updated': hierarchy_updated,  # 添加这个标志
+            'message': '置信度计算成功'
+        })
+        
+    except Exception as e:
+        logger.error(f"计算置信度失败: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+@app.route('/update-classification-files', methods=['POST'])
+def update_classification_files():
+    try:
+        data = request.json
+        file_name = data.get('file_name')
+        categories = data.get('categories')
+        confidence_scores = data.get('confidence_scores')
+
+        if not file_name or not categories or not confidence_scores:
             return jsonify({
                 'success': False,
-                'message': f'更新分类层级失败: {str(e)}'
-            }), 500
+                'message': '缺少必要参数'
+            }), 400
+
+        # 更新 classified_cases.json
+        with open('classified_cases.json', 'r', encoding='utf-8') as f:
+            cases = json.load(f)
+            
+        # 查找并更新案例
+        case_found = False
+        file_path = f'./emails/{file_name}'
         
-        # 更新本地JSON文件中的置信度
-        try:
-            with open('classified_cases.json', 'r', encoding='utf-8') as f:
-                cases = json.load(f)
+        for case in cases:
+            if case['file_path'] == file_path:
+                case['classification'] = categories
+                case['category_score'] = confidence_scores
+                case_found = True
+                break
                 
-            # 查找并更新对应案例的置信度分数
-            for case in cases:
-                if case['file_path'] == file_path:
-                    case['category_score'] = {
-                        'level1': confidence_scores['level1'],
-                        'level2': confidence_scores['level2'],
-                        'level3': confidence_scores['level3']
-                    }
-                    break
-                    
-            # 保存更新后的JSON文件
-            with open('classified_cases.json', 'w', encoding='utf-8') as f:
-                json.dump(cases, f, ensure_ascii=False, indent=2)
-                
-            return jsonify({
-                'success': True,
-                'confidence_scores': confidence_scores_simple,  # 使用简化的置信度分数
-                'message': '置信度已更新到本地文件',
-                'hierarchy_updated': hierarchy_updated
+        if not case_found:
+            # 如果没找到，添加新案例
+            cases.append({
+                'file_path': file_path,
+                'classification': categories,
+                'category_score': confidence_scores
             })
             
-        except Exception as e:
-            logger.error(f"更新JSON文件失败: {str(e)}")
-            return jsonify({
-                'success': False,
-                'message': f'更新本地文件失败: {str(e)}'
-            }), 500
+        # 保存更新后的案例
+        with open('classified_cases.json', 'w', encoding='utf-8') as f:
+            json.dump(cases, f, ensure_ascii=False, indent=2)
             
+        # 更新 category_hierarchy.json
+        with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+            hierarchy = json.load(f)
+            
+        # 确保分类层级存在
+        level1 = categories['level1']
+        level2 = categories['level2']
+        level3 = categories['level3']
+        
+        if level1 not in hierarchy:
+            hierarchy[level1] = {}
+        if level2 not in hierarchy[level1]:
+            hierarchy[level1][level2] = []
+        if level3 and level3 not in hierarchy[level1][level2]:
+            hierarchy[level1][level2].append(level3)
+            
+        # 保存更新后的层级
+        with open('category_hierarchy.json', 'w', encoding='utf-8') as f:
+            json.dump(hierarchy, f, ensure_ascii=False, indent=2)
+            
+        return jsonify({
+            'success': True,
+            'message': '分类文件更新成功'
+        })
     except Exception as e:
-        logger.error(f"重新计算置信度失败: {str(e)}")
+        logger.error(f"更新分类文件失败: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+@app.route('/get-classification-result')
+def get_classification_result():
+    try:
+        # 读取最新的分类结果
+        with open('category_hierarchy.json', 'r', encoding='utf-8') as f:
+            hierarchy = json.load(f)
+            
+        # 将分类结果转换为HTML格式
+        html = render_template('classification_result.html', hierarchy=hierarchy)
+        
+        return jsonify({
+            'success': True,
+            'html': html,
+            'hierarchy': hierarchy  # 添加原始层级数据
+        })
+    except Exception as e:
+        logger.error(f"获取分类结果失败: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+@app.route('/check-neo4j-status')
+def check_neo4j_status():
+    try:
+        # 检查Neo4j中是否已存在分类数据
+        knowledge_graph = KnowledgeGraph()
+        exists = knowledge_graph.check_categories_exist()
+        
+        return jsonify({
+            'success': True,
+            'exists': exists
+        })
+    except Exception as e:
+        logger.error(f"检查Neo4j状态失败: {str(e)}")
         return jsonify({
             'success': False,
             'message': str(e)
