@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-12 11:07:46
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-28 00:43:31
+LastEditTime: 2024-12-31 13:20:26
 FilePath: \Case_KB\process_emails.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -96,14 +96,12 @@ def create_initial_hierarchy(email_folder: str, hierarchy_file: str, cases_file:
         builder = CategoryHierarchyBuilder(llm_handler, cases_file=cases_file)
         
         processed_count = 0
-        retry_delay = 3  # 初始重试延迟时间（秒）
         
         # 处理每个邮件文件
         for i, file_path in enumerate(email_files, 1):
+            print(f"处理第 {i}/{len(email_files)} 个文件: {file_path}")
+            
             try:
-                print(f"处理第 {i}/{len(email_files)} 个文件: {file_path}")
-                
-                # 读取邮件内容
                 email_content = read_email_content(file_path)
                 if not email_content:
                     print(f"警告：文件 {file_path} 内容为空，跳过")
@@ -111,31 +109,30 @@ def create_initial_hierarchy(email_folder: str, hierarchy_file: str, cases_file:
                 
                 # 处理案例
                 result = builder.process_case(email_content, file_path)
+                if result is None:
+                    # LLM调用失败或处理出错，记录日志并继续下一个文件
+                    logger.error(f"处理文件 {file_path} 失败，跳过")
+                    continue
+                    
                 processed_count += 1
                 
-                # 定期保存结果
-                if processed_count % 2 == 0 or i == len(email_files):
+                # 每处理10个文件保存一次
+                if processed_count % 10 == 0:
                     save_results(
                         builder.get_current_hierarchy(),
                         builder.get_classified_cases(),
-                        'category_hierarchy.json',
-                        'classified_cases.json'
+                        hierarchy_file,
+                        cases_file
                     )
-                
+                    
             except Exception as e:
-                error_msg = f"处理文件 {file_path} 时出错: {str(e)}"
-                print(error_msg)
-                
                 # 检查是否是API限流错误
                 if "Azure OpenAI API 限流错误" in str(e):
-                    print(f"API限流，等待{retry_delay}秒后继续...")
-                    time.sleep(retry_delay)
-                    retry_delay *= 2
-                    i -= 1  # 重试当前文件
-                    continue
-                
-                logger.error(error_msg)
-                logger.error("错误详情:", exc_info=True)
+                    print(f"API限流错误，跳过当前文件")
+                else:
+                    logger.error(f"处理文件 {file_path} 时出错: {str(e)}")
+                    logger.error(f"错误详情:\n{traceback.format_exc()}")
+                continue
         
         if processed_count == 0:
             raise Exception("没有成功处理任何文件")
@@ -144,8 +141,8 @@ def create_initial_hierarchy(email_folder: str, hierarchy_file: str, cases_file:
         save_results(
             builder.get_current_hierarchy(),
             builder.get_classified_cases(),
-            'category_hierarchy.json',
-            'classified_cases.json'
+            hierarchy_file,
+            cases_file
         )
         
         # 返回构建的层级结构
@@ -153,9 +150,7 @@ def create_initial_hierarchy(email_folder: str, hierarchy_file: str, cases_file:
         
     except Exception as e:
         error_msg = f"创建分类层级结构失败: {str(e)}"
-        print(error_msg)
         logger.error(error_msg)
-        logger.error("错误详情:", exc_info=True)
         raise Exception(error_msg)
 
 def load_existing_data(hierarchy_file, cases_file):

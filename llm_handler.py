@@ -227,7 +227,7 @@ class LLMHandler:
             请分析以下技术支持描述，并从给定的类别层级中选择最合适的最小子类别进行分类。
             请只返回一个最具体的子类别（最深层级的类别）。
 
-            描述文本：
+            案例描述：
             {description}
 
             可选的类别层级：
@@ -246,21 +246,26 @@ class LLMHandler:
             }}
             """
 
+            # 修改这里：使用统一的 call_llm 方法
+            response = self.call_llm(prompt)
+            
             try:
-                # 尝试使用 Azure OpenAI
-                response = self._call_azure_llm(prompt)
-                result = self._parse_llm_response(response)
-                logger.info(f"Azure LLM分析成功: {result}")
-                return self._format_result(result)
-            except Exception as azure_error:
-                logger.warning(f"Azure LLM失败，切换到Kimi: {str(azure_error)}")
-                # 如果 Azure 失败，使用 Kimi
-                result = self.kimi_handler.analyze_text(description, formatted_hierarchy)
-                logger.info(f"Kimi分析结果: {result}")
-                return self._format_result(result)
-
+                result = json.loads(response)
+                return {
+                    'category': result.get('matched_category', '未分类'),
+                    'confidence': float(result.get('confidence', 0.5)),
+                    'explanation': result.get('explanation', '')
+                }
+            except json.JSONDecodeError:
+                logger.error(f"JSON解析失败: {response}")
+                return {
+                    'category': '未分类',
+                    'confidence': [0.5],
+                    'explanation': '解析失败'
+                }
+            
         except Exception as e:
-            logger.error(f"所有分析方法都失败: {str(e)}")
+            logger.error(f"分析描述失败: {str(e)}")
             return {
                 'categories': ['未分类'],
                 'confidence_scores': [0.5],
@@ -346,15 +351,47 @@ class LLMHandler:
         logger.debug(f"当前层级收集到的类别: {categories}")
         return categories - {''}  # 移除空字符串
 
-    def _call_azure_llm_basic(self, prompt: str) -> str:
-        """
-        调用Azure OpenAI API，如果失败则切换到Kimi
-        """
+    def call_llm(self, prompt: str, use_azure: bool = True) -> str:
+        """统一的LLM调用方法，包含重试和fallback机制"""
+        logger.info(f"开始LLM调用 (使用{'Azure' if use_azure else 'Kimi'})")
+        
         try:
-            # 首先尝试使用Azure LLM
-            logger.info("开始调用Azure LLM")
-            logger.debug(f"发送的prompt: {prompt[:200]}...")
-            
+            if use_azure:
+                try:
+                    # Azure调用会通过装饰器自动重试3次
+                    logger.debug("开始Azure调用")
+                    result = self.__call_azure(prompt)
+                    logger.info("Azure调用成功")
+                    return result
+                except Exception as azure_error:
+                    logger.warning(f"Azure完全失败 (3次尝试)，切换到Kimi")
+                    try:
+                        # Kimi调用会通过装饰器自动重试3次
+                        logger.debug("开始Kimi调用")
+                        return self.__call_kimi(prompt)
+                    except Exception as kimi_error:
+                        logger.error("Kimi调用也完全失败 (3次尝试)")
+                        # 不抛出异常，返回空字符串或特定的错误标记
+                        return ""  # 或者返回 {"error": "LLM调用失败"}
+            else:
+                try:
+                    return self.__call_kimi(prompt)
+                except Exception as e:
+                    logger.error(f"Kimi调用失败: {str(e)}")
+                    return ""  # 或者返回 {"error": "LLM调用失败"}
+                
+        except Exception as e:
+            logger.error(f"LLM调用完全失败 (Azure和Kimi各尝试3次)")
+            return ""  # 或者返回 {"error": "LLM调用失败"}
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=3, max=10),
+        reraise=True
+    )
+    def __call_azure(self, prompt: str) -> str:
+        """内部Azure调用方法"""
+        try:
             response = self.client.chat.completions.create(
                 model=self.deployment_name,
                 messages=[
@@ -364,302 +401,30 @@ class LLMHandler:
                 temperature=0.7,
                 max_tokens=1000
             )
-            
-            result = response.choices[0].message.content
-            logger.info(f"Azure LLM响应成功，返回内容长度: {len(result)}")
-            logger.debug(f"返回内容预览: {result[:200]}...")
-            
-            return result
-            
-        except Exception as azure_error:
-            logger.warning(f"Azure LLM调用失败，切换到Kimi: {str(azure_error)}")
-            try:
-                # 使用Kimi作为备选
-                completion = self.kimi_handler.client.chat.completions.create(
-                    model=self.kimi_handler.model,
-                    messages=[
-                        {"role": "system", "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"},
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                result = completion.choices[0].message.content
-                logger.info("Kimi响应成功")
-                logger.debug(f"Kimi响应内容: {result}")
-                return result
-                
-            except Exception as kimi_error:
-                logger.error(f"Kimi调用也失败了: {str(kimi_error)}")
-                logger.error(traceback.format_exc())
-                raise Exception("Azure和Kimi都调用失败了") from kimi_error
-
-    @retry(
-        stop=stop_after_attempt(3),  # 最多重试3次
-        wait=wait_exponential(multiplier=1, min=3, max=10),  # 指数退避，最少等待3秒
-        reraise=True  # 修改为True，让异常能够正确传播
-    )
-    def _call_azure_llm(self, prompt: str) -> str:
-        """
-        调用Azure OpenAI API，带有重试机制
-        """
-        try:
-            response = self.client.chat.completions.create(
-                model=self.deployment_name,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "你是一个专业的技术支持分类专家，擅长分析技术问题并进行准确分类。"
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.3
-            )
             return response.choices[0].message.content.strip()
         except Exception as e:
-            logger.error(f"调用Azure LLM失败: {str(e)}")
-            if "429" in str(e):  # 如果是速率限制错误
-                logger.info("触发速率限制，等待后重试...")
-                time.sleep(3)
-                raise
-            elif "401" in str(e) or "400" in str(e):  # 如果是认证错误或内容过滤错误
-                logger.info("Azure调用失败，尝试切换到Kimi...")
-                try:
-                    return self._call_kimi_basic(prompt)
-                except Exception as kimi_error:
-                    if "400" in str(kimi_error) and "content_filter" in str(kimi_error):
-                        logger.warning("Kimi内容过滤限制，直接返回错误")
-                        return json.dumps({
-                            "level1": "受LLM内容过滤限制",
-                            "level2": "受LLM内容过滤限制",
-                            "level3": "受LLM内容过滤限制",
-                            "similarity": {
-                                "level1": 0.0,
-                                "level2": 0.0,
-                                "level3": 0.0
-                            },
-                            "matched_path_level1": "",
-                            "matched_path_level2": "",
-                            "matched_path_level3": "",
-                            "reasoning": "内容被过滤，无法进行分类分析"
-                        })
-                    logger.error(f"Kimi调用也失败了: {str(kimi_error)}")
-                    raise Exception("Azure和Kimi都调用失败了") from kimi_error
-            else:
-                return self._get_default_response()
-
-    def _get_default_response(self) -> str:
-        """
-        当LLM调用失败时返回的默认响应
-        """
-        return json.dumps({
-            "categories": ["未分类"],
-            "confidence_scores": [0.5],
-            "explanation": "由于系统限制，暂时无法进行分类分析。请稍后重试。"
-        })
-
-    def _parse_llm_response(self, response: str) -> dict:
-        """
-        解析LLM的响应内容为字典格式
-        """
-        try:
-            # 打印原始响应以便调试
-            print("原始响应:", response)
-            
-            # 如果响应已经是字典格式，直接返回
-            if isinstance(response, dict):
-                return response
-            
-            # 确保响应不是空的
-            if not response or not isinstance(response, str):
-                raise ValueError(f"无效的响应格式: {type(response)}")
-            
-            # 清理响应文本，移除多余的空格和换行
-            cleaned_response = response.strip().replace('\n', '').replace('    ', '')
-            print("清理后的响应:", cleaned_response)
-            
-            # 尝试直接解析JSON
-            try:
-                result = json.loads(cleaned_response)
-                print("成功解析JSON:", result)
-            except json.JSONDecodeError:
-                # 如果解析失败，尝试提取JSON部分
-                import re
-                json_pattern = r'\{[^{}]*\}'
-                match = re.search(json_pattern, cleaned_response)
-                if match:
-                    json_str = match.group()
-                    print("提取的JSON字符串:", json_str)
-                    try:
-                        result = json.loads(json_str)
-                        print("成功解析提取的JSON:", result)
-                    except json.JSONDecodeError as e:
-                        print(f"JSON解析错误位置: 行 {e.lineno}, 列 {e.colno}")
-                        print(f"JSON解析错误信息: {e.msg}")
-                        raise
-                else:
-                    raise Exception("无法从响应中提取有效的JSON格式")
-            
-            # 确保所有必需的字段都存在
-            required_fields = ['categories', 'confidence_scores']
-            missing_fields = [field for field in required_fields if field not in result]
-            if missing_fields:
-                logger.warning(f"LLM响应缺少必要字段: {missing_fields}，使用默认值")
-                return {
-                    "categories": result.get('categories', ["未分类"]),
-                    "confidence_scores": [0.5] * len(result.get('categories', ["未分类"])),
-                    "explanations": result.get('explanations', ["无解释"])
-                }
-            
-            # 确保置信度在0-1之间
-            result['confidence_scores'] = [
-                min(max(float(score), 0), 1) 
-                for score in result['confidence_scores']
-            ]
-            
-            print("最终处理结果:", result)
-            return result
-            
-        except Exception as e:
-            print(f"解析LLM响应时出现错误: {type(e).__name__}")
-            print(f"错误信息: {str(e)}")
-            print(f"原始响应内容: {response}")
-            logger.error(f"解析LLM响应失败: {str(e)}")
-            return {
-                "categories": ["未分类"],
-                "confidence_scores": [0.5],
-                "explanations": ["解析失败"]
-            }
-
-    def generate_email(self, reference_emails: str, progress_description: str, case_info: dict) -> str:
-        """
-        生成邮件内容，如果Azure失败则使用Kimi
-        """
-
-        try:
-            # 先尝试使用Azure
-            try:
-                return self._generate_email_azure(reference_emails, progress_description, case_info)
-            except Exception as azure_error:
-                logger.warning(f"Azure邮件生成失败，切换到Kimi: {str(azure_error)}")
-                return self._generate_email_kimi(reference_emails, progress_description, case_info)
-            
-        except Exception as e:
-            logger.error(f"邮件生成失败: {str(e)}")
+            logger.error(f"Azure LLM调用失败: {str(e)}")
             raise
 
-    def _generate_email_azure(self, reference_emails: str, progress_description: str, case_info: dict) -> str:
-        """使用Azure生成邮件"""
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=3, max=10),
+        reraise=True
+    )
+    def __call_kimi(self, prompt: str) -> str:
+        """内部Kimi调用方法"""
         try:
-            # 分割长文本
-            #ref_chunks = self._split_text(reference_emails)
-            
-            prompt = f"""
-            你是一个专业的技术支持工程师，需要根据案例基本信息来对相关用户回复一封邮件，根据当前进度的描述，给出合适的指导意见，你需要以参考案例的历史邮件作为参考，生成一封新的进度更新邮件。
-
-            参考邮件内容：
-            {reference_emails}
-
-            当前进度描述：
-            {progress_description}
-
-            案例基本信息：
-            客户名称：{case_info.get('customer_name', '-')}
-            联系人：{case_info.get('contact_person', '-')}
-            案例标题：{case_info.get('project_subject', '-')}
-
-            要求：
-            1. 保持专业、礼貌的语气
-            2. 参考历史邮件的格式和风格
-            3. 包含问候语和结束语
-            4. 清晰描述当前的处理进度
-            5. 如果有下一步计划，请一并说明
-            6. 保持邮件简洁明了
-            7. 使用中文编写
-
-            请直接生成邮件内容，不要添加任何额外的说明。
-            """
-
-            response = self.client.chat.completions.create(
-                model=self.deployment_name,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "你是一个专业的技术支持工程师，擅长编写技术支持邮件。"
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.7,  # 适当提高创造性
-                max_tokens=1000   # 允许较长的回复
-            )
-
-            email_content = response.choices[0].message.content.strip()
-            
-            # 如果返回的内容包含多余的引号或格式标，清理它们
-            email_content = email_content.strip('`').strip('"')
-            
-            return email_content
-            
-        except Exception as e:
-            logger.error(f"Azure邮件生成失败: {str(e)}")
-            raise
-    
-    def _generate_email_kimi(self, reference_emails: str, progress_description: str, case_info: dict) -> str:
-        """使用Kimi生成邮件"""
-        try:
-            # 分割长文本
-            #ref_chunks = self.kimi_handler._split_text(reference_emails)
-            
-            prompt = f"""
-            你是一个专业的技术支持工程师，需要根据案例基本信息来对相关用户回复一封邮件，根据当前进度的描述，给出合适的指导意见，你需要以参考案例的历史邮件作为参考，生成一封新的进度更新邮件。
-
-            参考邮件内容：
-            {reference_emails}
-
-            当前进度描述：
-            {progress_description}
-
-            案例基本信息：
-            客户名称：{case_info.get('customer_name', '-')}
-            联系人：{case_info.get('contact_person', '-')}
-            案例标题：{case_info.get('project_subject', '-')}
-
-            要求：
-            1. 保持专业、礼貌的语气
-            2. 参考历史邮件的格式和风格
-            3. 包含问候语和结束语
-            4. 清晰描述当前的处理进度
-            5. 如果有下一步计划，请一并说明
-            6. 保持邮件简洁明了
-            7. 使用中文编写
-
-            请直接生成邮件内容，不要添加任何额外的说明。
-            """
-
-            messages = [
-                {"role": "system", "content": "你是一个专业的技术支持工程师，擅长编写技术支持邮件。"},
-                {"role": "user", "content": prompt}
-            ]
-
-            response = self.kimi_handler.client.chat.completions.create(
+            completion = self.kimi_handler.client.chat.completions.create(
                 model=self.kimi_handler.model,
-                messages=messages
+                messages=[
+                    {"role": "system", "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"},
+                    {"role": "user", "content": prompt}
+                ]
             )
-
-            email_content = response.choices[0].message.content.strip()
-            
-            # 如果返回的内容包含多余的引号或格式标，清理它们
-            email_content = email_content.strip('`').strip('"')
-            
-            return email_content
-
+            return completion.choices[0].message.content.strip()
         except Exception as e:
-            logger.error(f"生成邮件失败: {str(e)}")
-            raise Exception(f"生成邮件失败: {str(e)}")
+            logger.error(f"调用 Kimi 时出错: {str(e)}")
+            raise
 
     def _get_category_with_parents(self, category: str, hierarchy: dict) -> list:
         """
@@ -774,8 +539,8 @@ class LLMHandler:
             }}
             """
             
-            # 调用LLM获取评分
-            response = self._call_azure_llm_basic(prompt)
+            # 修改这里：使用统一的 call_llm 方法
+            response = self.call_llm(prompt)
             result = json.loads(response)
             
             # 返回标准化的置信度分数
@@ -800,47 +565,53 @@ class LLMHandler:
             }
 
     def test_connection(self):
+        """测试连接"""
         try:
-            response = self._call_azure_llm_basic("Hello")
+            # 修改为使用统一的 call_llm 方法
+            response = self.call_llm("Hello")
             print("连接测试成功!")
             return True
         except Exception as e:
             print(f"连接测试失败: {str(e)}")
             return False
 
-    def _call_kimi_basic(self, prompt: str) -> str:
-        """调用 Kimi API 进行基础对话"""
+    def generate_email(self, reference_emails: str, progress_description: str, case_info: dict) -> str:
+        """生成邮件内容"""
         try:
-            # 初始化 Kimi 客户端
-            kimi_client = OpenAI(
-                api_key=os.getenv('KIMI_API_KEY'),
-                base_url=os.getenv('KIMI_BASE_URL'),
-            )
+            prompt = f"""
+            你是一个专业的技术支持工程师，需要根据案例基本信息来对相关用户回复一封邮件，根据当前进度的描述，给出合适的指导意见，你需要以参考案例的历史邮件作为参考，生成一封新的进度更新邮件。
+
+            参考邮件内容：
+            {reference_emails}
+
+            当前进度描述：
+            {progress_description}
+
+            案例基本信息：
+            客户名称：{case_info.get('customer_name', '-')}
+            联系人：{case_info.get('contact_person', '-')}
+            案例标题：{case_info.get('project_subject', '-')}
+
+            要求：
+            1. 保持专业、礼貌的语气
+            2. 参考历史邮件的格式和风格
+            3. 包含问候语和结束语
+            4. 清晰描述当前的处理进度
+            5. 如果有下一步计划，请一并说明
+            6. 保持邮件简洁明了
+            7. 使用中文编写
+
+            请直接生成邮件内容，不要添加任何额外的说明。
+            """
+
+            # 使用统一的 call_llm 方法
+            email_content = self.call_llm(prompt)
             
-            # 使用 chat.completions 接口
-            completion = kimi_client.chat.completions.create(
-                model=os.getenv('KIMI_MODEL_NAME'),  # 使用指定的模型
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.7
-            )
-
-            # 获取响应内容
-            result = completion.choices[0].message.content.strip()
-            logger.info("Kimi响应成功")
-            logger.debug(f"Kimi响应内容: {result}")
-            return result
-
+            # 清理返回的内容
+            email_content = email_content.strip('`').strip('"')
+            return email_content
+            
         except Exception as e:
-            logger.error(f"调用 Kimi 时出错: {str(e)}")
-            logger.error(traceback.format_exc())
+            logger.error(f"邮件生成失败: {str(e)}")
             raise
 

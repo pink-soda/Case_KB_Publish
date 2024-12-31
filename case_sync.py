@@ -163,7 +163,7 @@ def generate_case_summary(case_id):
         
         logger.info(f"开始为案例 {case_id} 生成总结")
         try:
-            response = llm._call_azure_llm_basic(prompt)
+            response = llm.call_llm(prompt)
             if response:
                 case_summary = response.strip()
                 logger.info(f"成功生成案例 {case_id} 的总结，长度: {len(case_summary)}")
@@ -171,25 +171,9 @@ def generate_case_summary(case_id):
             else:
                 logger.warning(f"案例 {case_id} 的总结生成结果为空")
                 return ''
-        except Exception as llm_error:
-            logger.error(f"LLM生成总结失败: {str(llm_error)}")
-            # 尝试使用备用的Kimi模型
-            try:
-                kimi_handler = llm.kimi_handler
-                messages = [
-                    {"role": "system", "content": "你是一个专业的技术支持工程师，擅长总结技术问题和解决方案。"},
-                    {"role": "user", "content": prompt}
-                ]
-                response = kimi_handler.client.chat.completions.create(
-                    model=kimi_handler.model,
-                    messages=messages
-                )
-                case_summary = response.choices[0].message.content.strip()
-                logger.info(f"使用Kimi成功生成案例 {case_id} 的总结")
-                return case_summary
-            except Exception as kimi_error:
-                logger.error(f"Kimi生成总结也失败了: {str(kimi_error)}")
-                return ''
+        except Exception as e:
+            logger.error(f"生成总结失败: {str(e)}")
+            return ''
                 
     except Exception as e:
         logger.error(f"生成案例 {case_id} 总结时出错: {str(e)}")

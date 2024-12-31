@@ -2,7 +2,7 @@
 Author: pink-soda luckyli0127@gmail.com
 Date: 2024-12-09 10:41:47
 LastEditors: pink-soda luckyli0127@gmail.com
-LastEditTime: 2024-12-28 01:56:39
+LastEditTime: 2024-12-31 11:17:53
 FilePath: \test\category_classifier.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 class CategoryClassifier:
     def __init__(self, llm_handler):
         self.llm_handler = llm_handler
-        self.prompt_template = """你是一个专业的技术支持分类专家。请基于以下分类层级结构，对给定的技术支持案例进行分类。
+        self.classification_prompt = """你是一个专业的技术支持分类专家。请基于以下分类层级结构，对给定的技术支持案例进行分类。
 
         分类层级结构：
-        {hierarchy}
+        {existing_hierarchy}
 
         案例邮件内容：
         {email_content}
@@ -46,16 +46,16 @@ class CategoryClassifier:
                 "level2": 0.85,  // 二级分类的置信度
                 "level3": 0.75   // 三级分类的置信度
             }},
-            "reasoning": "分类理由说明"
+            "reasoning": "分类理由说明，包含每个层级的分类依据"
         }}
 
         注意：
-        - 每个层级的分类都需要独立评估置信度
-        - 如果某个层级的分类不确定，可以给出较低的置信度
-        - 置信度应该反映分类的准确性和确定性
-        - 如果案例内容模糊或者可能属于多个分类，请选择最相关的一个，并相应降低置信度
-        - 如果完全无法确定分类，请将所有分类设为"未分类"，置信度设为0
-        - 必须返回上述格式的JSON，不要添加任何额外的文本或说明
+        1. 每个层级的分类都需要独立评估置信度
+        2. 如果某个层级的分类不确定，可以给出较低的置信度
+        3. 置信度应该反映分类的准确性和确定性
+        4. 如果案例内容模糊或者可能属于多个分类，请选择最相关的一个，并相应降低置信度
+        5. 如果完全无法确定分类，请将所有分类设为"未分类"，置信度设为0
+        6. 必须返回上述格式的JSON，不要添加任何额外的文本或说明
         """
         self.cases_file = 'classified_cases.json'  # 添加文件路径属性
 
@@ -64,7 +64,7 @@ class CategoryClassifier:
             hierarchy=hierarchy,
             email_content=email_content
         )
-        response = self.llm_handler._call_azure_llm(prompt)
+        response = self.llm_handler.call_llm(prompt)
         result = self.llm_handler._parse_llm_response(response)
         
         # 确保返回结果包含置信度信息
@@ -191,7 +191,7 @@ class CategoryHierarchyBuilder:
             case2_level2=case2_levels[1],
             case2_level3=case2_levels[2]
         )
-        response = self.llm_handler._call_azure_llm(prompt)
+        response = self.llm_handler.call_llm(prompt)
         result = self.llm_handler._parse_llm_response(response)
         return result.get('similarity', 0)
 
@@ -248,49 +248,36 @@ class CategoryHierarchyBuilder:
         """处理单个案例，返回分类结果"""
         try:
             existing_hierarchy = self._hierarchy_to_string()
-            attempts = 0
-            last_error = None
-            response = None
-            while attempts < self.max_retries:
-                try:
-                    prompt = self.classification_prompt.format(
-                        email_content=email_content,
-                        existing_hierarchy=existing_hierarchy
-                    )
-                    response = self.llm_handler._call_azure_llm(prompt)
-                    result = self._parse_classification_response(response)
-                    break
-                except Exception as e:
-                    attempts += 1
-                    last_error = e
-                    if isinstance(e, openai.RateLimitError):
-                        raise Exception(f"Azure OpenAI API 限流错误: {str(e)}")
-                    if attempts == self.max_retries:
-                        error_msg = f"处理案例时出错（尝试{attempts}次后失败）: {str(last_error)}"
-                        if response:
-                            error_msg += f"\n响应内容: {response}"
-                        raise Exception(error_msg)
-                    continue
-
-            # 计算置信度
-            confidence_scores = self.llm_handler.calculate_category_confidence(
-                email_content,
-                {
-                    'level1': result.get('level1'),
-                    'level2': result.get('level2'),
-                    'level3': result.get('level3')
-                }
+            prompt = self.classification_prompt.format(
+                email_content=email_content,
+                existing_hierarchy=existing_hierarchy
             )
             
-            # 处理分类结果，使用计算出的置信度
+            # 只调用一次 LLM，它会返回分类和置信度
+            response = self.llm_handler.call_llm(prompt)
+            
+            # 检查是否是空响应或错误响应
+            if not response:
+                logger.error("LLM调用失败，跳过当前案例")
+                return None
+            
+            result = self._parse_classification_response(response)
+            
+            # 处理分类结果...
             processed_result = {
                 'level1': result.get('level1') or "案例中不存在该级别分类",
                 'level2': result.get('level2') or "案例中不存在该级别分类",
                 'level3': result.get('level3') or "案例中不存在该级别分类",
                 'similarity': {
-                    'level1': float(confidence_scores.get('level1', 0)) if result.get('level1') and result.get('level1') != "案例中不存在该级别分类" else 0.0,
-                    'level2': float(confidence_scores.get('level2', 0)) if result.get('level2') and result.get('level2') != "案例中不存在该级别分类" else 0.0,
-                    'level3': float(confidence_scores.get('level3', 0)) if result.get('level3') and result.get('level3') != "案例中不存在该级别分类" else 0.0
+                    'level1': float(result.get('confidence', {}).get('level1', 0)) 
+                             if result.get('level1') and result.get('level1') != "案例中不存在该级别分类" 
+                             else 0.0,
+                    'level2': float(result.get('confidence', {}).get('level2', 0)) 
+                             if result.get('level2') and result.get('level2') != "案例中不存在该级别分类" 
+                             else 0.0,
+                    'level3': float(result.get('confidence', {}).get('level3', 0)) 
+                             if result.get('level3') and result.get('level3') != "案例中不存在该级别分类" 
+                             else 0.0
                 }
             }
 
@@ -302,17 +289,14 @@ class CategoryHierarchyBuilder:
             if not self.hierarchy or any(score < self.similarity_threshold for score in processed_result['similarity'].values()):
                 self._add_to_hierarchy(result['level1'], result['level2'], result['level3'])
             
-            
             # 保存案例
             self._save_case(processed_result, email_content, file_path)
             
             return processed_result
             
         except Exception as e:
-            error_msg = f"处理案例时出错: {str(e)}"
-            if response:  # 使用之前初始化的response变量
-                error_msg += f"\n响应内容: {response}"
-            raise Exception(error_msg)
+            logger.error(f"处理案例时出错: {str(e)}")
+            return None
 
     def _save_classified_cases(self):
         """保存分类结果到JSON文件"""

@@ -50,20 +50,14 @@ class EmailClassifier:
             """
             
             try:
-                # 首先尝试使用 Azure LLM
-                response = self.llm._call_azure_llm_basic(prompt)
-            except Exception as azure_error:
-                logger.warning(f"Azure LLM 调用失败: {str(azure_error)}, 尝试使用 Kimi")
-                try:
-                    # Azure 失败后尝试使用 Kimi
-                    response = self.llm._call_kimi_basic(prompt)
-                except Exception as kimi_error:
-                    logger.error(f"Kimi 调用也失败: {str(kimi_error)}")
-                    return False
-
-            response = response.strip().lower()
-            logger.debug(f"内容相关性判断结果: {response}")
-            return "相关" in response
+                # 使用统一的 call_llm 方法
+                response = self.llm.call_llm(prompt)
+                response = response.strip().lower()
+                logger.debug(f"内容相关性判断结果: {response}")
+                return "相关" in response
+            except Exception as e:
+                logger.error(f"LLM调用失败: {str(e)}")
+                return False
                 
         except Exception as e:
             logger.error(f"判断邮件内容有效性时出错: {str(e)}")
@@ -118,49 +112,43 @@ class EmailClassifier:
                 }}
                 """
             
-            # 调用LLM并获取响应
+            # 修改LLM调用
             try:
-                # 首先尝试使用 Azure LLM
-                response = self.llm._call_azure_llm_basic(prompt)
-            except Exception as azure_error:
-                logger.warning(f"Azure LLM 调用失败: {str(azure_error)}, 尝试使用 Kimi")
+                response = self.llm.call_llm(prompt)
+                logger.debug(f"LLM原始响应: {response}")
+                
+                # 清理响应文本，确保是有效的JSON
+                cleaned_response = response.strip()
+                if cleaned_response.startswith("```json"):
+                    cleaned_response = cleaned_response[7:]
+                if cleaned_response.endswith("```"):
+                    cleaned_response = cleaned_response[:-3]
+                cleaned_response = cleaned_response.strip()
+                
+                # 尝试解析JSON
                 try:
-                    # Azure 失败后尝试使用 Kimi
-                    response = self.llm._call_kimi_basic(prompt)
-                except Exception as kimi_error:
-                    logger.error(f"Kimi 调用也失败: {str(kimi_error)}")
-                    raise Exception("所有 LLM 调用都失败")
-
-            logger.debug(f"LLM原始响应: {response}")
-            
-            # 清理响应文本，确保是有效的JSON
-            cleaned_response = response.strip()
-            if cleaned_response.startswith("```json"):
-                cleaned_response = cleaned_response[7:]
-            if cleaned_response.endswith("```"):
-                cleaned_response = cleaned_response[:-3]
-            cleaned_response = cleaned_response.strip()
-            
-            # 尝试解析JSON
-            try:
-                result = json.loads(cleaned_response)
-                logger.debug(f"解析后的JSON结果: {result}")
-                
-                # 验证必要的字段
-                if 'category' not in result or 'confidence' not in result:
-                    raise ValueError("响应缺少必要的字段")
+                    result = json.loads(cleaned_response)
+                    logger.debug(f"解析后的JSON结果: {result}")
                     
-                # 确保confidence是浮点数
-                confidence = float(result['confidence'])
-                if not 0 <= confidence <= 1:
-                    confidence = 0.5  # 如果置信度不在有效范围内，使用默认值
+                    # 验证必要的字段
+                    if 'category' not in result or 'confidence' not in result:
+                        raise ValueError("响应缺少必要的字段")
+                        
+                    # 确保confidence是浮点数
+                    confidence = float(result['confidence'])
+                    if not 0 <= confidence <= 1:
+                        confidence = 0.5  # 如果置信度不在有效范围内，使用默认值
+                        
+                    return (result['category'], confidence)
                     
-                return (result['category'], confidence)
+                except json.JSONDecodeError as e:
+                    logger.error(f"JSON解析错误: {str(e)}")
+                    logger.error(f"清理后的响应: {cleaned_response}")
+                    return (None, 0.0)
                 
-            except json.JSONDecodeError as e:
-                logger.error(f"JSON解析错误: {str(e)}")
-                logger.error(f"清理后的响应: {cleaned_response}")
-                return (None, 0.0)
+            except Exception as e:
+                logger.error(f"LLM调用失败: {str(e)}")
+                raise
                 
         except Exception as e:
             logger.error(f"邮件分类过程出错: {str(e)}")

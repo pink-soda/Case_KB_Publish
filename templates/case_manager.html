@@ -116,6 +116,14 @@
             width: 1rem;
             height: 1rem;
         }
+        
+        .sync-button {
+            background-color: #FF9800;
+        }
+        
+        .sync-button:hover {
+            background-color: #F57C00;
+        }
     </style>
 </head>
 <body>
@@ -143,6 +151,7 @@
             {% if cases_count == 0 %}
                 <button class="action-button build-button" onclick="buildLibrary()">构建案例库</button>
             {% else %}
+                <button class="action-button sync-button" onclick="syncLibrary()">同步案例库</button>
                 <button class="action-button update-button" onclick="updateLibrary()">更新案例库</button>
             {% endif %}
         </div>
@@ -265,6 +274,58 @@
                 setTimeout(() => {
                     button.disabled = false;
                     button.innerHTML = '更新案例库';
+                    progressContainer.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        async function syncLibrary() {
+            const button = document.querySelector('.sync-button');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = progressContainer.querySelector('.progress-bar');
+            const progressText = progressContainer.querySelector('.progress-text');
+
+            try {
+                // 禁用按钮并显示加载状态
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>同步中...';
+                progressContainer.style.display = 'block';
+
+                // 启动进度更新
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.setAttribute('aria-valuenow', progress);
+                    progressText.textContent = `正在同步案例库... ${progress}%`;
+                }, 500);
+
+                const response = await fetch('/case_manager/sync_with_csv', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+
+                // 完成进度
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+                progressText.textContent = data.success ? '同步完成' : '同步失败';
+
+                showMessage(data.message, !data.success);
+                if (data.success) {
+                    setTimeout(() => location.reload(), 2000);
+                }
+            } catch (error) {
+                showMessage('操作失败: ' + error, true);
+            } finally {
+                // 恢复按钮状态
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.innerHTML = '同步案例库';
                     progressContainer.style.display = 'none';
                 }, 2000);
             }
